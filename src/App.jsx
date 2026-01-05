@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { db } from './firebase';
+import { collection, query, where, onSnapshot, addDoc, deleteDoc, doc, Timestamp, orderBy } from "firebase/firestore";
 
 // --- ДОПОМІЖНІ ФУНКЦІЇ ---
 
@@ -37,7 +39,7 @@ const formatViewedDate = (date) => {
 
   if (date.getTime() === today.getTime()) return 'Сьогодні';
   if (date.getTime() === yesterday.getTime()) return 'Вчора';
-  
+
   return date.toLocaleDateString('uk-UA', {
     year: 'numeric',
     month: 'long',
@@ -54,58 +56,42 @@ const formatViewedDate = (date) => {
 function MedTrackerCard({ title, storageKey }) {
   const [currentDosage, setCurrentDosage] = useState(50);
 
-  // Функція-ініціалізатор для useState,
-  // яка ліниво завантажує дані з localStorage
-  const loadInitialHistory = () => {
-    try {
-      const storedHistory = localStorage.getItem(storageKey);
-      if (storedHistory) {
-        const parsedHistory = JSON.parse(storedHistory);
-        // Перетворюємо рядки дат назад в об'єкти Date
-        return parsedHistory.map(item => ({
-          ...item,
-          timestamp: new Date(item.timestamp),
-        }));
-      }
-    } catch (error) {
-      console.error(`Не вдалося завантажити історію ${storageKey}:`, error);
-    }
-    return []; // Повернути порожній масив, якщо нічого немає або сталася помилка
-  };
-
-  const [dosageHistory, setDosageHistory] = useState(loadInitialHistory);
+  const [dosageHistory, setDosageHistory] = useState([]);
   const [viewedDate, setViewedDate] = useState(getStartOfDay(new Date()));
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedDateTime, setSelectedDateTime] = useState(new Date());
 
-  // Завантаження історії з localStorage при монтуванні
-  // ЦЕЙ useEffect БІЛЬШЕ НЕ ПОТРІБЕН, оскільки ми використовуємо ліниву ініціалізацію useState
-  /*
+  // Синхронізація з Firestore
   useEffect(() => {
-    try {
-      const storedHistory = localStorage.getItem(storageKey);
-      if (storedHistory) {
-        const parsedHistory = JSON.parse(storedHistory);
-        const historyWithDates = parsedHistory.map(item => ({
-          ...item,
-          timestamp: new Date(item.timestamp),
-        }));
-        setDosageHistory(historyWithDates);
-      }
-    } catch (error) {
-      console.error(`Не вдалося завантажити історію ${storageKey}:`, error);
-    }
-  }, [storageKey]); // Залежність від storageKey
-  */
+    const q = query(
+      collection(db, "intakes"),
+      where("patientId", "==", title),
+      orderBy("timestamp", "desc")
+    );
 
-  // Збереження історії в localStorage при її зміні
-  useEffect(() => {
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(dosageHistory));
-    } catch (error) {
-      console.error(`Не вдалося зберегти історію ${storageKey}:`, error);
-    }
-  }, [dosageHistory, storageKey]); // Залежність від dosageHistory та storageKey
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const history = snapshot.docs.map(doc => {
+        const data = doc.data();
+        let timestamp = new Date();
+        if (data.timestamp instanceof Timestamp) {
+          timestamp = data.timestamp.toDate();
+        } else if (data.timestamp && data.timestamp.seconds) {
+          timestamp = new Date(data.timestamp.seconds * 1000);
+        }
+
+        return {
+          id: doc.id,
+          ...data,
+          timestamp: timestamp,
+        };
+      });
+      setDosageHistory(history);
+    }, (error) => {
+      console.error(`Помилка Firestore (${title}):`, error);
+    });
+
+    return () => unsubscribe();
+  }, [title]);
 
   const handleDosageChange = useCallback((event) => {
     setCurrentDosage(Number(event.target.value));
@@ -125,25 +111,31 @@ function MedTrackerCard({ title, storageKey }) {
     setSelectedDateTime(newDateTime);
   }, [selectedDateTime]);
 
-  const handleAddIntake = useCallback(() => {
+  const handleAddIntake = useCallback(async () => {
     const intakeTimestamp = showTimePicker ? selectedDateTime : new Date();
-    
-    const newIntake = {
-      id: Date.now(),
-      dosage: currentDosage,
-      timestamp: intakeTimestamp,
-    };
-    
-    setDosageHistory(prev => [newIntake, ...prev]);
-    setViewedDate(getStartOfDay(intakeTimestamp)); // Перейти до дати доданого запису
-    setShowTimePicker(false); // Закрити вибір часу після додавання
-    setSelectedDateTime(new Date()); // Скинути час на поточний
-  }, [currentDosage, showTimePicker, selectedDateTime]);
 
-  const handleDeleteIntake = useCallback((idToDelete) => {
-    setDosageHistory(prevHistory => 
-      prevHistory.filter(item => item.id !== idToDelete)
-    );
+    try {
+      await addDoc(collection(db, "intakes"), {
+        patientId: title,
+        dosage: currentDosage,
+        timestamp: Timestamp.fromDate(intakeTimestamp),
+        createdAt: Timestamp.now()
+      });
+
+      setViewedDate(getStartOfDay(intakeTimestamp)); // Перейти до дати доданого запису
+      setShowTimePicker(false); // Закрити вибір часу після додавання
+      setSelectedDateTime(new Date()); // Скинути час на поточний
+    } catch (e) {
+      console.error("Помилка при додаванні запису:", e);
+    }
+  }, [currentDosage, showTimePicker, selectedDateTime, title]);
+
+  const handleDeleteIntake = useCallback(async (idToDelete) => {
+    try {
+      await deleteDoc(doc(db, "intakes", idToDelete));
+    } catch (e) {
+      console.error("Помилка при видаленні запису:", e);
+    }
   }, []);
 
   const handlePrevDay = useCallback(() => {
@@ -170,7 +162,7 @@ function MedTrackerCard({ title, storageKey }) {
   const isToday = useMemo(() => viewedDate.getTime() === today.getTime(), [viewedDate, today]);
 
   const filteredHistory = useMemo(() => {
-    return dosageHistory.filter(item => 
+    return dosageHistory.filter(item =>
       getStartOfDay(item.timestamp).getTime() === viewedDate.getTime()
     ).sort((a, b) => b.timestamp - a.timestamp);
   }, [dosageHistory, viewedDate]);
@@ -186,7 +178,7 @@ function MedTrackerCard({ title, storageKey }) {
 
   return (
     <div className="w-full max-w-xs lg:max-w-sm bg-white rounded-3xl shadow-xl p-6 transform transition-transform duration-300 hover:scale-[1.01]">
-        
+
       {/* --- Заголовок --- */}
       <h1 className="text-4xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-8 tracking-tight">
         Трекер "{title}"
@@ -194,13 +186,13 @@ function MedTrackerCard({ title, storageKey }) {
 
       {/* --- Секція Слайдера --- */}
       <div className="mb-8 p-4 bg-blue-50 rounded-2xl shadow-inner border border-blue-100">
-        <label 
+        <label
           htmlFor={`dosage-slider-${title}`}
           className="block text-lg font-semibold text-blue-800 mb-3"
         >
           Оберіть дозу (мг):
         </label>
-        
+
         {/* --- Відображення поточної дози --- */}
         <div className="text-center text-6xl font-extrabold text-blue-700 mb-5 drop-shadow-md">
           {currentDosage}
@@ -293,7 +285,7 @@ function MedTrackerCard({ title, storageKey }) {
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
           </button>
-          
+
           <div className="flex flex-col items-center flex-grow mx-2">
             <span className="text-xl font-bold text-blue-700 text-center">
               {formatViewedDate(viewedDate)}
@@ -316,11 +308,11 @@ function MedTrackerCard({ title, storageKey }) {
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
           </button>
         </div>
-        
+
         {filteredHistory.length === 0 ? (
           <p className="text-gray-500 text-center py-6 text-lg">
-            {dosageHistory.length === 0 
-              ? "Почніть відстежувати прийоми, щоб побачити історію тут." 
+            {dosageHistory.length === 0
+              ? "Почніть відстежувати прийоми, щоб побачити історію тут."
               : "За цей день записів немає."
             }
           </p>
@@ -369,7 +361,7 @@ export default function App() {
       // Зчитуємо дані обох трекерів з localStorage
       const dataAH = localStorage.getItem('medTrackerHistory_AH') || '[]';
       const dataEI = localStorage.getItem('medTrackerHistory_EI') || '[]';
-      
+
       // Створюємо єдиний об'єкт для експорту
       const exportData = {
         AH: JSON.parse(dataAH),
@@ -423,7 +415,7 @@ export default function App() {
             // Записуємо дані в localStorage
             localStorage.setItem('medTrackerHistory_AH', JSON.stringify(importedData.AH));
             localStorage.setItem('medTrackerHistory_EI', JSON.stringify(importedData.EI));
-            
+
             // Перезавантажуємо сторінку, щоб компоненти оновили свій стан з localStorage
             // Це найпростіший спосіб синхронізувати стан
             window.location.reload();
@@ -475,19 +467,19 @@ export default function App() {
           background: #a8a8a8;
         }
       `}</style>
-      
+
       {/* Оновлений контейнер, що включає картки та футер */}
       <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-blue-100 to-indigo-200 font-sans text-gray-800">
-        
+
         {/* Головний контейнер, що розміщує картки */}
         <main className="flex-grow flex flex-col md:flex-row justify-center items-stretch p-4 gap-4">
-          <MedTrackerCard 
-            title="AH" 
-            storageKey="medTrackerHistory_AH" 
+          <MedTrackerCard
+            title="AH"
+            storageKey="medTrackerHistory_AH"
           />
-          <MedTrackerCard 
-            title="EI" 
-            storageKey="medTrackerHistory_EI" 
+          <MedTrackerCard
+            title="EI"
+            storageKey="medTrackerHistory_EI"
           />
         </main>
 
@@ -501,7 +493,7 @@ export default function App() {
             >
               Експорт
             </button>
-            
+
             <button
               onClick={() => fileInputRef.current && fileInputRef.current.click()}
               className="text-xs text-gray-700 bg-gray-100 hover:bg-gray-200 py-1.5 px-4 rounded-full transition-colors duration-200 shadow-sm"
@@ -509,7 +501,7 @@ export default function App() {
             >
               Імпорт
             </button>
-            
+
             {/* Прихований input, який ми активуємо кнопкою "Імпорт" */}
             <input
               type="file"
