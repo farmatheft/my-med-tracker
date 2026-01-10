@@ -508,6 +508,44 @@ export default function App() {
     reader.readAsText(file);
   }, []);
 
+  /**
+   * Обробник міграції старих даних (додавання поля unit: 'mg')
+   */
+  const handleMigration = useCallback(async () => {
+    try {
+      if (!window.confirm("Це оновить всі старі записи в базі, додавши unit = 'mg', якщо його немає. Продовжити?")) {
+        return;
+      }
+
+      console.log("Початок міграції...");
+      const querySnapshot = await getDocs(collection(db, "intakes"));
+      const batch = writeBatch(db);
+      let updatesCount = 0;
+
+      querySnapshot.forEach((docSnapshot) => {
+        const data = docSnapshot.data();
+        if (!data.unit) {
+          const docRef = doc(db, "intakes", docSnapshot.id);
+          batch.update(docRef, { unit: 'mg' });
+          updatesCount++;
+        }
+      });
+
+      if (updatesCount > 0) {
+        await batch.commit();
+        console.log(`Міграція завершена. Оновлено ${updatesCount} документів.`);
+        alert(`Успішно оновлено ${updatesCount} записів!`);
+      } else {
+        console.log("Міграція не потрібна. Всі документи вже мають поле unit.");
+        alert("Всі записи вже актуальні.");
+      }
+
+    } catch (e) {
+      console.error("Помилка під час міграції:", e);
+      alert("Сталася помилка. Перевірте консоль.");
+    }
+  }, []);
+
   return (
     <>
       {/* Додаємо стилі для анімацій та скролбару */}
