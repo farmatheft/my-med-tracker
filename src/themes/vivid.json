@@ -1,0 +1,14 @@
+{
+  "name": "vivid",
+  "isDark": false,
+  "backgroundGradient": ["#FFF176", "#FF8A65"],
+  "cardBackground": "rgba(255, 255, 255, 0.95)",
+  "textPrimary": "#4E342E",
+  "textSecondary": "#6D4C41",
+  "accentAH": "#FF5722",
+  "accentEI": "#FFC107",
+  "border": "#FFE082",
+  "timelineLine": "#FFCCBC",
+  "markerColor": "#FFAB91",
+  "success": "#43A047"
+}

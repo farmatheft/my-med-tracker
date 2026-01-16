@@ -1,0 +1,14 @@
+{
+  "name": "breeze",
+  "isDark": false,
+  "backgroundGradient": ["#E0F7FA", "#FFFFFF"],
+  "cardBackground": "rgba(255, 255, 255, 0.9)",
+  "textPrimary": "#006064",
+  "textSecondary": "#00838F",
+  "accentAH": "#4DD0E1",
+  "accentEI": "#81C784",
+  "border": "#B2EBF2",
+  "timelineLine": "#E0E0E0",
+  "markerColor": "#BDBDBD",
+  "success": "#4CAF50"
+}

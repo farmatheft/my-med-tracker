@@ -1,37 +1,25 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { db } from './firebase';
-import { collection, query, where, onSnapshot, addDoc, deleteDoc, doc, Timestamp, orderBy, getDocs, writeBatch } from "firebase/firestore";
+import { collection, query, where, onSnapshot, addDoc, deleteDoc, doc, Timestamp, orderBy } from "firebase/firestore";
 
-// --- ДОПОМІЖНІ ФУНКЦІЇ ---
+// --- THEME LOADING ---
+const themeModules = import.meta.glob('./themes/*.json', { eager: true });
+const themes = Object.values(themeModules).map(m => m.default);
 
-/**
- * Допоміжна функція для отримання початку дня (00:00:00) для дати
- * @param {Date} date - Вхідна дата
- * @returns {Date} - Новий об'єкт Date, що вказує на початок дня
- */
+// --- HELPERS ---
 const getStartOfDay = (date) => {
   const newDate = new Date(date);
   newDate.setHours(0, 0, 0, 0);
   return newDate;
 };
 
-/**
- * Форматує об'єкт Date у локалізований рядок ЧАСУ
- * @param {Date} dateObj - Об'єкт дати
- * @returns {string} - Відформатований рядок часу (напр. "14:30")
- */
 const formatTime = (dateObj) => {
-  return dateObj.toLocaleString('uk-UA', {
+  return dateObj.toLocaleTimeString('uk-UA', {
     hour: '2-digit',
     minute: '2-digit',
   });
 };
 
-/**
- * Форматує дату, що переглядається, у гарний рядок
- * @param {Date} date - Дата, що переглядається
- * @returns {string} - "Сьогодні", "Вчора" або локалізована дата
- */
 const formatViewedDate = (date) => {
   const today = getStartOfDay(new Date());
   const yesterday = getStartOfDay(new Date());
@@ -47,14 +35,22 @@ const formatViewedDate = (date) => {
   });
 };
 
-// --- КОМПОНЕНТ КАРТКИ ТРЕКЕРА ---
+// --- COMPONENTS ---
 
-/**
- * Компонент картки для відстеження одного типу ліків
- * @param {{title: string, storageKey: string}} props - Налаштування картки
- */
-function MedTrackerCard({ title, storageKey }) {
-  // Конфігурація для одиниць виміру
+const Notification = ({ message, onClose }) => {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 2000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  return (
+    <div className="fixed bottom-10 left-1/2 -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-full shadow-2xl z-50 notification-enter">
+      {message}
+    </div>
+  );
+};
+
+function MedTrackerCard({ title, onAddSuccess }) {
   const UNIT_CONFIG = {
     mg: { min: 1, max: 250, step: 1, default: 50, label: 'мг' },
     ml: { min: 0.1, max: 5.0, step: 0.1, default: 0.5, label: 'мл' }
@@ -62,55 +58,24 @@ function MedTrackerCard({ title, storageKey }) {
 
   const [unit, setUnit] = useState('mg');
   const [currentDosage, setCurrentDosage] = useState(UNIT_CONFIG.mg.default);
-
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedDateTime, setSelectedDateTime] = useState(new Date());
 
-  const handleDosageChange = useCallback((event) => {
-    setCurrentDosage(Number(event.target.value));
-  }, []);
-
-  const handleUnitChange = useCallback((newUnit) => {
+  const handleUnitChange = (newUnit) => {
     setUnit(newUnit);
     setCurrentDosage(UNIT_CONFIG[newUnit].default);
-  }, []);
+  };
 
-  const incrementDosage = useCallback(() => {
+  const adjustDosage = (delta) => {
     setCurrentDosage(prev => {
       const config = UNIT_CONFIG[unit];
-      const nextVal = prev + config.step;
-      // Виправляємо точність для дробових чисел (напр. 0.1)
-      const rounded = Math.round(nextVal * 10) / 10;
-      return rounded > config.max ? prev : rounded;
+      const nextVal = Math.round((prev + delta * config.step) * 10) / 10;
+      return Math.min(Math.max(nextVal, config.min), config.max);
     });
-  }, [unit]);
+  };
 
-  const decrementDosage = useCallback(() => {
-    setCurrentDosage(prev => {
-      const config = UNIT_CONFIG[unit];
-      const nextVal = prev - config.step;
-      const rounded = Math.round(nextVal * 10) / 10;
-      return rounded < config.min ? prev : rounded;
-    });
-  }, [unit]);
-
-  const handleDateTimeChange = useCallback((event) => {
-    const { name, value } = event.target;
-    const newDateTime = new Date(selectedDateTime);
-
-    if (name === "date") {
-      const [year, month, day] = value.split('-').map(Number);
-      newDateTime.setFullYear(year, month - 1, day);
-    } else if (name === "time") {
-      const [hours, minutes] = value.split(':').map(Number);
-      newDateTime.setHours(hours, minutes, 0, 0);
-    }
-    setSelectedDateTime(newDateTime);
-  }, [selectedDateTime]);
-
-  const handleAddIntake = useCallback(async () => {
+  const handleAddIntake = async () => {
     const intakeTimestamp = showTimePicker ? selectedDateTime : new Date();
-
     try {
       await addDoc(collection(db, "intakes"), {
         patientId: title,
@@ -119,289 +84,212 @@ function MedTrackerCard({ title, storageKey }) {
         timestamp: Timestamp.fromDate(intakeTimestamp),
         createdAt: Timestamp.now()
       });
-
-      setShowTimePicker(false); // Закрити вибір часу після додавання
-      setSelectedDateTime(new Date()); // Скинути час на поточний
+      onAddSuccess(`${title}: Додано ${currentDosage} ${unit}`);
+      setShowTimePicker(false);
     } catch (e) {
-      console.error("Помилка при додаванні запису:", e);
+      console.error(e);
     }
-  }, [currentDosage, showTimePicker, selectedDateTime, title, unit]);
-
-  // Форматування для полів input type="date" та "time"
-  const formattedDateForInput = useMemo(() => {
-    return selectedDateTime.toISOString().split('T')[0];
-  }, [selectedDateTime]);
-
-  const formattedTimeForInput = useMemo(() => {
-    return selectedDateTime.toTimeString().slice(0, 5);
-  }, [selectedDateTime]);
+  };
 
   return (
-    <div className="w-full max-w-xs lg:max-w-sm bg-white rounded-3xl shadow-xl p-6 transform transition-transform duration-300 hover:scale-[1.01]">
+    <div className="flex-1 bg-[var(--card-bg)] backdrop-blur-md rounded-[2.5rem] p-4 shadow-lg border border-[var(--border)] relative overflow-hidden">
+      <div className={`absolute top-3 left-3 px-2 py-0.5 rounded-md text-[10px] font-bold text-white ${title === 'AH' ? 'bg-[var(--accent-ah)]' : 'bg-[var(--accent-ei)]'}`}>
+        {title}
+      </div>
 
-      {/* --- Заголовок --- */}
-      <h1 className="text-4xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-8 tracking-tight">
-        Трекер "{title}"
-      </h1>
-
-      {/* --- Секція Слайдера --- */}
-      <div className="mb-8 p-4 bg-blue-50 rounded-2xl shadow-inner border border-blue-100">
-
-        {/* --- Перемикач одиниць --- */}
-        <div className="flex justify-center mb-6">
-          <div className="bg-white p-1 rounded-lg shadow-sm border border-blue-100 inline-flex">
+      <div className="flex flex-col items-center mt-4">
+        <div className="flex gap-2 mb-3">
+          {['mg', 'ml'].map(u => (
             <button
-              onClick={() => handleUnitChange('mg')}
-              className={`px-4 py-1 rounded-md text-sm font-bold transition-colors duration-200 ${unit === 'mg'
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-gray-500 hover:bg-gray-100'
-                }`}
+              key={u}
+              onClick={() => handleUnitChange(u)}
+              className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${unit === u ? (u === 'mg' ? 'bg-[var(--accent-ah)] text-white' : 'bg-[var(--accent-ei)] text-white') : 'bg-black/5 text-[var(--text-secondary)]'}`}
             >
-              МГ
+              {u.toUpperCase()}
             </button>
-            <button
-              onClick={() => handleUnitChange('ml')}
-              className={`px-4 py-1 rounded-md text-sm font-bold transition-colors duration-200 ${unit === 'ml'
-                ? 'bg-purple-600 text-white shadow-sm'
-                : 'text-gray-500 hover:bg-gray-100'
-                }`}
-            >
-              МЛ
-            </button>
-          </div>
+          ))}
         </div>
 
-        {/* --- Відображення поточної дози з кнопками --- */}
-        <div className="flex items-center justify-between mb-5">
-          <button
-            onClick={decrementDosage}
-            className="w-12 h-12 flex items-center justify-center bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-xl shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 font-bold text-2xl"
-            aria-label="Зменшити дозу"
-          >
-            -
-          </button>
-
-          <div className="text-center drop-shadow-md mx-2 min-w-[120px]">
-            <span className={`text-6xl font-extrabold ${unit === 'ml' ? 'text-purple-700' : 'text-blue-700'}`}>
-              {currentDosage}
-            </span>
-            <span className={`text-2xl font-bold ml-1 ${unit === 'ml' ? 'text-purple-500' : 'text-blue-500'}`}>
-              {UNIT_CONFIG[unit].label}
-            </span>
+        <div className="flex items-center justify-between w-full px-2 mb-4">
+          <button onClick={() => adjustDosage(-1)} className="w-10 h-10 rounded-full bg-black/5 text-[var(--text-primary)] text-xl flex items-center justify-center">-</button>
+          <div className="text-center">
+            <span className="text-4xl font-black text-[var(--text-primary)] leading-none">{currentDosage}</span>
+            <span className="text-sm font-bold text-[var(--text-secondary)] ml-1">{UNIT_CONFIG[unit].label}</span>
           </div>
-
-          <button
-            onClick={incrementDosage}
-            className="w-12 h-12 flex items-center justify-center bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-xl shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 font-bold text-2xl"
-            aria-label="Збільшити дозу"
-          >
-            +
-          </button>
+          <button onClick={() => adjustDosage(1)} className="w-10 h-10 rounded-full bg-black/5 text-[var(--text-primary)] text-xl flex items-center justify-center">+</button>
         </div>
 
-        {/* --- Слайдер --- */}
         <input
-          id={`dosage-slider-${title}`}
           type="range"
           min={UNIT_CONFIG[unit].min}
           max={UNIT_CONFIG[unit].max}
           step={UNIT_CONFIG[unit].step}
           value={currentDosage}
-          onChange={handleDosageChange}
-          className="w-full h-3 bg-gradient-to-r from-blue-300 to-blue-500 rounded-full appearance-none cursor-pointer accent-blue-600 shadow-md transition-all duration-200 ease-in-out hover:shadow-lg"
-          style={{ WebkitAppearance: 'none', height: '8px' }} // Додаткові стилі для крос-браузерності
+          onChange={(e) => setCurrentDosage(Number(e.target.value))}
+          className="w-full h-1.5 rounded-full appearance-none cursor-pointer mb-6"
+          style={{ background: `linear-gradient(90deg, var(--accent-ah) 0%, var(--accent-ei) 100%)` }}
         />
-        <div className="flex justify-between text-sm text-gray-500 mt-2 px-1">
-          <span>{UNIT_CONFIG[unit].min} {UNIT_CONFIG[unit].label}</span>
-          <span>{UNIT_CONFIG[unit].max} {UNIT_CONFIG[unit].label}</span>
+
+        <div className="w-full space-y-2">
+           <button
+            onClick={() => setShowTimePicker(!showTimePicker)}
+            className="w-full py-2 rounded-xl bg-black/5 text-[var(--text-secondary)] text-xs font-semibold flex items-center justify-center gap-2"
+          >
+            <span className="text-lg">🕒</span> {showTimePicker ? 'Приховати час' : 'Вказати час'}
+          </button>
+
+          {showTimePicker && (
+            <div className="p-2 bg-black/5 rounded-xl flex gap-2">
+              <input
+                type="time"
+                value={selectedDateTime.toTimeString().slice(0,5)}
+                onChange={(e) => {
+                  const [h, m] = e.target.value.split(':');
+                  const d = new Date(selectedDateTime);
+                  d.setHours(h, m);
+                  setSelectedDateTime(d);
+                }}
+                className="flex-1 bg-transparent text-xs text-[var(--text-primary)] focus:outline-none"
+              />
+            </div>
+          )}
+
+          <button
+            onClick={handleAddIntake}
+            className="w-full py-3 rounded-2xl bg-gradient-to-r from-[var(--accent-ah)] to-[var(--accent-ei)] text-white font-bold text-lg shadow-md active:scale-95 transition-transform"
+          >
+            + Додати
+          </button>
         </div>
       </div>
-
-      {/* --- Акордеон для вибору часу --- */}
-      <div className="mb-6">
-        <button
-          onClick={() => {
-            setShowTimePicker(prev => !prev);
-            if (!showTimePicker) setSelectedDateTime(new Date()); // Скидаємо на поточний час при відкритті
-          }}
-          className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-xl text-md transition-all duration-200 shadow-sm flex items-center justify-center space-x-2"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-          <span>{showTimePicker ? "Приховати вибір часу" : "Вказати час"}</span>
-        </button>
-
-        {showTimePicker && (
-          <div className="mt-4 p-4 bg-purple-50 rounded-2xl shadow-inner border border-purple-100 animate-fade-in-down">
-            <p className="text-sm text-gray-600 mb-3">
-              Встановіть дату та час, якщо запис був зроблений раніше.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex-1">
-                <label htmlFor={`date-picker-${title}`} className="block text-sm font-medium text-gray-700 mb-1">Дата:</label>
-                <input
-                  type="date"
-                  id={`date-picker-${title}`}
-                  name="date"
-                  value={formattedDateForInput}
-                  onChange={handleDateTimeChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
-                />
-              </div>
-              <div className="flex-1">
-                <label htmlFor={`time-picker-${title}`} className="block text-sm font-medium text-gray-700 mb-1">Час:</label>
-                <input
-                  type="time"
-                  id={`time-picker-${title}`}
-                  name="time"
-                  value={formattedTimeForInput}
-                  onChange={handleDateTimeChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
-                />
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* --- Кнопка Додавання --- */}
-      <button
-        onClick={handleAddIntake}
-        className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-4 px-4 rounded-xl text-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-blue-300 mb-4"
-      >
-        + Додати прийом
-      </button>
     </div>
   );
 }
 
-
-// --- КОМПОНЕНТ ТАЙМЛАЙНУ ІСТОРІЇ ---
-
-const DAY_HEIGHT = 500; // Висота одного дня в пікселях
+const DAY_HEIGHT = 800;
 
 function TimelineHistory() {
   const [intakes, setIntakes] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
     const q = query(collection(db, "intakes"), orderBy("timestamp", "desc"));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({
+    return onSnapshot(q, (snapshot) => {
+      setIntakes(snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
         timestamp: doc.data().timestamp?.toDate() || new Date(),
-      }));
-      setIntakes(data);
-    }, (error) => {
-      console.error("Помилка Firestore (Timeline):", error);
+      })));
     });
-    return () => unsubscribe();
   }, []);
 
-  const handleDeleteIntake = useCallback(async (idToDelete) => {
-    if (!window.confirm("Видалити цей запис?")) return;
-    try {
-      await deleteDoc(doc(db, "intakes", idToDelete));
-    } catch (e) {
-      console.error("Помилка при видаленні запису:", e);
-    }
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 60000);
+    return () => clearInterval(timer);
   }, []);
+
+  const handleDelete = async (e, id) => {
+    e.stopPropagation();
+    if (window.confirm("Видалити?")) {
+      await deleteDoc(doc(db, "intakes", id));
+      setSelectedId(null);
+    }
+  };
 
   const groupedByDay = useMemo(() => {
     const groups = {};
     const today = getStartOfDay(new Date());
-
-    // Переконуємось, що сьогоднішній день є в списку, навіть якщо немає записів
-    const todayStr = today.toLocaleDateString('uk-UA');
-    groups[todayStr] = {
-      date: today,
-      intakes: []
-    };
+    groups[today.toLocaleDateString('uk-UA')] = { date: today, intakes: [] };
 
     intakes.forEach(intake => {
-      const date = getStartOfDay(intake.timestamp);
-      const dateStr = date.toLocaleDateString('uk-UA');
-      if (!groups[dateStr]) {
-        groups[dateStr] = {
-          date: date,
-          intakes: []
-        };
-      }
+      const dateStr = getStartOfDay(intake.timestamp).toLocaleDateString('uk-UA');
+      if (!groups[dateStr]) groups[dateStr] = { date: getStartOfDay(intake.timestamp), intakes: [] };
       groups[dateStr].intakes.push(intake);
     });
 
     return Object.values(groups).sort((a, b) => b.date - a.date);
   }, [intakes]);
 
+  const getTimeTop = (date) => {
+    const mins = date.getHours() * 60 + date.getMinutes();
+    return ((1440 - mins) / 1440) * 100;
+  };
+
   return (
-    <div className="w-full max-h-[800px] overflow-y-auto custom-scrollbar bg-white rounded-3xl p-4 md:p-8">
-      <div className="relative flex flex-col">
-        {groupedByDay.map((day, dayIndex) => (
-          <div
-            key={day.date.getTime()}
-            className="relative"
-            style={{ height: `${DAY_HEIGHT}px` }}
-          >
-            {/* Центральна лінія таймлайну */}
-            <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-indigo-200 -translate-x-1/2" />
-
-            {/* Події дня */}
-            {day.intakes.map((intake) => {
-              const minutes = intake.timestamp.getHours() * 60 + intake.timestamp.getMinutes();
-              const topPercent = ((1440 - minutes) / 1440) * 100;
-              const isAH = intake.patientId === 'AH';
-
+    <div className="flex-grow overflow-y-auto custom-scrollbar px-4 pb-20" onClick={() => setSelectedId(null)}>
+      <div className="relative">
+        {groupedByDay.map((day) => (
+          <div key={day.date.getTime()} className="relative" style={{ height: `${DAY_HEIGHT}px` }}>
+            {/* Markers */}
+            {[...Array(24 * 6)].map((_, i) => {
+              const mins = i * 10;
+              const top = ((1440 - mins) / 1440) * 100;
+              const isMajor = mins % 180 === 0;
               return (
-                <div
-                  key={intake.id}
-                  className={`absolute flex items-center group ${isAH ? 'right-1/2 pr-0' : 'left-1/2 pl-0'}`}
-                  style={{ top: `${topPercent}%`, transform: 'translateY(-50%)' }}
-                >
-                  {isAH ? (
-                    <>
-                      <button
-                        onClick={() => handleDeleteIntake(intake.id)}
-                        className="opacity-0 group-hover:opacity-100 mr-4 text-red-400 hover:text-red-600 transition-opacity"
-                        title="Видалити"
-                      >
-                        ×
-                      </button>
-                      <span className="font-bold text-lg md:text-xl text-blue-700 whitespace-nowrap">
-                        {intake.dosage} {intake.unit}
-                      </span>
-                      <span className="ml-3 text-sm md:text-base text-gray-500 whitespace-nowrap">
-                        {formatTime(intake.timestamp)}
-                      </span>
-                      <div className="w-5 h-5 rounded-full border-[4px] border-indigo-200 bg-white ml-4 translate-x-1/2 z-10 shadow-sm" />
-                    </>
-                  ) : (
-                    <>
-                      <div className="w-5 h-5 rounded-full border-[4px] border-indigo-200 bg-white mr-4 -translate-x-1/2 z-10 shadow-sm" />
-                      <span className="mr-3 text-sm md:text-base text-gray-500 whitespace-nowrap">
-                        {formatTime(intake.timestamp)}
-                      </span>
-                      <span className="font-bold text-lg md:text-xl text-purple-700 whitespace-nowrap">
-                        {intake.dosage} {intake.unit}
-                      </span>
-                      <button
-                        onClick={() => handleDeleteIntake(intake.id)}
-                        className="opacity-0 group-hover:opacity-100 ml-4 text-red-400 hover:text-red-600 transition-opacity"
-                        title="Видалити"
-                      >
-                        ×
-                      </button>
-                    </>
+                <div key={i} className="absolute left-1/2 flex items-center" style={{ top: `${top}%` }}>
+                  <div className={`h-[1px] bg-[var(--marker-color)] opacity-30 ${isMajor ? 'w-6' : 'w-3'}`} />
+                  {isMajor && (
+                    <span className="ml-2 text-[10px] font-bold text-[var(--marker-color)]">
+                      {String(Math.floor(mins / 60)).padStart(2, '0')}:00
+                    </span>
                   )}
                 </div>
               );
             })}
 
-            {/* Лінія розділювач дня внизу (на 00:00) */}
-            <div className="absolute bottom-0 left-0 right-0 border-b-2 border-indigo-100 flex justify-center">
-              <div className="absolute -bottom-3 bg-white px-4 py-0.5 rounded-full border border-indigo-50 shadow-sm">
-                <span className="text-xs md:text-sm font-bold text-indigo-400">
-                  {formatViewedDate(day.date)}
-                </span>
+            {/* Central Line */}
+            <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-[var(--timeline-line)] -translate-x-1/2" />
+
+            {/* Current Time Line */}
+            {getStartOfDay(currentTime).getTime() === day.date.getTime() && (
+              <div className="absolute left-0 right-0 z-20 pointer-events-none" style={{ top: `${getTimeTop(currentTime)}%` }}>
+                <div className="w-full h-px bg-[var(--accent-ah)] opacity-50 shadow-[0_0_8px_var(--accent-ah)]" />
+                <div className="absolute right-0 -top-4 px-2 py-0.5 bg-[var(--accent-ah)] text-white text-[10px] font-bold rounded-l-md shadow-sm">
+                  {formatTime(currentTime)}
+                </div>
               </div>
+            )}
+
+            {/* Intakes */}
+            {day.intakes.map((intake) => {
+              const isAH = intake.patientId === 'AH';
+              const isSelected = selectedId === intake.id;
+              const top = getTimeTop(intake.timestamp);
+
+              return (
+                <div
+                  key={intake.id}
+                  onClick={(e) => { e.stopPropagation(); setSelectedId(isSelected ? null : intake.id); }}
+                  className={`absolute flex items-center transition-all duration-300 cursor-pointer ${isAH ? 'right-1/2 pr-4 justify-end' : 'left-1/2 pl-4'} ${selectedId && !isSelected ? 'opacity-30 scale-95' : 'opacity-100 scale-100'}`}
+                  style={{ top: `${top}%`, transform: 'translateY(-50%)', width: '45%' }}
+                >
+                  <div className={`flex flex-col ${isAH ? 'items-end' : 'items-start'} ${isSelected ? 'bg-white/10 p-2 rounded-2xl ring-1 ring-[var(--border)]' : ''}`}>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-lg font-black ${isAH ? 'text-[var(--accent-ah)]' : 'text-[var(--accent-ei)]'}`}>
+                        {intake.dosage}
+                      </span>
+                      <span className="text-[10px] font-bold text-[var(--text-secondary)]">{intake.unit}</span>
+                      <span className="text-xs font-bold text-[var(--text-primary)] opacity-60">{formatTime(intake.timestamp)}</span>
+                    </div>
+                    {isSelected && (
+                      <button
+                        onClick={(e) => handleDelete(e, intake.id)}
+                        className="mt-1 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center text-xs shadow-lg animate-fade-in-down"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+                  <div className={`absolute w-3 h-3 rounded-full border-2 border-white shadow-sm z-10 ${isAH ? '-right-1.5' : '-left-1.5'} ${isAH ? 'bg-[var(--accent-ah)]' : 'bg-[var(--accent-ei)]'}`} />
+                </div>
+              );
+            })}
+
+            <div className="absolute bottom-4 left-0 right-0 flex justify-center pointer-events-none">
+              <span className="px-4 py-1 rounded-full bg-black/5 text-[var(--text-secondary)] text-[10px] font-bold uppercase tracking-widest backdrop-blur-sm">
+                {formatViewedDate(day.date)}
+              </span>
             </div>
           </div>
         ))}
@@ -410,181 +298,61 @@ function TimelineHistory() {
   );
 }
 
-// --- ГОЛОВНИЙ КОМПОНЕНТ ДОДАТКА ---
-
 export default function App() {
-  const fileInputRef = useRef(null); // Ref для прихованого input[type=file]
+  const [currentTheme, setCurrentTheme] = useState(() => {
+    const saved = localStorage.getItem('theme');
+    return themes.find(t => t.name === saved) || themes[0];
+  });
+  const [notification, setNotification] = useState(null);
 
-  /**
-   * Обробник експорту даних
-   */
-  const handleExport = useCallback(() => {
-    try {
-      // Зчитуємо дані обох трекерів з localStorage
-      const dataAH = localStorage.getItem('medTrackerHistory_AH') || '[]';
-      const dataEI = localStorage.getItem('medTrackerHistory_EI') || '[]';
-
-      // Створюємо єдиний об'єкт для експорту
-      const exportData = {
-        AH: JSON.parse(dataAH),
-        EI: JSON.parse(dataEI),
-      };
-
-      // Створюємо JSON-файл і запускаємо завантаження
-      const jsonString = JSON.stringify(exportData, null, 2); // 'null, 2' для гарного форматування
-      const blob = new Blob([jsonString], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'med_tracker_backup.json';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
-    } catch (error) {
-      console.error("Помилка експорту:", error);
-      // В реальному додатку тут можна показати повідомлення про помилку (не alert)
-    }
-  }, []);
-
-  /**
-   * Обробник вибору файлу для імпорту
-   */
-  const handleFileSelect = useCallback((event) => {
-    const file = event.target.files[0];
-    if (!file) {
-      return;
-    }
-
-    // Перевірка, що це JSON
-    if (file.type !== 'application/json') {
-      console.warn("Дозволено завантажувати лише файли JSON.");
-      event.target.value = null; // Скидання input
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const content = e.target.result;
-        const importedData = JSON.parse(content);
-
-        // Перевірка наявності очікуваних ключів
-        if (importedData && importedData.AH && importedData.EI) {
-          // Проста валідація, що це масиви
-          if (Array.isArray(importedData.AH) && Array.isArray(importedData.EI)) {
-            // Записуємо дані в localStorage
-            localStorage.setItem('medTrackerHistory_AH', JSON.stringify(importedData.AH));
-            localStorage.setItem('medTrackerHistory_EI', JSON.stringify(importedData.EI));
-
-            // Перезавантажуємо сторінку, щоб компоненти оновили свій стан з localStorage
-            // Це найпростіший спосіб синхронізувати стан
-            window.location.reload();
-          } else {
-            throw new Error('Невірний формат даних у файлі.');
-          }
-        } else {
-          throw new Error('Файл не містить очікуваних ключів "AH" та "EI".');
-        }
-      } catch (error) {
-        console.error("Помилка імпорту:", error);
-        // В реальному додатку тут можна показати повідомлення про помилку (не alert)
-      } finally {
-        event.target.value = null; // Завжди скидаємо input
-      }
-    };
-    reader.readAsText(file);
-  }, []);
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty('--bg-gradient-start', currentTheme.backgroundGradient[0]);
+    root.style.setProperty('--bg-gradient-end', currentTheme.backgroundGradient[1]);
+    root.style.setProperty('--card-bg', currentTheme.cardBackground);
+    root.style.setProperty('--text-primary', currentTheme.textPrimary);
+    root.style.setProperty('--text-secondary', currentTheme.textSecondary);
+    root.style.setProperty('--accent-ah', currentTheme.accentAH);
+    root.style.setProperty('--accent-ei', currentTheme.accentEI);
+    root.style.setProperty('--border', currentTheme.border);
+    root.style.setProperty('--timeline-line', currentTheme.timelineLine);
+    root.style.setProperty('--marker-color', currentTheme.markerColor);
+    root.style.setProperty('--success-color', currentTheme.success);
+    localStorage.setItem('theme', currentTheme.name);
+  }, [currentTheme]);
 
   return (
-    <>
-      {/* Додаємо стилі для анімацій та скролбару */}
-      <style>{`
-        @keyframes fadeInDown {
-          from {
-            opacity: 0;
-            transform: translateY(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-fade-in-down {
-          animation: fadeInDown 0.3s ease-out;
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: #f1f1f1;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #c5c5c5;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #a8a8a8;
-        }
-      `}</style>
+    <div className="h-screen w-screen overflow-hidden flex flex-col transition-colors duration-500" style={{ background: `linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end))` }}>
+      {notification && <Notification message={notification} onClose={() => setNotification(null)} />}
 
-      {/* Оновлений контейнер, що включає картки та футер */}
-      <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-blue-100 to-indigo-200 font-sans text-gray-800 pb-10">
-
-        {/* Головний контейнер, що розміщує картки */}
-        <main className="flex-grow flex flex-col items-center p-4 gap-8">
-          <div className="flex flex-col md:flex-row justify-center items-start gap-4">
-            <MedTrackerCard
-              title="AH"
-              storageKey="medTrackerHistory_AH"
-            />
-            <MedTrackerCard
-              title="EI"
-              storageKey="medTrackerHistory_EI"
-            />
-          </div>
-
-          <div className="w-full max-w-4xl px-2">
-            <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-8 tracking-tight">
-              Спільна історія
-            </h2>
-            <TimelineHistory />
-          </div>
-        </main>
-
-        {/* Секція Імпорту/Експорту (Футер) */}
-        <footer className="w-full text-center p-4 mt-auto">
-          <div className="inline-flex items-center space-x-3 bg-white/50 backdrop-blur-sm p-2 rounded-full shadow-sm">
+      {/* Header with Theme Switcher */}
+      <header className="p-4 flex justify-between items-center">
+        <h1 className="text-xl font-black text-[var(--text-primary)] tracking-tight">TRACKER</h1>
+        <div className="flex gap-2">
+          {themes.map(t => (
             <button
-              onClick={handleExport}
-              className="text-xs text-gray-700 bg-gray-100 hover:bg-gray-200 py-1.5 px-4 rounded-full transition-colors duration-200 shadow-sm"
-              title="Експортувати історію обох карток у .json файл"
-            >
-              Експорт
-            </button>
-
-            <button
-              onClick={() => fileInputRef.current && fileInputRef.current.click()}
-              className="text-xs text-gray-700 bg-gray-100 hover:bg-gray-200 py-1.5 px-4 rounded-full transition-colors duration-200 shadow-sm"
-              title="Імпортувати історію з .json файлу"
-            >
-              Імпорт
-            </button>
-
-
-            {/* Прихований input, який ми активуємо кнопкою "Імпорт" */}
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileSelect}
-              accept=".json"
-              className="hidden"
+              key={t.name}
+              onClick={() => setCurrentTheme(t)}
+              className={`w-6 h-6 rounded-full border-2 transition-transform ${currentTheme.name === t.name ? 'scale-125 border-[var(--text-primary)]' : 'border-transparent opacity-50'}`}
+              style={{ background: t.backgroundGradient[0] }}
+              title={t.name}
             />
-          </div>
-        </footer>
-      </div>
-    </>
+          ))}
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="flex-grow flex flex-col gap-4 max-w-lg mx-auto w-full px-4 overflow-hidden">
+        <div className="flex gap-4">
+          <MedTrackerCard title="AH" onAddSuccess={setNotification} />
+          <MedTrackerCard title="EI" onAddSuccess={setNotification} />
+        </div>
+
+        <div className="flex-grow bg-[var(--card-bg)] backdrop-blur-md rounded-t-[2.5rem] pt-6 shadow-2xl border-x border-t border-[var(--border)] flex flex-col overflow-hidden">
+          <h2 className="text-center text-xs font-black text-[var(--text-secondary)] tracking-[0.3em] uppercase mb-4">Timeline</h2>
+          <TimelineHistory />
+        </div>
+      </main>
+    </div>
   );
 }

@@ -1,0 +1,14 @@
+{
+  "name": "neon",
+  "isDark": true,
+  "backgroundGradient": ["#000000", "#121212"],
+  "cardBackground": "rgba(20, 20, 20, 0.9)",
+  "textPrimary": "#00FF41",
+  "textSecondary": "#008F11",
+  "accentAH": "#FF00FF",
+  "accentEI": "#00FFFF",
+  "border": "#00FF41",
+  "timelineLine": "#1A1A1A",
+  "markerColor": "#333333",
+  "success": "#00FF41"
+}
