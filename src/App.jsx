@@ -63,42 +63,8 @@ function MedTrackerCard({ title, storageKey }) {
   const [unit, setUnit] = useState('mg');
   const [currentDosage, setCurrentDosage] = useState(UNIT_CONFIG.mg.default);
 
-  const [dosageHistory, setDosageHistory] = useState([]);
-  const [viewedDate, setViewedDate] = useState(getStartOfDay(new Date()));
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedDateTime, setSelectedDateTime] = useState(new Date());
-
-  // Синхронізація з Firestore
-  useEffect(() => {
-    const q = query(
-      collection(db, "intakes"),
-      where("patientId", "==", title),
-      orderBy("timestamp", "desc")
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const history = snapshot.docs.map(doc => {
-        const data = doc.data();
-        let timestamp = new Date();
-        if (data.timestamp instanceof Timestamp) {
-          timestamp = data.timestamp.toDate();
-        } else if (data.timestamp && data.timestamp.seconds) {
-          timestamp = new Date(data.timestamp.seconds * 1000);
-        }
-
-        return {
-          id: doc.id,
-          ...data,
-          timestamp: timestamp,
-        };
-      });
-      setDosageHistory(history);
-    }, (error) => {
-      console.error(`Помилка Firestore (${title}):`, error);
-    });
-
-    return () => unsubscribe();
-  }, [title]);
 
   const handleDosageChange = useCallback((event) => {
     setCurrentDosage(Number(event.target.value));
@@ -154,50 +120,12 @@ function MedTrackerCard({ title, storageKey }) {
         createdAt: Timestamp.now()
       });
 
-      setViewedDate(getStartOfDay(intakeTimestamp)); // Перейти до дати доданого запису
       setShowTimePicker(false); // Закрити вибір часу після додавання
       setSelectedDateTime(new Date()); // Скинути час на поточний
     } catch (e) {
       console.error("Помилка при додаванні запису:", e);
     }
-  }, [currentDosage, showTimePicker, selectedDateTime, title]);
-
-  const handleDeleteIntake = useCallback(async (idToDelete) => {
-    try {
-      await deleteDoc(doc(db, "intakes", idToDelete));
-    } catch (e) {
-      console.error("Помилка при видаленні запису:", e);
-    }
-  }, []);
-
-  const handlePrevDay = useCallback(() => {
-    setViewedDate(prevDate => {
-      const newDate = new Date(prevDate);
-      newDate.setDate(newDate.getDate() - 1);
-      return newDate;
-    });
-  }, []);
-
-  const handleNextDay = useCallback(() => {
-    setViewedDate(prevDate => {
-      const newDate = new Date(prevDate);
-      newDate.setDate(newDate.getDate() + 1);
-      return newDate;
-    });
-  }, []);
-
-  const handleGoToToday = useCallback(() => {
-    setViewedDate(getStartOfDay(new Date()));
-  }, []);
-
-  const today = useMemo(() => getStartOfDay(new Date()), []);
-  const isToday = useMemo(() => viewedDate.getTime() === today.getTime(), [viewedDate, today]);
-
-  const filteredHistory = useMemo(() => {
-    return dosageHistory.filter(item =>
-      getStartOfDay(item.timestamp).getTime() === viewedDate.getTime()
-    ).sort((a, b) => b.timestamp - a.timestamp);
-  }, [dosageHistory, viewedDate]);
+  }, [currentDosage, showTimePicker, selectedDateTime, title, unit]);
 
   // Форматування для полів input type="date" та "time"
   const formattedDateForInput = useMemo(() => {
@@ -338,88 +266,149 @@ function MedTrackerCard({ title, storageKey }) {
       {/* --- Кнопка Додавання --- */}
       <button
         onClick={handleAddIntake}
-        className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-4 px-4 rounded-xl text-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-blue-300 mb-8"
+        className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-4 px-4 rounded-xl text-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-blue-300 mb-4"
       >
         + Додати прийом
       </button>
-
-      {/* --- Секція Історії --- */}
-      <div className="mt-6">
-        <h2 className="text-2xl font-bold text-gray-800 border-b-2 border-gray-200 pb-3 mb-5">
-          Історія прийомів
-        </h2>
-
-        {/* --- Навігація по датах --- */}
-        <div className="flex items-center justify-between mb-5 bg-gray-100 p-3 rounded-xl shadow-md">
-          <button
-            onClick={handlePrevDay}
-            className="p-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-gray-400"
-            aria-label="Попередній день"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
-          </button>
-
-          <div className="flex flex-col items-center flex-grow mx-2">
-            <span className="text-xl font-bold text-blue-700 text-center">
-              {formatViewedDate(viewedDate)}
-            </span>
-            <button
-              onClick={handleGoToToday}
-              disabled={isToday}
-              className="text-sm text-purple-600 hover:underline disabled:text-gray-400 disabled:no-underline disabled:cursor-not-allowed mt-1"
-            >
-              (Повернутись до сьогодні)
-            </button>
-          </div>
-
-          <button
-            onClick={handleNextDay}
-            disabled={isToday}
-            className="p-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
-            aria-label="Наступний день"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-          </button>
-        </div>
-
-        {filteredHistory.length === 0 ? (
-          <p className="text-gray-500 text-center py-6 text-lg">
-            {dosageHistory.length === 0
-              ? "Почніть відстежувати прийоми, щоб побачити історію тут."
-              : "За цей день записів немає."
-            }
-          </p>
-        ) : (
-          <ul className="space-y-4 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
-            {filteredHistory.map((intake) => (
-              <li
-                key={intake.id}
-                className="flex justify-between items-center bg-gradient-to-r from-white to-gray-50 p-4 rounded-xl shadow-md transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5 group"
-              >
-                <div className="flex items-center">
-                  <span className={`font-extrabold text-xl mr-3 ${intake.unit === 'ml' ? 'text-purple-700' : 'text-blue-700'}`}>
-                    {intake.dosage} {intake.unit || 'мг'}
-                  </span>
-                  <span className="text-md text-gray-600">
-                    {formatTime(intake.timestamp)}
-                  </span>
-                </div>
-                <button
-                  onClick={() => handleDeleteIntake(intake.id)}
-                  className="text-red-400 hover:text-red-600 font-bold text-2xl px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-full hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-300"
-                  aria-label="Видалити запис"
-                >
-                  &times;
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
     </div>
   );
 }
 
+
+// --- КОМПОНЕНТ ТАЙМЛАЙНУ ІСТОРІЇ ---
+
+const DAY_HEIGHT = 500; // Висота одного дня в пікселях
+
+function TimelineHistory() {
+  const [intakes, setIntakes] = useState([]);
+
+  useEffect(() => {
+    const q = query(collection(db, "intakes"), orderBy("timestamp", "desc"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const data = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        timestamp: doc.data().timestamp?.toDate() || new Date(),
+      }));
+      setIntakes(data);
+    }, (error) => {
+      console.error("Помилка Firestore (Timeline):", error);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleDeleteIntake = useCallback(async (idToDelete) => {
+    if (!window.confirm("Видалити цей запис?")) return;
+    try {
+      await deleteDoc(doc(db, "intakes", idToDelete));
+    } catch (e) {
+      console.error("Помилка при видаленні запису:", e);
+    }
+  }, []);
+
+  const groupedByDay = useMemo(() => {
+    const groups = {};
+    const today = getStartOfDay(new Date());
+
+    // Переконуємось, що сьогоднішній день є в списку, навіть якщо немає записів
+    const todayStr = today.toLocaleDateString('uk-UA');
+    groups[todayStr] = {
+      date: today,
+      intakes: []
+    };
+
+    intakes.forEach(intake => {
+      const date = getStartOfDay(intake.timestamp);
+      const dateStr = date.toLocaleDateString('uk-UA');
+      if (!groups[dateStr]) {
+        groups[dateStr] = {
+          date: date,
+          intakes: []
+        };
+      }
+      groups[dateStr].intakes.push(intake);
+    });
+
+    return Object.values(groups).sort((a, b) => b.date - a.date);
+  }, [intakes]);
+
+  return (
+    <div className="w-full max-h-[800px] overflow-y-auto custom-scrollbar bg-white rounded-3xl p-4 md:p-8">
+      <div className="relative flex flex-col">
+        {groupedByDay.map((day, dayIndex) => (
+          <div
+            key={day.date.getTime()}
+            className="relative"
+            style={{ height: `${DAY_HEIGHT}px` }}
+          >
+            {/* Центральна лінія таймлайну */}
+            <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-indigo-200 -translate-x-1/2" />
+
+            {/* Події дня */}
+            {day.intakes.map((intake) => {
+              const minutes = intake.timestamp.getHours() * 60 + intake.timestamp.getMinutes();
+              const topPercent = ((1440 - minutes) / 1440) * 100;
+              const isAH = intake.patientId === 'AH';
+
+              return (
+                <div
+                  key={intake.id}
+                  className={`absolute flex items-center group ${isAH ? 'right-1/2 pr-0' : 'left-1/2 pl-0'}`}
+                  style={{ top: `${topPercent}%`, transform: 'translateY(-50%)' }}
+                >
+                  {isAH ? (
+                    <>
+                      <button
+                        onClick={() => handleDeleteIntake(intake.id)}
+                        className="opacity-0 group-hover:opacity-100 mr-4 text-red-400 hover:text-red-600 transition-opacity"
+                        title="Видалити"
+                      >
+                        ×
+                      </button>
+                      <span className="font-bold text-lg md:text-xl text-blue-700 whitespace-nowrap">
+                        {intake.dosage} {intake.unit}
+                      </span>
+                      <span className="ml-3 text-sm md:text-base text-gray-500 whitespace-nowrap">
+                        {formatTime(intake.timestamp)}
+                      </span>
+                      <div className="w-5 h-5 rounded-full border-[4px] border-indigo-200 bg-white ml-4 translate-x-1/2 z-10 shadow-sm" />
+                    </>
+                  ) : (
+                    <>
+                      <div className="w-5 h-5 rounded-full border-[4px] border-indigo-200 bg-white mr-4 -translate-x-1/2 z-10 shadow-sm" />
+                      <span className="mr-3 text-sm md:text-base text-gray-500 whitespace-nowrap">
+                        {formatTime(intake.timestamp)}
+                      </span>
+                      <span className="font-bold text-lg md:text-xl text-purple-700 whitespace-nowrap">
+                        {intake.dosage} {intake.unit}
+                      </span>
+                      <button
+                        onClick={() => handleDeleteIntake(intake.id)}
+                        className="opacity-0 group-hover:opacity-100 ml-4 text-red-400 hover:text-red-600 transition-opacity"
+                        title="Видалити"
+                      >
+                        ×
+                      </button>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+
+            {/* Лінія розділювач дня внизу (на 00:00) */}
+            <div className="absolute bottom-0 left-0 right-0 border-b-2 border-indigo-100 flex justify-center">
+              <div className="absolute -bottom-3 bg-white px-4 py-0.5 rounded-full border border-indigo-50 shadow-sm">
+                <span className="text-xs md:text-sm font-bold text-indigo-400">
+                  {formatViewedDate(day.date)}
+                </span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 // --- ГОЛОВНИЙ КОМПОНЕНТ ДОДАТКА ---
 
@@ -542,18 +531,27 @@ export default function App() {
       `}</style>
 
       {/* Оновлений контейнер, що включає картки та футер */}
-      <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-blue-100 to-indigo-200 font-sans text-gray-800">
+      <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-blue-100 to-indigo-200 font-sans text-gray-800 pb-10">
 
         {/* Головний контейнер, що розміщує картки */}
-        <main className="flex-grow flex flex-col md:flex-row justify-center items-center p-4 gap-4">
-          <MedTrackerCard
-            title="AH"
-            storageKey="medTrackerHistory_AH"
-          />
-          <MedTrackerCard
-            title="EI"
-            storageKey="medTrackerHistory_EI"
-          />
+        <main className="flex-grow flex flex-col items-center p-4 gap-8">
+          <div className="flex flex-col md:flex-row justify-center items-start gap-4">
+            <MedTrackerCard
+              title="AH"
+              storageKey="medTrackerHistory_AH"
+            />
+            <MedTrackerCard
+              title="EI"
+              storageKey="medTrackerHistory_EI"
+            />
+          </div>
+
+          <div className="w-full max-w-4xl px-2">
+            <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-8 tracking-tight">
+              Спільна історія
+            </h2>
+            <TimelineHistory />
+          </div>
         </main>
 
         {/* Секція Імпорту/Експорту (Футер) */}
