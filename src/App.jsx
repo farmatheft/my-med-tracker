@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { db } from './firebase';
-import { collection, query, where, onSnapshot, addDoc, deleteDoc, doc, Timestamp, orderBy } from "firebase/firestore";
+import { collection, query, where, onSnapshot, addDoc, deleteDoc, doc, Timestamp, orderBy, updateDoc } from "firebase/firestore";
 
 // --- THEME LOADING ---
 const themeModules = import.meta.glob('./themes/*.json', { eager: true });
@@ -18,6 +18,16 @@ const formatTime = (dateObj) => {
     hour: '2-digit',
     minute: '2-digit',
   });
+};
+
+const padTime = (value) => String(value).padStart(2, '0');
+
+const formatDateInput = (dateObj) => {
+  return `${dateObj.getFullYear()}-${padTime(dateObj.getMonth() + 1)}-${padTime(dateObj.getDate())}`;
+};
+
+const formatTimeInput = (dateObj) => {
+  return `${padTime(dateObj.getHours())}:${padTime(dateObj.getMinutes())}`;
 };
 
 const formatViewedDate = (date) => {
@@ -105,6 +115,151 @@ const ThemeSelector = ({ themes, currentTheme, onSelect }) => {
           </button>
         );
       })}
+    </div>
+  );
+};
+
+const IntakeDetailsModal = ({ intake, onClose }) => {
+  const [dosage, setDosage] = useState(intake.dosage);
+  const [unit, setUnit] = useState(intake.unit);
+  const [dateValue, setDateValue] = useState(formatDateInput(intake.timestamp));
+  const [timeValue, setTimeValue] = useState(formatTimeInput(intake.timestamp));
+  const [showConfirm, setShowConfirm] = useState(false);
+  const accentColor = intake.patientId === 'AH' ? 'var(--accent-ah)' : 'var(--accent-ei)';
+
+  const handleSave = async () => {
+    const nextDate = new Date(`${dateValue}T${timeValue}`);
+    await updateDoc(doc(db, "intakes", intake.id), {
+      dosage: Number(dosage),
+      unit,
+      timestamp: Timestamp.fromDate(nextDate),
+      updatedAt: Timestamp.now()
+    });
+    onClose();
+  };
+
+  const handleDelete = async () => {
+    await deleteDoc(doc(db, "intakes", intake.id));
+    onClose();
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="relative mt-12 w-[min(92vw,520px)] max-h-[85vh] overflow-y-auto rounded-3xl border border-[var(--border)] p-5 shadow-2xl"
+        style={{ background: 'linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end))' }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <h3 className="text-lg font-black text-[var(--text-primary)]">Деталі запису</h3>
+            <p className="text-xs font-semibold text-[var(--text-secondary)] mt-1">{intake.patientId}</p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-8 h-8 rounded-full border border-[var(--border)] text-[var(--text-primary)] flex items-center justify-center"
+            aria-label="Close record"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2">Доза</label>
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                min="0"
+                step="0.1"
+                value={dosage}
+                onChange={(e) => setDosage(e.target.value)}
+                className="flex-1 rounded-xl border border-[var(--border)] bg-transparent px-3 py-2 text-sm font-semibold text-[var(--text-primary)] focus:outline-none"
+              />
+              {['mg', 'ml'].map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => setUnit(type)}
+                  className={`px-3 py-2 rounded-xl text-xs font-bold transition-all ${unit === type ? 'text-white' : 'bg-black/5 text-[var(--text-secondary)]'}`}
+                  style={unit === type ? { background: accentColor } : undefined}
+                >
+                  {type.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2">Дата</label>
+              <input
+                type="date"
+                value={dateValue}
+                onChange={(e) => setDateValue(e.target.value)}
+                className="w-full rounded-xl border border-[var(--border)] bg-transparent px-3 py-2 text-xs font-semibold text-[var(--text-primary)] focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2">Час</label>
+              <input
+                type="time"
+                value={timeValue}
+                onChange={(e) => setTimeValue(e.target.value)}
+                className="w-full rounded-xl border border-[var(--border)] bg-transparent px-3 py-2 text-xs font-semibold text-[var(--text-primary)] focus:outline-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 flex items-center justify-between gap-3">
+          <button
+            type="button"
+            onClick={() => setShowConfirm(true)}
+            className="flex-1 rounded-2xl border border-red-400/70 px-4 py-3 text-xs font-bold text-red-400"
+          >
+            Видалити
+          </button>
+          <button
+            type="button"
+            onClick={handleSave}
+            className="flex-1 rounded-2xl bg-gradient-to-r from-[var(--accent-ah)] to-[var(--accent-ei)] px-4 py-3 text-xs font-bold text-white"
+          >
+            Зберегти
+          </button>
+        </div>
+
+        {showConfirm && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm rounded-3xl">
+            <div className="w-[min(80vw,320px)] rounded-2xl border border-[var(--border)] p-4 text-center"
+              style={{ background: 'linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end))' }}
+            >
+              <p className="text-sm font-bold text-[var(--text-primary)]">Видалити цей запис?</p>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">Цю дію не можна скасувати.</p>
+              <div className="mt-4 flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowConfirm(false)}
+                  className="flex-1 rounded-xl border border-[var(--border)] px-3 py-2 text-xs font-bold text-[var(--text-primary)]"
+                >
+                  Скасувати
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  className="flex-1 rounded-xl bg-red-500 px-3 py-2 text-xs font-bold text-white"
+                >
+                  Підтвердити
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
@@ -231,9 +386,8 @@ function MedTrackerCard({ title, onAddSuccess }) {
 const DAY_HEIGHT = 960;
 const TIMELINE_TITLE_DEFAULT = 'Timeline';
 
-function TimelineHistory({ onDayChange }) {
+function TimelineHistory({ onDayChange, selectedId, onSelectIntake }) {
   const [intakes, setIntakes] = useState([]);
-  const [selectedId, setSelectedId] = useState(null);
   const [currentTime, setCurrentTime] = useState(new Date());
   const scrollRef = useRef(null);
   const dayRefs = useRef([]);
@@ -253,14 +407,6 @@ function TimelineHistory({ onDayChange }) {
     const timer = setInterval(() => setCurrentTime(new Date()), 60000);
     return () => clearInterval(timer);
   }, []);
-
-  const handleDelete = async (e, id) => {
-    e.stopPropagation();
-    if (window.confirm("Видалити?")) {
-      await deleteDoc(doc(db, "intakes", id));
-      setSelectedId(null);
-    }
-  };
 
   const groupedByDay = useMemo(() => {
     const groups = {};
@@ -316,7 +462,7 @@ function TimelineHistory({ onDayChange }) {
     <div
       ref={scrollRef}
       className="flex-grow overflow-y-auto custom-scrollbar px-4 pb-20"
-      onClick={() => setSelectedId(null)}
+      onClick={() => onSelectIntake(null)}
       onScroll={updateCurrentDayHeading}
     >
       <div className="relative">
@@ -369,7 +515,7 @@ function TimelineHistory({ onDayChange }) {
               return (
                 <div
                   key={intake.id}
-                  onClick={(e) => { e.stopPropagation(); setSelectedId(isSelected ? null : intake.id); }}
+                  onClick={(e) => { e.stopPropagation(); onSelectIntake(isSelected ? null : intake); }}
                   className={`absolute flex items-center transition-all duration-300 cursor-pointer ${isAH ? 'right-1/2 pr-4 justify-end' : 'left-1/2 pl-4'} ${selectedId && !isSelected ? 'opacity-30 scale-95' : 'opacity-100 scale-100'}`}
                   style={{ top: `${top}%`, transform: 'translateY(-50%)', width: '45%' }}
                 >
@@ -381,14 +527,6 @@ function TimelineHistory({ onDayChange }) {
                       <span className="text-[10px] font-bold text-[var(--text-secondary)]">{intake.unit}</span>
                       <span className="text-xs font-bold text-[var(--text-primary)] opacity-60">{formatTime(intake.timestamp)}</span>
                     </div>
-                    {isSelected && (
-                      <button
-                        onClick={(e) => handleDelete(e, intake.id)}
-                        className="mt-1 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center text-xs shadow-lg animate-fade-in-down"
-                      >
-                        ×
-                      </button>
-                    )}
                   </div>
                   <div className={`absolute w-3 h-3 rounded-full border-2 border-white shadow-sm z-10 ${isAH ? '-right-1.5' : '-left-1.5'} ${isAH ? 'bg-[var(--accent-ah)]' : 'bg-[var(--accent-ei)]'}`} />
                 </div>
@@ -415,6 +553,18 @@ export default function App() {
   const [notification, setNotification] = useState(null);
   const [timelineHeading, setTimelineHeading] = useState(TIMELINE_TITLE_DEFAULT);
   const [showSettings, setShowSettings] = useState(false);
+  const [selectedIntakeId, setSelectedIntakeId] = useState(null);
+  const [activeIntake, setActiveIntake] = useState(null);
+
+  const handleSelectIntake = (intake) => {
+    if (!intake) {
+      setSelectedIntakeId(null);
+      setActiveIntake(null);
+      return;
+    }
+    setSelectedIntakeId(intake.id);
+    setActiveIntake(intake);
+  };
 
   useEffect(() => {
     const root = document.documentElement;
@@ -466,7 +616,11 @@ export default function App() {
           style={{ background: 'linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end))' }}
         >
           <h2 className="text-center text-xs font-black text-[var(--text-secondary)] tracking-[0.3em] uppercase mb-4">{timelineHeading}</h2>
-          <TimelineHistory onDayChange={(label) => setTimelineHeading(label || TIMELINE_TITLE_DEFAULT)} />
+          <TimelineHistory
+            onDayChange={(label) => setTimelineHeading(label || TIMELINE_TITLE_DEFAULT)}
+            selectedId={selectedIntakeId}
+            onSelectIntake={handleSelectIntake}
+          />
         </div>
       </main>
 
@@ -506,6 +660,13 @@ export default function App() {
             />
           </div>
         </div>
+      )}
+
+      {activeIntake && (
+        <IntakeDetailsModal
+          intake={activeIntake}
+          onClose={() => handleSelectIntake(null)}
+        />
       )}
     </div>
   );
