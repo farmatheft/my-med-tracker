@@ -1,0 +1,14 @@
+{
+  "name": "abyss",
+  "isDark": true,
+  "backgroundGradient": ["#0D1B2A", "#1B263B"],
+  "cardBackground": "rgba(27, 38, 59, 0.8)",
+  "textPrimary": "#E0E1DD",
+  "textSecondary": "#A5A5A5",
+  "accentAH": "#415A77",
+  "accentEI": "#778DA9",
+  "border": "#415A77",
+  "timelineLine": "#1B263B",
+  "markerColor": "#415A77",
+  "success": "#4CAF50"
+}

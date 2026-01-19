@@ -1,0 +1,14 @@
+{
+  "name": "ember",
+  "isDark": true,
+  "backgroundGradient": ["#2D1B1B", "#1A0F0F"],
+  "cardBackground": "rgba(45, 30, 30, 0.8)",
+  "textPrimary": "#FFCCBC",
+  "textSecondary": "#B0BEC5",
+  "accentAH": "#FF7043",
+  "accentEI": "#FFA726",
+  "border": "#4E342E",
+  "timelineLine": "#3E2723",
+  "markerColor": "#5D4037",
+  "success": "#66BB6A"
+}

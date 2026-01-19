@@ -1,0 +1,14 @@
+{
+  "name": "serene",
+  "isDark": false,
+  "backgroundGradient": ["#FFEFBA", "#FFFFFF"],
+  "cardBackground": "rgba(255, 255, 255, 0.9)",
+  "textPrimary": "#5D4037",
+  "textSecondary": "#8D6E63",
+  "accentAH": "#FF8A65",
+  "accentEI": "#FFD54F",
+  "border": "#D7CCC8",
+  "timelineLine": "#E0E0E0",
+  "markerColor": "#BDBDBD",
+  "success": "#81C784"
+}
