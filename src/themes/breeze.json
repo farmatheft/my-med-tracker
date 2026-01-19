@@ -2,7 +2,7 @@
   "name": "breeze",
   "isDark": false,
   "backgroundGradient": ["#E0F7FA", "#FFFFFF"],
-  "cardBackground": "rgba(255, 255, 255, 0.9)",
+  "cardBackground": ["rgba(255, 255, 255, 0.96)", "rgba(255, 255, 255, 0.86)"],
   "textPrimary": "#006064",
   "textSecondary": "#00838F",
   "accentAH": "#4DD0E1",
@@ -10,7 +10,7 @@
   "border": "#B2EBF2",
   "timelineLine": "#E0E0E0",
   "markerColor": "#BDBDBD",
-  "timelineBackground": "rgba(224, 247, 250, 0.6)",
-  "timelineSecondaryBackground": "rgba(224, 247, 250, 0.85)",
+  "timelineBackground": ["rgba(224, 247, 250, 0.8)", "rgba(224, 247, 250, 0.5)"],
+  "timelineSecondaryBackground": ["rgba(224, 247, 250, 0.95)", "rgba(224, 247, 250, 0.7)"],
   "success": "#4CAF50"
 }

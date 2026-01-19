@@ -1,0 +1,16 @@
+{
+  "name": "pearl",
+  "isDark": false,
+  "backgroundGradient": ["#FFFDF7", "#EDE7F6"],
+  "cardBackground": ["rgba(255, 255, 255, 0.98)", "rgba(248, 245, 255, 0.88)"],
+  "textPrimary": "#4A148C",
+  "textSecondary": "#6A1B9A",
+  "accentAH": "#8E24AA",
+  "accentEI": "#5C6BC0",
+  "border": "#D1C4E9",
+  "timelineLine": "#B39DDB",
+  "markerColor": "#9575CD",
+  "timelineBackground": ["rgba(237, 231, 246, 0.8)", "rgba(237, 231, 246, 0.55)"],
+  "timelineSecondaryBackground": ["rgba(225, 213, 240, 0.95)", "rgba(225, 213, 240, 0.7)"],
+  "success": "#7CB342"
+}

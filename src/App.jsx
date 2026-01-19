@@ -50,6 +50,65 @@ const Notification = ({ message, onClose }) => {
   );
 };
 
+const ThemeSelector = ({ themes, currentTheme, onSelect }) => {
+  return (
+    <div className="grid grid-cols-2 gap-3">
+      {themes.map((theme) => {
+        const isSelected = currentTheme.name === theme.name;
+
+        return (
+          <button
+            key={theme.name}
+            type="button"
+            onClick={() => onSelect(theme)}
+            className={`rounded-2xl border px-3 py-3 text-left transition-all ${isSelected ? 'border-[var(--success-color)] shadow-lg' : 'border-[var(--border)] hover:-translate-y-0.5'}`}
+          >
+            <div
+              className="rounded-xl p-3"
+              style={{
+                background: `linear-gradient(135deg, ${theme.backgroundGradient[0]}, ${theme.backgroundGradient[1]})`
+              }}
+            >
+              <div
+                className="rounded-lg p-2 mb-2"
+                style={{
+                  background: `linear-gradient(135deg, ${theme.cardBackground[0]}, ${theme.cardBackground[1]})`
+                }}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="h-2 w-10 rounded-full" style={{ background: theme.accentAH }} />
+                  <div className="h-2 w-6 rounded-full" style={{ background: theme.accentEI }} />
+                </div>
+              </div>
+
+              <div
+                className="relative h-8 rounded-lg overflow-hidden"
+                style={{
+                  background: `linear-gradient(180deg, ${theme.timelineBackground[0]}, ${theme.timelineBackground[1]})`
+                }}
+              >
+                <div
+                  className="absolute left-1/2 top-0 bottom-0 w-1 opacity-90"
+                  style={{ background: theme.timelineLine }}
+                />
+                <div
+                  className="absolute left-2 right-2 top-2 h-1 rounded-full opacity-80"
+                  style={{ background: theme.accentEI }}
+                />
+              </div>
+            </div>
+
+            <div className="mt-2 flex items-center justify-between text-xs font-semibold text-[var(--text-primary)]">
+              <span className="capitalize">{theme.name}</span>
+              {isSelected && <span className="text-[var(--success-color)] text-sm">✓</span>}
+            </div>
+          </button>
+        );
+      })}
+    </div>
+  );
+};
+
 function MedTrackerCard({ title, onAddSuccess }) {
   const UNIT_CONFIG = {
     mg: { min: 1, max: 250, step: 1, default: 50, label: 'мг' },
@@ -92,13 +151,16 @@ function MedTrackerCard({ title, onAddSuccess }) {
   };
 
   return (
-    <div className="flex-1 bg-[var(--card-bg)] backdrop-blur-md rounded-[2.5rem] p-4 shadow-lg border border-[var(--border)] relative overflow-hidden">
+    <div
+      className="flex-1 backdrop-blur-md rounded-[2rem] p-3 shadow-lg border border-[var(--border)] relative overflow-hidden"
+      style={{ background: 'linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end))' }}
+    >
       <div className={`absolute top-3 left-3 px-2 py-0.5 rounded-md text-[10px] font-bold text-white ${title === 'AH' ? 'bg-[var(--accent-ah)]' : 'bg-[var(--accent-ei)]'}`}>
         {title}
       </div>
 
-      <div className="flex flex-col items-center mt-4">
-        <div className="flex gap-2 mb-3">
+      <div className="flex flex-col items-center mt-3">
+        <div className="flex gap-2 mb-2">
           {['mg', 'ml'].map(u => (
             <button
               key={u}
@@ -111,12 +173,12 @@ function MedTrackerCard({ title, onAddSuccess }) {
         </div>
 
         <div className="flex items-center justify-between w-full px-2 mb-4">
-          <button onClick={() => adjustDosage(-1)} className="w-10 h-10 rounded-full bg-black/5 text-[var(--text-primary)] text-xl flex items-center justify-center">-</button>
+          <button onClick={() => adjustDosage(-1)} className="w-9 h-9 rounded-full bg-black/5 text-[var(--text-primary)] text-lg flex items-center justify-center">-</button>
           <div className="text-center">
-            <span className="text-4xl font-black text-[var(--text-primary)] leading-none">{currentDosage}</span>
+            <span className="text-3xl font-black text-[var(--text-primary)] leading-none">{currentDosage}</span>
             <span className="text-sm font-bold text-[var(--text-secondary)] ml-1">{UNIT_CONFIG[unit].label}</span>
           </div>
-          <button onClick={() => adjustDosage(1)} className="w-10 h-10 rounded-full bg-black/5 text-[var(--text-primary)] text-xl flex items-center justify-center">+</button>
+          <button onClick={() => adjustDosage(1)} className="w-9 h-9 rounded-full bg-black/5 text-[var(--text-primary)] text-lg flex items-center justify-center">+</button>
         </div>
 
         <input
@@ -166,7 +228,7 @@ function MedTrackerCard({ title, onAddSuccess }) {
   );
 }
 
-const DAY_HEIGHT = 800;
+const DAY_HEIGHT = 960;
 const TIMELINE_TITLE_DEFAULT = 'Timeline';
 
 function TimelineHistory({ onDayChange }) {
@@ -263,11 +325,11 @@ function TimelineHistory({ onDayChange }) {
              key={day.date.getTime()}
              ref={dayRefs.current[index]}
              className="relative"
-             style={{
-               height: `${DAY_HEIGHT}px`,
-               background: index % 2 === 0 ? 'var(--timeline-bg)' : 'var(--timeline-bg-alt)'
-             }}
-           >
+              style={{
+                height: `${DAY_HEIGHT}px`,
+                background: `linear-gradient(180deg, ${index % 2 === 0 ? 'var(--timeline-bg-start)' : 'var(--timeline-bg-alt-start)'}, ${index % 2 === 0 ? 'var(--timeline-bg-end)' : 'var(--timeline-bg-alt-end)'})`
+              }}
+            >
             {/* Markers */}
             {[...Array(24 * 6)].map((_, i) => {
               const mins = i * 10;
@@ -275,7 +337,7 @@ function TimelineHistory({ onDayChange }) {
               const isMajor = mins % 180 === 0;
               return (
                 <div key={i} className="absolute left-1/2 flex items-center" style={{ top: `${top}%` }}>
-                  <div className={`h-[1px] bg-[var(--marker-color)] opacity-30 ${isMajor ? 'w-6' : 'w-3'}`} />
+                  <div className={`h-[1px] bg-[var(--marker-color)] opacity-60 ${isMajor ? 'w-6' : 'w-3'}`} />
                   {isMajor && (
                     <span className="ml-2 text-[10px] font-bold text-[var(--marker-color)]">
                       {String(Math.floor(mins / 60)).padStart(2, '0')}:00
@@ -286,7 +348,7 @@ function TimelineHistory({ onDayChange }) {
             })}
 
             {/* Central Line */}
-            <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-[var(--timeline-line)] -translate-x-1/2" />
+            <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-[var(--timeline-line)] -translate-x-1/2 opacity-90 shadow-[0_0_8px_var(--timeline-line)]" />
 
             {/* Current Time Line */}
             {getStartOfDay(currentTime).getTime() === day.date.getTime() && (
@@ -352,12 +414,14 @@ export default function App() {
   });
   const [notification, setNotification] = useState(null);
   const [timelineHeading, setTimelineHeading] = useState(TIMELINE_TITLE_DEFAULT);
+  const [showSettings, setShowSettings] = useState(false);
 
   useEffect(() => {
     const root = document.documentElement;
     root.style.setProperty('--bg-gradient-start', currentTheme.backgroundGradient[0]);
     root.style.setProperty('--bg-gradient-end', currentTheme.backgroundGradient[1]);
-    root.style.setProperty('--card-bg', currentTheme.cardBackground);
+    root.style.setProperty('--card-bg-start', currentTheme.cardBackground[0]);
+    root.style.setProperty('--card-bg-end', currentTheme.cardBackground[1]);
     root.style.setProperty('--text-primary', currentTheme.textPrimary);
     root.style.setProperty('--text-secondary', currentTheme.textSecondary);
     root.style.setProperty('--accent-ah', currentTheme.accentAH);
@@ -365,8 +429,10 @@ export default function App() {
     root.style.setProperty('--border', currentTheme.border);
     root.style.setProperty('--timeline-line', currentTheme.timelineLine);
     root.style.setProperty('--marker-color', currentTheme.markerColor);
-    root.style.setProperty('--timeline-bg', currentTheme.timelineBackground);
-    root.style.setProperty('--timeline-bg-alt', currentTheme.timelineSecondaryBackground);
+    root.style.setProperty('--timeline-bg-start', currentTheme.timelineBackground[0]);
+    root.style.setProperty('--timeline-bg-end', currentTheme.timelineBackground[1]);
+    root.style.setProperty('--timeline-bg-alt-start', currentTheme.timelineSecondaryBackground[0]);
+    root.style.setProperty('--timeline-bg-alt-end', currentTheme.timelineSecondaryBackground[1]);
     root.style.setProperty('--success-color', currentTheme.success);
     localStorage.setItem('theme', currentTheme.name);
   }, [currentTheme]);
@@ -375,37 +441,72 @@ export default function App() {
     <div className="h-screen w-screen overflow-hidden flex flex-col transition-colors duration-500" style={{ background: `linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end))` }}>
       {notification && <Notification message={notification} onClose={() => setNotification(null)} />}
 
-      {/* Header with Theme Switcher */}
-      <header className="p-4 flex justify-between items-center">
-        <h1 className="text-xl font-black text-[var(--text-primary)] tracking-tight">TRACKER</h1>
-        <div className="flex gap-2">
-          {themes.map(t => (
-            <button
-              key={t.name}
-              onClick={() => setCurrentTheme(t)}
-              className={`w-6 h-6 rounded-full border-2 transition-transform ${currentTheme.name === t.name ? 'scale-125' : 'opacity-60'}`}
-              style={{
-                background: `linear-gradient(135deg, ${t.backgroundGradient[0]}, ${t.backgroundGradient[1]})`,
-                borderColor: currentTheme.name === t.name ? t.textPrimary : 'transparent'
-              }}
-              title={t.name}
-            />
-          ))}
-        </div>
+      {/* Header */}
+      <header className="p-4 flex justify-end items-center">
+        <button
+          type="button"
+          onClick={() => setShowSettings(true)}
+          className="w-10 h-10 rounded-full border border-[var(--border)] text-[var(--text-primary)] shadow-md hover:scale-105 transition-transform"
+          style={{ background: 'linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end))' }}
+          aria-label="Open settings"
+        >
+          <span className="text-lg">⚙️</span>
+        </button>
       </header>
 
       {/* Main Content */}
       <main className="flex-grow flex flex-col gap-4 max-w-lg mx-auto w-full px-4 overflow-hidden">
-        <div className="flex gap-4">
+        <div className="flex gap-3">
           <MedTrackerCard title="AH" onAddSuccess={setNotification} />
           <MedTrackerCard title="EI" onAddSuccess={setNotification} />
         </div>
 
-        <div className="flex-grow bg-[var(--card-bg)] backdrop-blur-md rounded-t-[2.5rem] pt-6 shadow-2xl border-x border-t border-[var(--border)] flex flex-col overflow-hidden">
+        <div
+          className="flex-grow backdrop-blur-md rounded-t-[2.5rem] pt-6 shadow-2xl border-x border-t border-[var(--border)] flex flex-col overflow-hidden"
+          style={{ background: 'linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end))' }}
+        >
           <h2 className="text-center text-xs font-black text-[var(--text-secondary)] tracking-[0.3em] uppercase mb-4">{timelineHeading}</h2>
           <TimelineHistory onDayChange={(label) => setTimelineHeading(label || TIMELINE_TITLE_DEFAULT)} />
         </div>
       </main>
+
+      {showSettings && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 backdrop-blur-sm"
+          onClick={() => setShowSettings(false)}
+        >
+          <div
+            className="mt-16 w-[min(92vw,520px)] rounded-3xl border border-[var(--border)] p-5 shadow-2xl"
+            style={{ background: 'linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end))' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <h3 className="text-lg font-black text-[var(--text-primary)]">Settings</h3>
+                <p className="text-xs font-semibold text-[var(--text-secondary)] mt-1">Current theme: {currentTheme.name}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowSettings(false)}
+                className="w-8 h-8 rounded-full border border-[var(--border)] text-[var(--text-primary)] flex items-center justify-center"
+                aria-label="Close settings"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="mb-3">
+              <h4 className="text-xs font-black text-[var(--text-secondary)] uppercase tracking-[0.3em]">Theme</h4>
+            </div>
+
+            <ThemeSelector
+              themes={themes}
+              currentTheme={currentTheme}
+              onSelect={(theme) => setCurrentTheme(theme)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

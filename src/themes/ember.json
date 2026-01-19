@@ -2,7 +2,7 @@
   "name": "ember",
   "isDark": true,
   "backgroundGradient": ["#2D1B1B", "#1A0F0F"],
-  "cardBackground": "rgba(45, 30, 30, 0.8)",
+  "cardBackground": ["rgba(45, 30, 30, 0.95)", "rgba(45, 30, 30, 0.75)"],
   "textPrimary": "#FFCCBC",
   "textSecondary": "#B0BEC5",
   "accentAH": "#FF7043",
@@ -10,7 +10,7 @@
   "border": "#4E342E",
   "timelineLine": "#3E2723",
   "markerColor": "#5D4037",
-  "timelineBackground": "rgba(45, 27, 27, 0.4)",
-  "timelineSecondaryBackground": "rgba(45, 27, 27, 0.55)",
+  "timelineBackground": ["rgba(45, 27, 27, 0.6)", "rgba(45, 27, 27, 0.3)"],
+  "timelineSecondaryBackground": ["rgba(45, 27, 27, 0.75)", "rgba(45, 27, 27, 0.45)"],
   "success": "#66BB6A"
 }

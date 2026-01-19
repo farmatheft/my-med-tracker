@@ -2,7 +2,7 @@
   "name": "vivid",
   "isDark": false,
   "backgroundGradient": ["#FFF176", "#FF8A65"],
-  "cardBackground": "rgba(255, 255, 255, 0.95)",
+  "cardBackground": ["rgba(255, 255, 255, 0.98)", "rgba(255, 255, 255, 0.88)"],
   "textPrimary": "#4E342E",
   "textSecondary": "#6D4C41",
   "accentAH": "#FF5722",
@@ -10,7 +10,7 @@
   "border": "#FFE082",
   "timelineLine": "#FFCCBC",
   "markerColor": "#FFAB91",
-  "timelineBackground": "rgba(255, 241, 118, 0.55)",
-  "timelineSecondaryBackground": "rgba(255, 138, 101, 0.45)",
+  "timelineBackground": ["rgba(255, 241, 118, 0.75)", "rgba(255, 241, 118, 0.45)"],
+  "timelineSecondaryBackground": ["rgba(255, 138, 101, 0.7)", "rgba(255, 138, 101, 0.4)"],
   "success": "#43A047"
 }

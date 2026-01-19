@@ -2,7 +2,7 @@
   "name": "neon",
   "isDark": true,
   "backgroundGradient": ["#000000", "#121212"],
-  "cardBackground": "rgba(20, 20, 20, 0.9)",
+  "cardBackground": ["rgba(20, 20, 20, 0.95)", "rgba(20, 20, 20, 0.75)"],
   "textPrimary": "#00FF41",
   "textSecondary": "#008F11",
   "accentAH": "#FF00FF",
@@ -10,7 +10,7 @@
   "border": "#00FF41",
   "timelineLine": "#1A1A1A",
   "markerColor": "#333333",
-  "timelineBackground": "rgba(0, 0, 0, 0.4)",
-  "timelineSecondaryBackground": "rgba(0, 0, 0, 0.6)",
+  "timelineBackground": ["rgba(0, 0, 0, 0.6)", "rgba(0, 0, 0, 0.3)"],
+  "timelineSecondaryBackground": ["rgba(0, 0, 0, 0.75)", "rgba(0, 0, 0, 0.45)"],
   "success": "#00FF41"
 }

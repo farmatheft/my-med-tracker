@@ -1,0 +1,16 @@
+{
+  "name": "galaxy",
+  "isDark": true,
+  "backgroundGradient": ["#0A0F1F", "#1B1035"],
+  "cardBackground": ["rgba(16, 20, 38, 0.95)", "rgba(16, 20, 38, 0.75)"],
+  "textPrimary": "#EDE7F6",
+  "textSecondary": "#B39DDB",
+  "accentAH": "#8E24AA",
+  "accentEI": "#26C6DA",
+  "border": "#312E81",
+  "timelineLine": "#4338CA",
+  "markerColor": "#6D28D9",
+  "timelineBackground": ["rgba(10, 15, 31, 0.6)", "rgba(10, 15, 31, 0.3)"],
+  "timelineSecondaryBackground": ["rgba(10, 15, 31, 0.78)", "rgba(10, 15, 31, 0.45)"],
+  "success": "#66BB6A"
+}

@@ -2,7 +2,7 @@
   "name": "forest",
   "isDark": false,
   "backgroundGradient": ["#E8F5E9", "#C8E6C9"],
-  "cardBackground": "rgba(255, 255, 255, 0.9)",
+  "cardBackground": ["rgba(255, 255, 255, 0.96)", "rgba(255, 255, 255, 0.85)"],
   "textPrimary": "#1B5E20",
   "textSecondary": "#2E7D32",
   "accentAH": "#43A047",
@@ -10,7 +10,7 @@
   "border": "#A5D6A7",
   "timelineLine": "#E0E0E0",
   "markerColor": "#9E9E9E",
-  "timelineBackground": "rgba(232, 245, 233, 0.7)",
-  "timelineSecondaryBackground": "rgba(200, 230, 201, 0.9)",
+  "timelineBackground": ["rgba(232, 245, 233, 0.85)", "rgba(232, 245, 233, 0.55)"],
+  "timelineSecondaryBackground": ["rgba(200, 230, 201, 0.95)", "rgba(200, 230, 201, 0.7)"],
   "success": "#2E7D32"
 }

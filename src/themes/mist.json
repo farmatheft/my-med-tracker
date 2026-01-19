@@ -1,0 +1,16 @@
+{
+  "name": "mist",
+  "isDark": false,
+  "backgroundGradient": ["#F5F7FA", "#E0E7FF"],
+  "cardBackground": ["rgba(255, 255, 255, 0.96)", "rgba(245, 248, 255, 0.86)"],
+  "textPrimary": "#1E3A8A",
+  "textSecondary": "#3B82F6",
+  "accentAH": "#6366F1",
+  "accentEI": "#0EA5E9",
+  "border": "#C7D2FE",
+  "timelineLine": "#A5B4FC",
+  "markerColor": "#94A3B8",
+  "timelineBackground": ["rgba(224, 231, 255, 0.82)", "rgba(224, 231, 255, 0.55)"],
+  "timelineSecondaryBackground": ["rgba(214, 220, 255, 0.94)", "rgba(214, 220, 255, 0.7)"],
+  "success": "#22C55E"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "graphite",
+  "isDark": true,
+  "backgroundGradient": ["#0F141B", "#222831"],
+  "cardBackground": ["rgba(20, 25, 32, 0.95)", "rgba(20, 25, 32, 0.75)"],
+  "textPrimary": "#ECEFF4",
+  "textSecondary": "#B0BEC5",
+  "accentAH": "#00BFA5",
+  "accentEI": "#FFCA28",
+  "border": "#2E3440",
+  "timelineLine": "#4C566A",
+  "markerColor": "#6B7280",
+  "timelineBackground": ["rgba(15, 20, 27, 0.6)", "rgba(15, 20, 27, 0.3)"],
+  "timelineSecondaryBackground": ["rgba(15, 20, 27, 0.78)", "rgba(15, 20, 27, 0.45)"],
+  "success": "#10B981"
+}

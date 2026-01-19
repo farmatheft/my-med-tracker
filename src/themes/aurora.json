@@ -2,7 +2,7 @@
   "name": "aurora",
   "isDark": true,
   "backgroundGradient": ["#0B1020", "#1B2A41"],
-  "cardBackground": "rgba(17, 24, 39, 0.85)",
+  "cardBackground": ["rgba(17, 24, 39, 0.95)", "rgba(17, 24, 39, 0.75)"],
   "textPrimary": "#E3F2FD",
   "textSecondary": "#BBDEFB",
   "accentAH": "#7C4DFF",
@@ -10,7 +10,7 @@
   "border": "#334155",
   "timelineLine": "#1F2937",
   "markerColor": "#475569",
-  "timelineBackground": "rgba(11, 16, 32, 0.35)",
-  "timelineSecondaryBackground": "rgba(11, 16, 32, 0.5)",
+  "timelineBackground": ["rgba(11, 16, 32, 0.55)", "rgba(11, 16, 32, 0.25)"],
+  "timelineSecondaryBackground": ["rgba(11, 16, 32, 0.7)", "rgba(11, 16, 32, 0.4)"],
   "success": "#4CAF50"
 }

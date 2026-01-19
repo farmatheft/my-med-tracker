@@ -2,7 +2,7 @@
   "name": "ocean",
   "isDark": false,
   "backgroundGradient": ["#E1F5FE", "#B3E5FC"],
-  "cardBackground": "rgba(255, 255, 255, 0.92)",
+  "cardBackground": ["rgba(255, 255, 255, 0.96)", "rgba(255, 255, 255, 0.85)"],
   "textPrimary": "#01579B",
   "textSecondary": "#0277BD",
   "accentAH": "#0288D1",
@@ -10,7 +10,7 @@
   "border": "#81D4FA",
   "timelineLine": "#E0E0E0",
   "markerColor": "#90A4AE",
-  "timelineBackground": "rgba(225, 245, 254, 0.7)",
-  "timelineSecondaryBackground": "rgba(179, 229, 252, 0.9)",
+  "timelineBackground": ["rgba(225, 245, 254, 0.85)", "rgba(225, 245, 254, 0.55)"],
+  "timelineSecondaryBackground": ["rgba(179, 229, 252, 0.95)", "rgba(179, 229, 252, 0.7)"],
   "success": "#039BE5"
 }

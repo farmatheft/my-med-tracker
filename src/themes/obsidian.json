@@ -1,0 +1,16 @@
+{
+  "name": "obsidian",
+  "isDark": true,
+  "backgroundGradient": ["#0A0A0A", "#1C1B1B"],
+  "cardBackground": ["rgba(18, 18, 18, 0.95)", "rgba(18, 18, 18, 0.75)"],
+  "textPrimary": "#F5F5F5",
+  "textSecondary": "#BDBDBD",
+  "accentAH": "#EF5350",
+  "accentEI": "#FF7043",
+  "border": "#2C2C2C",
+  "timelineLine": "#424242",
+  "markerColor": "#616161",
+  "timelineBackground": ["rgba(10, 10, 10, 0.65)", "rgba(10, 10, 10, 0.35)"],
+  "timelineSecondaryBackground": ["rgba(10, 10, 10, 0.8)", "rgba(10, 10, 10, 0.5)"],
+  "success": "#66BB6A"
+}

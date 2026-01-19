@@ -1,0 +1,16 @@
+{
+  "name": "sunrise",
+  "isDark": false,
+  "backgroundGradient": ["#FFF3E0", "#FFE0B2"],
+  "cardBackground": ["rgba(255, 255, 255, 0.97)", "rgba(255, 248, 240, 0.86)"],
+  "textPrimary": "#E65100",
+  "textSecondary": "#EF6C00",
+  "accentAH": "#FB8C00",
+  "accentEI": "#FFB300",
+  "border": "#FFCC80",
+  "timelineLine": "#FFB74D",
+  "markerColor": "#FFCC80",
+  "timelineBackground": ["rgba(255, 243, 224, 0.85)", "rgba(255, 243, 224, 0.55)"],
+  "timelineSecondaryBackground": ["rgba(255, 224, 178, 0.95)", "rgba(255, 224, 178, 0.7)"],
+  "success": "#43A047"
+}
