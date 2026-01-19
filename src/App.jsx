@@ -264,7 +264,15 @@ const IntakeDetailsModal = ({ intake, onClose }) => {
   );
 };
 
-function MedTrackerCard({ title, onAddSuccess }) {
+function MedTrackerCard({
+  title,
+  onAddSuccess,
+  isSelectingTime,
+  selectedTime,
+  onStartTimeSelection,
+  onCancelTimeSelection,
+  onResetTimeSelection
+}) {
   const UNIT_CONFIG = {
     mg: { min: 1, max: 250, step: 1, default: 50, label: 'мг' },
     ml: { min: 0.1, max: 5.0, step: 0.1, default: 0.5, label: 'мл' }
@@ -272,8 +280,7 @@ function MedTrackerCard({ title, onAddSuccess }) {
 
   const [unit, setUnit] = useState('mg');
   const [currentDosage, setCurrentDosage] = useState(UNIT_CONFIG.mg.default);
-  const [showTimePicker, setShowTimePicker] = useState(false);
-  const [selectedDateTime, setSelectedDateTime] = useState(new Date());
+  const isAddDisabled = isSelectingTime && !selectedTime;
 
   const handleUnitChange = (newUnit) => {
     setUnit(newUnit);
@@ -289,7 +296,7 @@ function MedTrackerCard({ title, onAddSuccess }) {
   };
 
   const handleAddIntake = async () => {
-    const intakeTimestamp = showTimePicker ? selectedDateTime : new Date();
+    const intakeTimestamp = isSelectingTime && selectedTime ? selectedTime : new Date();
     try {
       await addDoc(collection(db, "intakes"), {
         patientId: title,
@@ -299,7 +306,7 @@ function MedTrackerCard({ title, onAddSuccess }) {
         createdAt: Timestamp.now()
       });
       onAddSuccess(`${title}: Додано ${currentDosage} ${unit}`);
-      setShowTimePicker(false);
+      onResetTimeSelection(title);
     } catch (e) {
       console.error(e);
     }
@@ -348,32 +355,23 @@ function MedTrackerCard({ title, onAddSuccess }) {
         />
 
         <div className="w-full space-y-2">
-           <button
-            onClick={() => setShowTimePicker(!showTimePicker)}
+          <button
+            onClick={() => (isSelectingTime ? onCancelTimeSelection(title) : onStartTimeSelection(title))}
             className="w-full py-2 rounded-xl bg-black/5 text-[var(--text-secondary)] text-xs font-semibold flex items-center justify-center gap-2"
           >
-            <span className="text-lg">🕒</span> {showTimePicker ? 'Приховати час' : 'Вказати час'}
+            <span className="text-lg">🕒</span> {isSelectingTime ? 'Відміна' : 'Вказати час'}
           </button>
 
-          {showTimePicker && (
-            <div className="p-2 bg-black/5 rounded-xl flex gap-2">
-              <input
-                type="time"
-                value={selectedDateTime.toTimeString().slice(0,5)}
-                onChange={(e) => {
-                  const [h, m] = e.target.value.split(':');
-                  const d = new Date(selectedDateTime);
-                  d.setHours(h, m);
-                  setSelectedDateTime(d);
-                }}
-                className="flex-1 bg-transparent text-xs text-[var(--text-primary)] focus:outline-none"
-              />
+          {isSelectingTime && (
+            <div className="p-2 bg-black/5 rounded-xl text-[10px] font-semibold text-[var(--text-secondary)]">
+              {selectedTime ? `Обрано час: ${formatTime(selectedTime)}` : 'Оберіть час на таймлайні'}
             </div>
           )}
 
           <button
             onClick={handleAddIntake}
-            className="w-full py-3 rounded-2xl bg-gradient-to-r from-[var(--accent-ah)] to-[var(--accent-ei)] text-white font-bold text-lg shadow-md active:scale-95 transition-transform"
+            disabled={isAddDisabled}
+            className={`w-full py-3 rounded-2xl bg-gradient-to-r from-[var(--accent-ah)] to-[var(--accent-ei)] text-white font-bold text-lg shadow-md transition-transform ${isAddDisabled ? 'opacity-50 cursor-not-allowed' : 'active:scale-95'}`}
           >
             + Додати
           </button>
@@ -386,9 +384,18 @@ function MedTrackerCard({ title, onAddSuccess }) {
 const DAY_HEIGHT = 960;
 const TIMELINE_TITLE_DEFAULT = 'Timeline';
 
-function TimelineHistory({ onDayChange, selectedId, onSelectIntake }) {
+function TimelineHistory({
+  onDayChange,
+  selectedId,
+  onSelectIntake,
+  isSelectingTime,
+  onTimeSelected
+}) {
   const [intakes, setIntakes] = useState([]);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [hoverLine, setHoverLine] = useState(null);
+  const [selectedLine, setSelectedLine] = useState(null);
+  const isPointerDown = useRef(false);
   const scrollRef = useRef(null);
   const dayRefs = useRef([]);
 
@@ -407,6 +414,13 @@ function TimelineHistory({ onDayChange, selectedId, onSelectIntake }) {
     const timer = setInterval(() => setCurrentTime(new Date()), 60000);
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (!isSelectingTime) return;
+    if (selectedLine) return;
+    const now = new Date();
+    setSelectedLine({ date: getStartOfDay(now), mins: now.getHours() * 60 + now.getMinutes() });
+  }, [isSelectingTime, selectedLine]);
 
   const groupedByDay = useMemo(() => {
     const groups = {};
@@ -458,12 +472,82 @@ function TimelineHistory({ onDayChange, selectedId, onSelectIntake }) {
     return ((1440 - mins) / 1440) * 100;
   };
 
+  const getTopFromMins = (mins) => ((1440 - mins) / 1440) * 100;
+
+  const getMinutesFromPointer = (rect, clientY) => {
+    const relative = Math.min(Math.max(clientY - rect.top, 0), rect.height);
+    const ratio = 1 - relative / rect.height;
+    return Math.round(ratio * 1440);
+  };
+
+  const getDayFromPointer = (clientY) => {
+    if (!dayRefs.current.length) return null;
+    for (let i = 0; i < dayRefs.current.length; i += 1) {
+      const ref = dayRefs.current[i]?.current;
+      if (!ref) continue;
+      const rect = ref.getBoundingClientRect();
+      if (clientY >= rect.top && clientY <= rect.bottom) {
+        return { day: sortedDays[i], rect };
+      }
+    }
+    return null;
+  };
+
+  const updateHoverFromPointer = (clientY) => {
+    const target = getDayFromPointer(clientY);
+    if (!target) return;
+    const mins = getMinutesFromPointer(target.rect, clientY);
+    setHoverLine({ date: target.day.date, mins });
+  };
+
+  const updateSelectionFromPointer = (clientY) => {
+    const target = getDayFromPointer(clientY);
+    if (!target) return;
+    const mins = getMinutesFromPointer(target.rect, clientY);
+    const selectedDate = new Date(target.day.date);
+    selectedDate.setHours(Math.floor(mins / 60), mins % 60, 0, 0);
+    setSelectedLine({ date: target.day.date, mins });
+    onTimeSelected(selectedDate);
+  };
+
+  const handlePointerMove = (e) => {
+    if (!e.clientY) return;
+    updateHoverFromPointer(e.clientY);
+    if (isPointerDown.current) {
+      updateSelectionFromPointer(e.clientY);
+    }
+  };
+
+  const handlePointerDown = (e) => {
+    isPointerDown.current = true;
+    updateSelectionFromPointer(e.clientY);
+  };
+
+  const handlePointerUp = () => {
+    isPointerDown.current = false;
+  };
+
+  useEffect(() => {
+    const handleWindowUp = () => {
+      isPointerDown.current = false;
+    };
+    window.addEventListener('pointerup', handleWindowUp);
+    window.addEventListener('pointercancel', handleWindowUp);
+    return () => {
+      window.removeEventListener('pointerup', handleWindowUp);
+      window.removeEventListener('pointercancel', handleWindowUp);
+    };
+  }, []);
+
   return (
     <div
       ref={scrollRef}
       className="flex-grow overflow-y-auto custom-scrollbar px-4 pb-20"
       onClick={() => onSelectIntake(null)}
       onScroll={updateCurrentDayHeading}
+      onPointerMove={handlePointerMove}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
     >
       <div className="relative">
          {sortedDays.map((day, index) => (
@@ -502,6 +586,26 @@ function TimelineHistory({ onDayChange, selectedId, onSelectIntake }) {
                 <div className="w-full h-px bg-[var(--accent-ah)] opacity-50 shadow-[0_0_8px_var(--accent-ah)]" />
                 <div className="absolute right-0 -top-4 px-2 py-0.5 bg-[var(--accent-ah)] text-white text-[10px] font-bold rounded-l-md shadow-sm">
                   {formatTime(currentTime)}
+                </div>
+              </div>
+            )}
+
+            {/* Hover Line */}
+            {hoverLine && hoverLine.date.getTime() === day.date.getTime() && (
+              <div className="absolute left-0 right-0 z-10 pointer-events-none" style={{ top: `${getTopFromMins(hoverLine.mins)}%` }}>
+                <div className="w-full h-px bg-[var(--marker-color)] opacity-40" />
+                <div className="absolute right-0 -top-4 px-2 py-0.5 bg-[var(--marker-color)] text-[var(--text-primary)] text-[10px] font-bold rounded-l-md shadow-sm opacity-80">
+                  {formatTime(new Date(day.date.getTime() + hoverLine.mins * 60000))}
+                </div>
+              </div>
+            )}
+
+            {/* Selected Time Line */}
+            {isSelectingTime && selectedLine && selectedLine.date.getTime() === day.date.getTime() && (
+              <div className="absolute left-0 right-0 z-20 pointer-events-none" style={{ top: `${getTopFromMins(selectedLine.mins)}%` }}>
+                <div className="w-full h-px bg-[var(--accent-ei)] opacity-80 shadow-[0_0_10px_var(--accent-ei)]" />
+                <div className="absolute right-0 -top-4 px-2 py-0.5 bg-[var(--accent-ei)] text-white text-[10px] font-bold rounded-l-md shadow-sm">
+                  {formatTime(new Date(day.date.getTime() + selectedLine.mins * 60000))}
                 </div>
               </div>
             )}
@@ -555,6 +659,8 @@ export default function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [selectedIntakeId, setSelectedIntakeId] = useState(null);
   const [activeIntake, setActiveIntake] = useState(null);
+  const [activeTimeSelection, setActiveTimeSelection] = useState(null);
+  const [selectedTimeMap, setSelectedTimeMap] = useState({});
 
   const handleSelectIntake = (intake) => {
     if (!intake) {
@@ -564,6 +670,26 @@ export default function App() {
     }
     setSelectedIntakeId(intake.id);
     setActiveIntake(intake);
+  };
+
+  const handleStartTimeSelection = (patientId) => {
+    setActiveTimeSelection(patientId);
+    setSelectedTimeMap((prev) => ({ ...prev, [patientId]: null }));
+  };
+
+  const handleCancelTimeSelection = (patientId) => {
+    setActiveTimeSelection((prev) => (prev === patientId ? null : prev));
+    setSelectedTimeMap((prev) => ({ ...prev, [patientId]: null }));
+  };
+
+  const handleResetTimeSelection = (patientId) => {
+    setSelectedTimeMap((prev) => ({ ...prev, [patientId]: null }));
+    setActiveTimeSelection((prev) => (prev === patientId ? null : prev));
+  };
+
+  const handleTimeSelected = (date) => {
+    if (!activeTimeSelection) return;
+    setSelectedTimeMap((prev) => ({ ...prev, [activeTimeSelection]: date }));
   };
 
   useEffect(() => {
@@ -607,8 +733,24 @@ export default function App() {
       {/* Main Content */}
       <main className="flex-grow flex flex-col gap-4 max-w-lg mx-auto w-full px-4 overflow-hidden">
         <div className="flex gap-3">
-          <MedTrackerCard title="AH" onAddSuccess={setNotification} />
-          <MedTrackerCard title="EI" onAddSuccess={setNotification} />
+          <MedTrackerCard
+            title="AH"
+            onAddSuccess={setNotification}
+            isSelectingTime={activeTimeSelection === 'AH'}
+            selectedTime={selectedTimeMap.AH}
+            onStartTimeSelection={handleStartTimeSelection}
+            onCancelTimeSelection={handleCancelTimeSelection}
+            onResetTimeSelection={handleResetTimeSelection}
+          />
+          <MedTrackerCard
+            title="EI"
+            onAddSuccess={setNotification}
+            isSelectingTime={activeTimeSelection === 'EI'}
+            selectedTime={selectedTimeMap.EI}
+            onStartTimeSelection={handleStartTimeSelection}
+            onCancelTimeSelection={handleCancelTimeSelection}
+            onResetTimeSelection={handleResetTimeSelection}
+          />
         </div>
 
         <div
@@ -620,6 +762,8 @@ export default function App() {
             onDayChange={(label) => setTimelineHeading(label || TIMELINE_TITLE_DEFAULT)}
             selectedId={selectedIntakeId}
             onSelectIntake={handleSelectIntake}
+            isSelectingTime={Boolean(activeTimeSelection)}
+            onTimeSelected={handleTimeSelected}
           />
         </div>
       </main>
