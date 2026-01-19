@@ -359,14 +359,11 @@ function MedTrackerCard({
             onClick={() => (isSelectingTime ? onCancelTimeSelection(title) : onStartTimeSelection(title))}
             className="w-full py-2 rounded-xl bg-black/5 text-[var(--text-secondary)] text-xs font-semibold flex items-center justify-center gap-2"
           >
-            <span className="text-lg">🕒</span> {isSelectingTime ? 'Відміна' : 'Вказати час'}
+            <span className="text-lg">🕒</span>
+            {isSelectingTime
+              ? (selectedTime ? `Відміна · ${formatTime(selectedTime)}` : 'Відміна')
+              : 'Вказати час'}
           </button>
-
-          {isSelectingTime && (
-            <div className="p-2 bg-black/5 rounded-xl text-[10px] font-semibold text-[var(--text-secondary)]">
-              {selectedTime ? `Обрано час: ${formatTime(selectedTime)}` : 'Оберіть час на таймлайні'}
-            </div>
-          )}
 
           <button
             onClick={handleAddIntake}
@@ -757,7 +754,12 @@ export default function App() {
           className="flex-grow backdrop-blur-md rounded-t-[2.5rem] pt-6 shadow-2xl border-x border-t border-[var(--border)] flex flex-col overflow-hidden"
           style={{ background: 'linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end))' }}
         >
-          <h2 className="text-center text-xs font-black text-[var(--text-secondary)] tracking-[0.3em] uppercase mb-4">{timelineHeading}</h2>
+          <h2 className="text-center text-xs font-black text-[var(--text-secondary)] tracking-[0.3em] uppercase mb-2">{timelineHeading}</h2>
+          {activeTimeSelection && (
+            <div className="text-center text-[10px] font-semibold text-[var(--text-secondary)] mb-2">
+              Оберіть час на таймлайні
+            </div>
+          )}
           <TimelineHistory
             onDayChange={(label) => setTimelineHeading(label || TIMELINE_TITLE_DEFAULT)}
             selectedId={selectedIntakeId}
