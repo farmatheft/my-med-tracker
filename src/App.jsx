@@ -167,11 +167,14 @@ function MedTrackerCard({ title, onAddSuccess }) {
 }
 
 const DAY_HEIGHT = 800;
+const TIMELINE_TITLE_DEFAULT = 'Timeline';
 
-function TimelineHistory() {
+function TimelineHistory({ onDayChange }) {
   const [intakes, setIntakes] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const scrollRef = useRef(null);
+  const dayRefs = useRef([]);
 
   useEffect(() => {
     const q = query(collection(db, "intakes"), orderBy("timestamp", "desc"));
@@ -211,16 +214,56 @@ function TimelineHistory() {
     return Object.values(groups).sort((a, b) => b.date - a.date);
   }, [intakes]);
 
+  const sortedDays = useMemo(() => groupedByDay, [groupedByDay]);
+
+  useEffect(() => {
+    dayRefs.current = sortedDays.map((_, idx) => dayRefs.current[idx] || React.createRef());
+  }, [sortedDays]);
+
+  const updateCurrentDayHeading = useCallback(() => {
+    if (!scrollRef.current || !sortedDays.length) return;
+    const containerTop = scrollRef.current.getBoundingClientRect().top;
+    let activeIndex = 0;
+
+    dayRefs.current.forEach((ref, idx) => {
+      if (!ref.current) return;
+      const rect = ref.current.getBoundingClientRect();
+      const topOffset = rect.top - containerTop;
+      if (topOffset <= 20) {
+        activeIndex = idx;
+      }
+    });
+
+    const activeDay = sortedDays[activeIndex];
+    if (activeDay) {
+      onDayChange(formatViewedDate(activeDay.date));
+    }
+  }, [onDayChange, sortedDays]);
+
+  useEffect(() => {
+    updateCurrentDayHeading();
+  }, [updateCurrentDayHeading, sortedDays]);
+
   const getTimeTop = (date) => {
     const mins = date.getHours() * 60 + date.getMinutes();
     return ((1440 - mins) / 1440) * 100;
   };
 
   return (
-    <div className="flex-grow overflow-y-auto custom-scrollbar px-4 pb-20" onClick={() => setSelectedId(null)}>
+    <div
+      ref={scrollRef}
+      className="flex-grow overflow-y-auto custom-scrollbar px-4 pb-20"
+      onClick={() => setSelectedId(null)}
+      onScroll={updateCurrentDayHeading}
+    >
       <div className="relative">
-        {groupedByDay.map((day) => (
-          <div key={day.date.getTime()} className="relative" style={{ height: `${DAY_HEIGHT}px` }}>
+        {sortedDays.map((day, index) => (
+          <div
+            key={day.date.getTime()}
+            ref={dayRefs.current[index]}
+            className="relative"
+            style={{ height: `${DAY_HEIGHT}px` }}
+          >
             {/* Markers */}
             {[...Array(24 * 6)].map((_, i) => {
               const mins = i * 10;
@@ -286,7 +329,7 @@ function TimelineHistory() {
               );
             })}
 
-            <div className="absolute bottom-4 left-0 right-0 flex justify-center pointer-events-none">
+            <div className="absolute top-4 left-0 right-0 flex justify-center pointer-events-none">
               <span className="px-4 py-1 rounded-full bg-black/5 text-[var(--text-secondary)] text-[10px] font-bold uppercase tracking-widest backdrop-blur-sm">
                 {formatViewedDate(day.date)}
               </span>
@@ -304,6 +347,7 @@ export default function App() {
     return themes.find(t => t.name === saved) || themes[0];
   });
   const [notification, setNotification] = useState(null);
+  const [timelineHeading, setTimelineHeading] = useState(TIMELINE_TITLE_DEFAULT);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -352,8 +396,8 @@ export default function App() {
         </div>
 
         <div className="flex-grow bg-[var(--card-bg)] backdrop-blur-md rounded-t-[2.5rem] pt-6 shadow-2xl border-x border-t border-[var(--border)] flex flex-col overflow-hidden">
-          <h2 className="text-center text-xs font-black text-[var(--text-secondary)] tracking-[0.3em] uppercase mb-4">Timeline</h2>
-          <TimelineHistory />
+          <h2 className="text-center text-xs font-black text-[var(--text-secondary)] tracking-[0.3em] uppercase mb-4">{timelineHeading}</h2>
+          <TimelineHistory onDayChange={(label) => setTimelineHeading(label || TIMELINE_TITLE_DEFAULT)} />
         </div>
       </main>
     </div>
