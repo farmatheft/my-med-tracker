@@ -1,0 +1,14 @@
+{
+  "name": "ocean",
+  "isDark": false,
+  "backgroundGradient": ["#E1F5FE", "#B3E5FC"],
+  "cardBackground": "rgba(255, 255, 255, 0.92)",
+  "textPrimary": "#01579B",
+  "textSecondary": "#0277BD",
+  "accentAH": "#0288D1",
+  "accentEI": "#26C6DA",
+  "border": "#81D4FA",
+  "timelineLine": "#E0E0E0",
+  "markerColor": "#90A4AE",
+  "success": "#039BE5"
+}

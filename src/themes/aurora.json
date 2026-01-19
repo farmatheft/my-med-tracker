@@ -1,0 +1,14 @@
+{
+  "name": "aurora",
+  "isDark": true,
+  "backgroundGradient": ["#0B1020", "#1B2A41"],
+  "cardBackground": "rgba(17, 24, 39, 0.85)",
+  "textPrimary": "#E3F2FD",
+  "textSecondary": "#BBDEFB",
+  "accentAH": "#7C4DFF",
+  "accentEI": "#00E5FF",
+  "border": "#334155",
+  "timelineLine": "#1F2937",
+  "markerColor": "#475569",
+  "success": "#4CAF50"
+}

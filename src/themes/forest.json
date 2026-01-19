@@ -1,0 +1,14 @@
+{
+  "name": "forest",
+  "isDark": false,
+  "backgroundGradient": ["#E8F5E9", "#C8E6C9"],
+  "cardBackground": "rgba(255, 255, 255, 0.9)",
+  "textPrimary": "#1B5E20",
+  "textSecondary": "#2E7D32",
+  "accentAH": "#43A047",
+  "accentEI": "#8BC34A",
+  "border": "#A5D6A7",
+  "timelineLine": "#E0E0E0",
+  "markerColor": "#9E9E9E",
+  "success": "#2E7D32"
+}

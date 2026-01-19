@@ -333,8 +333,11 @@ export default function App() {
             <button
               key={t.name}
               onClick={() => setCurrentTheme(t)}
-              className={`w-6 h-6 rounded-full border-2 transition-transform ${currentTheme.name === t.name ? 'scale-125 border-[var(--text-primary)]' : 'border-transparent opacity-50'}`}
-              style={{ background: t.backgroundGradient[0] }}
+              className={`w-6 h-6 rounded-full border-2 transition-transform ${currentTheme.name === t.name ? 'scale-125' : 'opacity-60'}`}
+              style={{
+                background: `linear-gradient(135deg, ${t.backgroundGradient[0]}, ${t.backgroundGradient[1]})`,
+                borderColor: currentTheme.name === t.name ? t.textPrimary : 'transparent'
+              }}
               title={t.name}
             />
           ))}
