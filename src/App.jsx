@@ -476,7 +476,7 @@ export default function App() {
           onClick={() => setShowSettings(false)}
         >
           <div
-            className="mt-16 w-[min(92vw,520px)] rounded-3xl border border-[var(--border)] p-5 shadow-2xl"
+            className="mt-16 w-[min(92vw,520px)] max-h-[80vh] overflow-y-auto rounded-3xl border border-[var(--border)] p-5 shadow-2xl"
             style={{ background: 'linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end))' }}
             onClick={(e) => e.stopPropagation()}
           >
