@@ -188,25 +188,26 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
               }, ${index % 2 === 0 ? 'var(--timeline-bg-end)' : 'var(--timeline-bg-alt-end)'})`
             }}
           >
-            {/* Markers */}
-            {[...Array(24 * 6)].map((_, i) => {
-              const mins = i * 10;
-              const top = ((1440 - mins) / 1440) * 100;
-              const isMajor = mins % 180 === 0;
-              return (
+            <div className="absolute inset-0 z-0">
+              {/* Markers */}
+              {[...Array(24 * 6)].map((_, i) => {
+                const mins = i * 10;
+                const top = ((1440 - mins) / 1440) * 100;
+                const isMajor = mins % 180 === 0;
+                return (
                 <div key={i} className="absolute left-1/2 flex items-center" style={{ top: `${top}%` }}>
-                  <div className={`h-[1px] bg-[var(--marker-color)] opacity-60 ${isMajor ? 'w-6' : 'w-3'}`} />
-                  {isMajor && (
-                    <span className="ml-2 text-[10px] font-bold text-[var(--marker-color)]">
-                      {String(Math.floor(mins / 60)).padStart(2, '0')}:00
-                    </span>
-                  )}
-                </div>
-              );
-            })}
-
-            {/* Central Line */}
-            <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-[var(--timeline-line)] -translate-x-1/2 opacity-90 shadow-[0_0_8px_var(--timeline-line)]" />
+                    <div className={`h-[1px] bg-[var(--marker-color)] opacity-40 ${isMajor ? 'w-6' : 'w-3'}`} />
+                    {isMajor && (
+                      <span className="ml-2 text-[10px] font-bold text-[var(--marker-color)] opacity-70">
+                        {String(Math.floor(mins / 60)).padStart(2, '0')}:00
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+              {/* Central Line */}
+              <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-[var(--timeline-line)] -translate-x-1/2 opacity-80 shadow-[0_0_8px_var(--timeline-line)]" />
+            </div>
 
             {/* Current Time Line */}
             {getStartOfDay(currentTime).getTime() === day.date.getTime() && (
@@ -254,7 +255,7 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                     e.stopPropagation();
                     onSelectIntake(isSelected ? null : intake);
                   }}
-                  className={`absolute flex items-center transition-all duration-300 cursor-pointer ${
+                  className={`absolute z-10 flex items-center transition-all duration-300 cursor-pointer ${
                     isAH ? 'right-1/2 pr-4 justify-end' : 'left-1/2 pl-4'
                   } ${selectedId && !isSelected ? 'opacity-30 scale-95' : 'opacity-100 scale-100'}`}
                   style={{ top: `${top}%`, transform: 'translateY(-50%)', width: '45%' }}
@@ -293,7 +294,7 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
               );
             })}
 
-            <div className="absolute top-4 left-0 right-0 flex justify-center pointer-events-none">
+            <div className="absolute top-4 left-0 right-0 z-20 flex justify-center pointer-events-none">
               <span className="px-4 py-1 rounded-full bg-black/5 text-[var(--text-secondary)] text-[10px] font-bold uppercase tracking-widest backdrop-blur-sm">
                 {formatViewedDate(day.date)}
               </span>

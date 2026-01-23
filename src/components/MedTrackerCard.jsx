@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { GiWaterDrop } from 'react-icons/gi';
 import { FaSyringe, FaPills } from 'react-icons/fa6';
 import { addDoc, collection, Timestamp } from 'firebase/firestore';
@@ -6,8 +6,8 @@ import { db } from '../firebase';
 import { formatTime, getStartOfDay } from '../utils/time';
 
 const UNIT_CONFIG = {
-  mg: { min: 1, max: 250, step: 1, default: 50, label: 'мг' },
-  ml: { min: 0.1, max: 5.0, step: 0.1, default: 0.5, label: 'мл' }
+  mg: { min: 0, max: 250, step: 1, default: 0, label: 'мг' },
+  ml: { min: 0, max: 5.0, step: 0.1, default: 0, label: 'мл' }
 };
 
 const SUBTYPE_OPTIONS = [
@@ -34,6 +34,7 @@ const MedTrackerCard = ({
 }) => {
   const [unit, setUnit] = useState('mg');
   const [currentDosage, setCurrentDosage] = useState(UNIT_CONFIG.mg.default);
+  const [sliderValue, setSliderValue] = useState(0);
   const [subtype, setSubtype] = useState(() => getDefaultSubtype(title));
   const isAddDisabled = isSelectingTime && !selectedTime;
   const isSelectedToday = selectedTime
@@ -47,6 +48,26 @@ const MedTrackerCard = ({
     setUnit(newUnit);
     setCurrentDosage(UNIT_CONFIG[newUnit].default);
   };
+
+  const getDosageFromPercent = (percent) => {
+    const config = UNIT_CONFIG[unit];
+    const raw = (percent / 100) * config.max;
+    const precision = config.step < 1 ? 10 : 1;
+    const rounded = Math.round(raw * precision) / precision;
+    return Math.min(Math.max(rounded, config.min), config.max);
+  };
+
+  const getPercentFromDosage = (value) => {
+    const config = UNIT_CONFIG[unit];
+    if (!config.max) return 0;
+    return Math.round((value / config.max) * 100);
+  };
+
+  const sliderPercent = useMemo(() => getPercentFromDosage(currentDosage), [currentDosage, unit]);
+
+  useEffect(() => {
+    setSliderValue(sliderPercent);
+  }, [sliderPercent]);
 
   const adjustDosage = (delta) => {
     setCurrentDosage((prev) => {
@@ -69,6 +90,7 @@ const MedTrackerCard = ({
       });
       onAddSuccess(`${title}: Додано ${currentDosage} ${unit}`);
       onResetTimeSelection(title);
+      setCurrentDosage(0);
     } catch (e) {
       console.error(e);
     }
@@ -156,16 +178,44 @@ const MedTrackerCard = ({
           </button>
         </div>
 
-        <input
-          type="range"
-          min={UNIT_CONFIG[unit].min}
-          max={UNIT_CONFIG[unit].max}
-          step={UNIT_CONFIG[unit].step}
-          value={currentDosage}
-          onChange={(e) => setCurrentDosage(Number(e.target.value))}
-          className="w-full h-1.5 rounded-full appearance-none cursor-pointer mb-6"
-          style={{ background: 'linear-gradient(90deg, var(--accent-ah) 0%, var(--accent-ei) 100%)' }}
-        />
+        <div className="w-full mb-6">
+          <div
+            className={`syringe-slider ${sliderValue >= 98 ? 'is-full' : ''}`}
+            style={{
+              '--syringe-fill': `${sliderValue}%`,
+              '--syringe-accent': title === 'AH' ? 'var(--accent-ah)' : 'var(--accent-ei)'
+            }}
+          >
+            <div className="syringe-slider__piston" style={{ left: `calc(${sliderValue}% + 20px)` }}>
+              <span className="syringe-slider__piston-handle" />
+              <span className="syringe-slider__piston-rod" />
+            </div>
+            <div className="syringe-slider__body">
+              <div className="syringe-slider__liquid" />
+              <div className="syringe-slider__shine" />
+              <div className="syringe-slider__bubbles">
+                <span className="bubble bubble-1" />
+                <span className="bubble bubble-2" />
+                <span className="bubble bubble-3" />
+              </div>
+            </div>
+            <div className="syringe-slider__needle" />
+            <input
+              type="range"
+              min={0}
+              max={100}
+              step={1}
+              value={sliderValue}
+              onChange={(e) => {
+                const nextPercent = Number(e.target.value);
+                setSliderValue(nextPercent);
+                setCurrentDosage(getDosageFromPercent(nextPercent));
+              }}
+              className="syringe-slider__input"
+              aria-label="Слайдер обʼєму"
+            />
+          </div>
+        </div>
 
         <div className="w-full space-y-2">
           <button
