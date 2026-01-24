@@ -232,6 +232,8 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
             {/* Gaps: time passed between two adjacent intakes (AH left, EI right) */}
             <div className="absolute inset-0 pointer-events-none z-0">
               {(() => {
+                const isToday = getStartOfDay(currentTime).getTime() === day.date.getTime();
+
                 const sortedByPatient = (patientId) =>
                   day.intakes
                     .filter((i) => i.patientId === patientId)
@@ -258,6 +260,34 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                 const ahGaps = buildGaps(sortedByPatient('AH'));
                 const eiGaps = buildGaps(sortedByPatient('EI'));
 
+                const buildNowGap = (patientId) => {
+                  if (!isToday) return null;
+                  const lastPast = day.intakes
+                    .filter((i) => i.patientId === patientId)
+                    .filter((i) => i.timestamp instanceof Date)
+                    .filter((i) => i.timestamp.getTime() <= currentTime.getTime())
+                    .slice()
+                    .sort((a, b) => b.timestamp - a.timestamp)[0];
+                  if (!lastPast) return null;
+
+                  const top1 = getTimeTop(lastPast.timestamp);
+                  const top2 = getTimeTop(currentTime);
+                  const top = (top1 + top2) / 2;
+                  const minutesPassed = Math.abs((currentTime - lastPast.timestamp) / 60000);
+
+                  // Avoid rendering a near-zero label when the last intake is essentially "now".
+                  if (minutesPassed < 1) return null;
+
+                  return {
+                    id: `${lastPast.id}__now`,
+                    top,
+                    label: formatDurationHM(minutesPassed)
+                  };
+                };
+
+                const ahNowGap = buildNowGap('AH');
+                const eiNowGap = buildNowGap('EI');
+
                 const commonStyle = {
                   color: 'var(--text-secondary)',
                   opacity: 0.22,
@@ -283,6 +313,20 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                       </div>
                     ))}
 
+                    {ahNowGap && (
+                      <div
+                        key={`ah-gap-${ahNowGap.id}`}
+                        className="absolute left-1/2 whitespace-nowrap"
+                        style={{
+                          top: `${ahNowGap.top}%`,
+                          transform: 'translate(-100%, -50%) translateX(-12px)',
+                          ...commonStyle
+                        }}
+                      >
+                        {ahNowGap.label}
+                      </div>
+                    )}
+
                     {eiGaps.map((g) => (
                       <div
                         key={`ei-gap-${g.id}`}
@@ -296,6 +340,20 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                         {g.label}
                       </div>
                     ))}
+
+                    {eiNowGap && (
+                      <div
+                        key={`ei-gap-${eiNowGap.id}`}
+                        className="absolute left-1/2 whitespace-nowrap"
+                        style={{
+                          top: `${eiNowGap.top}%`,
+                          transform: 'translate(0, -50%) translateX(12px)',
+                          ...commonStyle
+                        }}
+                      >
+                        {eiNowGap.label}
+                      </div>
+                    )}
                   </>
                 );
               })()}
