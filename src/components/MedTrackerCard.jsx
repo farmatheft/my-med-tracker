@@ -7,7 +7,7 @@ import { formatTime, getStartOfDay } from '../utils/time';
 import SyringeSlider from './SyringeSlider';
 
 const UNIT_CONFIG = {
-  mg: { min: 0, max: 250, step: 1, default: 0, label: 'мг' },
+  mg: { min: 0, max: 100, step: 1, default: 0, label: 'мг' },
   ml: { min: 0, max: 5.0, step: 0.1, default: 0, label: 'мл' }
 };
 
