@@ -114,6 +114,24 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
     return `${h}:${String(m).padStart(2, '0')}`;
   };
 
+  const lastPastIntakeIdByPatient = useMemo(() => {
+    const now = currentTime;
+    const pick = (patientId) => {
+      const candidates = intakes
+        .filter((i) => i.patientId === patientId)
+        .filter((i) => i.timestamp instanceof Date)
+        .filter((i) => i.timestamp.getTime() <= now.getTime())
+        .slice()
+        .sort((a, b) => b.timestamp - a.timestamp);
+      return candidates[0]?.id || null;
+    };
+
+    return {
+      AH: pick('AH'),
+      EI: pick('EI')
+    };
+  }, [currentTime, intakes]);
+
   const getDayFromPointer = (clientY) => {
     if (!dayRefs.current.length) return null;
     for (let i = 0; i < dayRefs.current.length; i += 1) {
@@ -242,8 +260,8 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
 
                 const commonStyle = {
                   color: 'var(--text-secondary)',
-                  opacity: 0.28,
-                  fontSize: '22px',
+                  opacity: 0.22,
+                  fontSize: '28px',
                   fontWeight: 800,
                   letterSpacing: '0.02em',
                   textShadow: '0 1px 0 rgba(0,0,0,0.08)'
@@ -331,6 +349,13 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                 const isSelected = selectedId === intake.id;
                 const top = getTimeTop(intake.timestamp);
 
+                const isLastPastForPatient =
+                  (isAH && lastPastIntakeIdByPatient.AH === intake.id) ||
+                  (!isAH && lastPastIntakeIdByPatient.EI === intake.id);
+                const sinceNowLabel = isLastPastForPatient
+                  ? formatDurationHM(Math.abs((currentTime - intake.timestamp) / 60000))
+                  : null;
+
                 const mainAccent = isAH ? 'var(--accent-ah)' : 'var(--accent-ei)';
                 const bubbleBg = isAH
                   ? 'color-mix(in srgb, var(--accent-ah) 14%, transparent)'
@@ -371,6 +396,14 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                         <span className="text-[10px] font-semibold" style={{ color: 'var(--text-secondary)', opacity: 0.7 }}>
                           {formatTime(intake.timestamp)}
                         </span>
+                        {sinceNowLabel && (
+                          <span
+                            className="ml-1 text-[10px] font-black"
+                            style={{ color: 'var(--text-secondary)', opacity: 0.7 }}
+                          >
+                            +{sinceNowLabel}
+                          </span>
+                        )}
                         {subtypeBadge && (
                           <span
                             className="ml-1 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[9px] font-black"
