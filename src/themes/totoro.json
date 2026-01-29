@@ -1,0 +1,16 @@
+{
+    "name": "totoro",
+    "isDark": false,
+    "backgroundGradient": ["#FDF5E6", "#F5F5DC"],
+    "cardBackground": ["rgba(255, 255, 255, 0.96)", "rgba(253, 245, 230, 0.85)"],
+    "textPrimary": "#1B3022",
+    "textSecondary": "#4A5D23",
+    "accentAH": "#2F4F4F",
+    "accentEI": "#F08080",
+    "border": "#C2B280",
+    "timelineLine": "#A9A9A9",
+    "markerColor": "#2F4F4F",
+    "timelineBackground": ["rgba(253, 245, 230, 0.85)", "rgba(253, 245, 230, 0.55)"],
+    "timelineSecondaryBackground": ["rgba(245, 245, 220, 0.95)", "rgba(245, 245, 220, 0.7)"],
+    "success": "#6B8E23"
+  }

@@ -1,0 +1,16 @@
+{
+  "name": "tartan",
+  "isDark": false,
+  "backgroundGradient": ["#F2EFE9", "#E8E4D9"],
+  "cardBackground": ["rgba(255, 255, 255, 0.96)", "rgba(242, 239, 233, 0.85)"],
+  "textPrimary": "#2D1B1B",
+  "textSecondary": "#5D4037",
+  "accentAH": "#E64A19",
+  "accentEI": "#388E3C",
+  "border": "#D7CCC8",
+  "timelineLine": "#BDBDBD",
+  "markerColor": "#E64A19",
+  "timelineBackground": ["rgba(242, 239, 233, 0.85)", "rgba(242, 239, 233, 0.55)"],
+  "timelineSecondaryBackground": ["rgba(232, 228, 217, 0.95)", "rgba(232, 228, 217, 0.7)"],
+  "success": "#2E7D32"
+}

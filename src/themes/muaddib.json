@@ -1,0 +1,16 @@
+{
+  "name": "muad'dib",
+  "isDark": false,
+  "backgroundGradient": ["#D2B48C", "#C1A273"],
+  "cardBackground": ["rgba(255, 255, 255, 0.96)", "rgba(245, 245, 220, 0.85)"],
+  "textPrimary": "#3E2723",
+  "textSecondary": "#5D4037",
+  "accentAH": "#8B4513",
+  "accentEI": "#1E90FF",
+  "border": "#A68966",
+  "timelineLine": "#BDBDBD",
+  "markerColor": "#8B4513",
+  "timelineBackground": ["rgba(210, 180, 140, 0.85)", "rgba(210, 180, 140, 0.55)"],
+  "timelineSecondaryBackground": ["rgba(193, 162, 115, 0.95)", "rgba(193, 162, 115, 0.7)"],
+  "success": "#4CAF50"
+}

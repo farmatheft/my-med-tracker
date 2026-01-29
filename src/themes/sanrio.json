@@ -1,0 +1,16 @@
+{
+    "name": "sanrio",
+    "isDark": false,
+    "backgroundGradient": ["#FFFFFF", "#F8F9FA"],
+    "cardBackground": ["rgba(255, 255, 255, 0.98)", "rgba(248, 249, 250, 0.9)"],
+    "textPrimary": "#5D5C70",
+    "textSecondary": "#8E8DA4",
+    "accentAH": "#749BC2",
+    "accentEI": "#D895A3",
+    "border": "#E2E8F0",
+    "timelineLine": "#CBD5E1",
+    "markerColor": "#749BC2",
+    "timelineBackground": ["rgba(248, 249, 250, 0.9)", "rgba(248, 249, 250, 0.6)"],
+    "timelineSecondaryBackground": ["rgba(255, 255, 255, 0.95)", "rgba(248, 249, 250, 0.8)"],
+    "success": "#82C18F"
+  }

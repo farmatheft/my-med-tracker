@@ -1,0 +1,16 @@
+{
+    "name": "cyber action",
+    "isDark": true,
+    "backgroundGradient": ["#1A0B2E", "#090412"],
+    "cardBackground": ["rgba(38, 20, 62, 0.95)", "rgba(26, 12, 46, 0.75)"],
+    "textPrimary": "#E3F2FD",
+    "textSecondary": "#B39DDB",
+    "accentAH": "#00E5FF",
+    "accentEI": "#D500F9",
+    "border": "#4A148C",
+    "timelineLine": "#311B92",
+    "markerColor": "#00E5FF",
+    "timelineBackground": ["rgba(26, 11, 46, 0.6)", "rgba(26, 11, 46, 0.3)"],
+    "timelineSecondaryBackground": ["rgba(26, 11, 46, 0.8)", "rgba(26, 11, 46, 0.5)"],
+    "success": "#FFAB40"
+  }
