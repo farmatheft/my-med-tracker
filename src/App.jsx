@@ -91,6 +91,7 @@ export default function App() {
     root.style.setProperty('--subtype-im', subtype.im || (isDark ? '#BA68C8' : '#a855f7'));
     root.style.setProperty('--subtype-po', subtype.po || (isDark ? '#FFB74D' : '#f59e0b'));
     root.style.setProperty('--subtype-ivpo', subtype.ivpo || (isDark ? '#81C784' : '#22c55e'));
+    root.style.setProperty('--subtype-vtrk', subtype.vtrk || (isDark ? '#FACC15' : '#FACC15'));
 
     // --- Subtype panel (top of each card)
     const subtypePanel = currentTheme.subtypePanel || {};
