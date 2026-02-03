@@ -97,72 +97,108 @@ const MedTrackerCard = ({
 
   return (
     <div className="flex-1 rounded-[2rem] overflow-hidden border border-[var(--border)] shadow-soft-strong">
-      {/* Card header - styled like Add button for theme adaptability */}
+      {/* Header Panel - Solid, rounded corners, separate from body */}
       <div
-        className="p-3 pb-8"
+        className="p-3 rounded-t-[2rem]"
         style={{
           background: 'var(--add-btn-bg)',
-          borderBottom: '1px solid var(--add-btn-border)'
+          borderBottom: '2px solid var(--add-btn-border)'
         }}
       >
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
+          {/* Title Badge */}
           <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center font-extrabold text-base"
+            className="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm shrink-0"
             style={{
               background: 'var(--success-color)',
               color: 'var(--add-btn-bg)',
-              boxShadow: '0 0 14px var(--success-color)'
+              boxShadow: '0 0 12px var(--success-color)'
             }}
           >
             {title}
           </div>
 
-          <div className="flex items-center gap-2">
-            <span
-              className="text-[10px] font-bold"
-              style={{ color: 'var(--add-btn-text)', opacity: 0.6 }}
-            >
-              MG/ML
-            </span>
-            <div
-              className="flex items-center rounded-full p-1 border"
-              style={{
-                background: 'var(--surface)',
-                borderColor: 'var(--add-btn-border)'
-              }}
-            >
-              {['mg', 'ml'].map((u) => (
+          {/* Unit Toggle */}
+          <div
+            className="flex items-center rounded-xl p-1 border shrink-0"
+            style={{
+              background: 'var(--surface)',
+              borderColor: 'var(--add-btn-border)'
+            }}
+          >
+            {['mg', 'ml'].map((u) => (
+              <button
+                key={u}
+                type="button"
+                onClick={() => handleUnitChange(u)}
+                className="px-3 py-1 rounded-lg text-[10px] font-bold tracking-wide transition"
+                style={
+                  unit === u
+                    ? {
+                        background: 'var(--success-color)',
+                        color: 'var(--add-btn-bg)'
+                      }
+                    : { color: 'var(--add-btn-text)', opacity: 0.7 }
+                }
+              >
+                {u.toUpperCase()}
+              </button>
+            ))}
+          </div>
+
+          {/* Subtype Selector */}
+          <div
+            className="flex justify-center items-center gap-1 px-2 py-1 rounded-xl"
+            style={{
+              background: 'var(--subtype-panel-bg)',
+              border: '1px solid var(--subtype-panel-border)'
+            }}
+          >
+            {SUBTYPE_OPTIONS.map((option) => {
+              const isActive = subtype === option.value;
+              const Icon = option.icon;
+              const cssColor =
+                option.value === 'IV' ? 'var(--subtype-iv)' :
+                option.value === 'IM' ? 'var(--subtype-im)' :
+                option.value === 'PO' ? 'var(--subtype-po)' :
+                option.value === 'IV+PO' ? 'var(--subtype-po)' :
+                option.value === 'VTRK' ? 'var(--subtype-vtrk)' :
+                'var(--text-secondary)';
+              
+              return (
                 <button
-                  key={u}
+                  key={option.value}
                   type="button"
-                  onClick={() => handleUnitChange(u)}
-                  className="px-3 py-1 rounded-full text-[10px] font-extrabold tracking-wide transition"
-                  style={
-                    unit === u
-                      ? {
-                          background: 'var(--success-color)',
-                          color: 'var(--add-btn-bg)'
-                        }
-                      : { color: 'var(--add-btn-text)', opacity: 0.7 }
-                  }
+                  onClick={() => setSubtype(option.value)}
+                  className="flex flex-col items-center gap-0.5 transition-opacity"
+                  style={{ opacity: isActive ? 1 : 0.5 }}
                 >
-                  {u.toUpperCase()}
+                  <div
+                    className="w-7 h-7 rounded-lg border flex items-center justify-center"
+                    style={
+                      isActive
+                        ? { borderColor: cssColor, background: `color-mix(in srgb, ${cssColor} 20%, transparent)`, color: cssColor }
+                        : { borderColor: 'var(--border)', background: 'var(--surface)', color: 'var(--text-secondary)' }
+                    }
+                  >
+                    <span className="flex items-center gap-0.5">
+                      <Icon className="text-xs" />
+                      {option.value === 'IV+PO' && <FaPills className="text-[6px]" />}
+                    </span>
+                  </div>
                 </button>
-              ))}
-            </div>
+              );
+            })}
           </div>
         </div>
-
-        {/* Subtypes row */}
-        <SubtypeSelector value={subtype} onChange={setSubtype} options={SUBTYPE_OPTIONS} />
       </div>
 
-      {/* Light body */}
+      {/* Body Panel - With small gap from header, rounded top */}
       <div
-        className="-mt-6 rounded-t-[2rem] p-5 pt-7 flex flex-col gap-6 shadow-soft"
+        className="mt-1 p-4 rounded-t-[1.5rem] flex flex-col gap-4"
         style={{ background: 'var(--surface-2)' }}
       >
-        {/* Dosage Control */}
+        {/* Dosage Control with Large Value Indicator */}
         <div className="flex items-center justify-between">
           <button
             type="button"
@@ -209,7 +245,7 @@ const MedTrackerCard = ({
             max={UNIT_CONFIG[unit].max}
             step={UNIT_CONFIG[unit].step}
             color={activeColor}
-            className="h-16"
+            className="h-14"
           />
         </div>
 

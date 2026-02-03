@@ -30,7 +30,7 @@
     "im": "#7C3AED",
     "po": "#F59E0B",
     "ivpo": "#22C55E",
-    "vtrk": "#EF5350"
+    "vtrk": "#FACC15"
   },
   "subtypePanel": {
     "bg": "rgba(2, 6, 23, 0.22)",
@@ -41,5 +41,20 @@
     "text": "#E1F5FE",
     "border": "rgba(255, 255, 255, 0.18)",
     "glow": "#039BE5"
+  },
+  "slider": {
+    "liquid": "#0288D1",
+    "liquidOpacity": 0.8,
+    "bubbles": "#FFFFFF",
+    "bubblesOpacity": 0.7,
+    "plungerRod": "#4FC3F7",
+    "plungerHead": "#29B6F6",
+    "plungerHandle": "#4DD0E1",
+    "barrelEmpty": "#E1F5FE",
+    "barrelStroke": "#81D4FA",
+    "graduations": "#4FC3F7",
+    "needle": "#90A4AE",
+    "trackFilled": "#0288D1",
+    "trackEmpty": "#B3E5FC"
   }
 }

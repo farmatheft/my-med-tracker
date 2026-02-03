@@ -70,13 +70,14 @@ const SyringeSlider = ({ value, max, min = 0, step = 1, onChange, color = '#22c5
   const transitionClass = isDragging ? "transition-none" : "transition-all duration-500 ease-in-out";
 
   return (
-    <div 
-      ref={containerRef}
-      className={`syringe-container w-full h-16 relative flex items-center justify-center cursor-pointer select-none ${className}`}
-      onMouseDown={onMouseDown}
-      onTouchStart={onTouchStart}
-    >
-      <svg viewBox="0 0 350 100" className="w-full h-full drop-shadow-md">
+    <div className={`syringe-wrapper w-full flex flex-col ${className}`}>
+      <div 
+        ref={containerRef}
+        className="syringe-container w-full h-16 relative flex items-center justify-center cursor-pointer select-none"
+        onMouseDown={onMouseDown}
+        onTouchStart={onTouchStart}
+      >
+        <svg viewBox="0 0 350 100" className="w-full h-full drop-shadow-md">
         {/* Needle */}
         <line x1="10" y1="50" x2="50" y2="50" stroke="#94a3b8" strokeWidth="2" />
         
@@ -152,6 +153,23 @@ const SyringeSlider = ({ value, max, min = 0, step = 1, onChange, color = '#22c5
         <text x={barrelStart} y="85" fontSize="10" fontWeight="bold" fill="#94a3b8" textAnchor="middle">{min}</text>
         <text x={barrelEnd} y="85" fontSize="10" fontWeight="bold" fill="#94a3b8" textAnchor="middle">{max}</text>
       </svg>
+      </div>
+
+      {/* Control Slider */}
+      <div className="slider-control w-full px-2 mt-1">
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={value}
+          onChange={(e) => onChange(Number(e.target.value))}
+          className="slider-input w-full h-2 rounded-lg appearance-none cursor-pointer"
+          style={{
+            background: `linear-gradient(to right, ${color} 0%, ${color} ${percentage}%, #e2e8f0 ${percentage}%, #e2e8f0 100%)`
+          }}
+        />
+      </div>
       <style>{`
         @keyframes bubble-float {
           0%, 100% { transform: translateY(0); }
@@ -163,6 +181,35 @@ const SyringeSlider = ({ value, max, min = 0, step = 1, onChange, color = '#22c5
         .bubble-delay-1 { animation-delay: 0s; }
         .bubble-delay-2 { animation-delay: 1s; }
         .bubble-delay-3 { animation-delay: 2s; }
+
+        /* Slider styling */
+        .slider-input::-webkit-slider-thumb {
+          appearance: none;
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background: ${color};
+          cursor: pointer;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+          border: 2px solid white;
+        }
+        .slider-input::-moz-range-thumb {
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background: ${color};
+          cursor: pointer;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+          border: 2px solid white;
+        }
+        .slider-input::-webkit-slider-runnable-track {
+          height: 8px;
+          border-radius: 4px;
+        }
+        .slider-input::-moz-range-track {
+          height: 8px;
+          border-radius: 4px;
+        }
       `}</style>
     </div>
   );
