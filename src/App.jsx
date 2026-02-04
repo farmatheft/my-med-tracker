@@ -4,6 +4,7 @@ import ThemeSelector from './components/ThemeSelector';
 import IntakeDetailsModal from './components/IntakeDetailsModal';
 import MedTrackerCard from './components/MedTrackerCard';
 import TimelineHistory from './components/TimelineHistory';
+import Statistics from './components/Statistics';
 import { TIMELINE_TITLE_DEFAULT } from './utils/time';
 
 // --- THEME LOADING ---
@@ -23,6 +24,7 @@ export default function App() {
   const [activeTimeSelection, setActiveTimeSelection] = useState(null);
   const [selectedTimeMap, setSelectedTimeMap] = useState({});
   const [mobileCardIndex, setMobileCardIndex] = useState(0);
+  const [showStatistics, setShowStatistics] = useState(false);
   const touchStartX = React.useRef(null);
 
   const handleSelectIntake = (intake) => {
@@ -123,7 +125,19 @@ export default function App() {
       {notification && <Notification message={notification} onClose={() => setNotification(null)} />}
 
       {/* Header */}
-      <header className="p-3 flex justify-end items-center">
+      <header className="p-3 flex justify-between items-center">
+        <button
+          type="button"
+          onClick={() => setShowStatistics(!showStatistics)}
+          className="w-10 h-10 rounded-full border border-[var(--border)] text-[var(--text-primary)] shadow-md hover:scale-105 transition-transform flex items-center justify-center"
+          style={{ background: 'linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end))' }}
+          aria-label={showStatistics ? "Show main view" : "Show statistics"}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+            <path d="M3 3v18h18" />
+            <path d="M18 9l-5 5-4-4-3 3" />
+          </svg>
+        </button>
         <button
           type="button"
           onClick={() => setShowSettings(true)}
@@ -140,116 +154,122 @@ export default function App() {
 
       {/* Main Content */}
       <main className="flex-grow flex flex-col gap-4 max-w-3xl mx-auto w-full px-4 pb-6">
-        {/* Cards: desktop/tablet side-by-side */}
-        <div className="hidden sm:flex gap-3">
-          <MedTrackerCard
-            title="AH"
-            onAddSuccess={setNotification}
-            isSelectingTime={activeTimeSelection === 'AH'}
-            selectedTime={selectedTimeMap.AH}
-            onStartTimeSelection={handleStartTimeSelection}
-            onCancelTimeSelection={handleCancelTimeSelection}
-            onResetTimeSelection={handleResetTimeSelection}
-          />
-          <MedTrackerCard
-            title="EI"
-            onAddSuccess={setNotification}
-            isSelectingTime={activeTimeSelection === 'EI'}
-            selectedTime={selectedTimeMap.EI}
-            onStartTimeSelection={handleStartTimeSelection}
-            onCancelTimeSelection={handleCancelTimeSelection}
-            onResetTimeSelection={handleResetTimeSelection}
-          />
-        </div>
-
-        {/* Cards: mobile carousel */}
-        <div className="sm:hidden">
-          <div
-            className="relative overflow-hidden"
-            onTouchStart={(e) => {
-              touchStartX.current = e.touches?.[0]?.clientX ?? null;
-            }}
-            onTouchEnd={(e) => {
-              const start = touchStartX.current;
-              const end = e.changedTouches?.[0]?.clientX ?? null;
-              touchStartX.current = null;
-              if (start == null || end == null) return;
-              const dx = end - start;
-              const threshold = 50;
-              if (dx > threshold) setMobileCardIndex(0);
-              if (dx < -threshold) setMobileCardIndex(1);
-            }}
-          >
-            <div
-              className="flex transition-transform duration-300 ease-out"
-              style={{ transform: `translateX(-${mobileCardIndex * 100}%)` }}
-            >
-              <div className="min-w-full">
-                <MedTrackerCard
-                  title="AH"
-                  onAddSuccess={setNotification}
-                  isSelectingTime={activeTimeSelection === 'AH'}
-                  selectedTime={selectedTimeMap.AH}
-                  onStartTimeSelection={handleStartTimeSelection}
-                  onCancelTimeSelection={handleCancelTimeSelection}
-                  onResetTimeSelection={handleResetTimeSelection}
-                />
-              </div>
-              <div className="min-w-full">
-                <MedTrackerCard
-                  title="EI"
-                  onAddSuccess={setNotification}
-                  isSelectingTime={activeTimeSelection === 'EI'}
-                  selectedTime={selectedTimeMap.EI}
-                  onStartTimeSelection={handleStartTimeSelection}
-                  onCancelTimeSelection={handleCancelTimeSelection}
-                  onResetTimeSelection={handleResetTimeSelection}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Dots */}
-          <div className="mt-2 flex justify-center gap-2">
-            {[0, 1].map((idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => setMobileCardIndex(idx)}
-                className="h-2.5 w-2.5 rounded-full"
-                style={{
-                  background: idx === mobileCardIndex ? 'var(--text-primary)' : 'rgba(0,0,0,0.18)',
-                  opacity: idx === mobileCardIndex ? 0.8 : 0.45
-                }}
-                aria-label={idx === 0 ? 'Show AH card' : 'Show EI card'}
+        {showStatistics ? (
+          <Statistics onBack={() => setShowStatistics(false)} />
+        ) : (
+          <>
+            {/* Cards: desktop/tablet side-by-side */}
+            <div className="hidden sm:flex gap-3">
+              <MedTrackerCard
+                title="AH"
+                onAddSuccess={setNotification}
+                isSelectingTime={activeTimeSelection === 'AH'}
+                selectedTime={selectedTimeMap.AH}
+                onStartTimeSelection={handleStartTimeSelection}
+                onCancelTimeSelection={handleCancelTimeSelection}
+                onResetTimeSelection={handleResetTimeSelection}
               />
-            ))}
-          </div>
-        </div>
-
-        <div
-          className="rounded-[2.5rem] pt-6 shadow-soft-strong border border-[var(--border)] flex flex-col overflow-hidden"
-          style={{
-            background: 'var(--surface)',
-            // Fixed viewport for the timeline window.
-            // One full day (24h) is mapped to this height; scrolling moves across days, not within a day.
-            height: '600px'
-          }}
-        >
-          <h2 className="text-center text-xl font-black text-[var(--text-primary)] uppercase tracking-tight">{timelineHeading}</h2>
-          {activeTimeSelection && (
-            <div className="text-center text-xs font-semibold text-[var(--text-secondary)] mb-2">
-              Оберіть час на таймлайні
+              <MedTrackerCard
+                title="EI"
+                onAddSuccess={setNotification}
+                isSelectingTime={activeTimeSelection === 'EI'}
+                selectedTime={selectedTimeMap.EI}
+                onStartTimeSelection={handleStartTimeSelection}
+                onCancelTimeSelection={handleCancelTimeSelection}
+                onResetTimeSelection={handleResetTimeSelection}
+              />
             </div>
-          )}
-          <TimelineHistory
-            onDayChange={(label) => setTimelineHeading(label || TIMELINE_TITLE_DEFAULT)}
-            selectedId={selectedIntakeId}
-            onSelectIntake={handleSelectIntake}
-            isSelectingTime={Boolean(activeTimeSelection)}
-            onTimeSelected={handleTimeSelected}
-          />
-        </div>
+
+            {/* Cards: mobile carousel */}
+            <div className="sm:hidden">
+              <div
+                className="relative overflow-hidden"
+                onTouchStart={(e) => {
+                  touchStartX.current = e.touches?.[0]?.clientX ?? null;
+                }}
+                onTouchEnd={(e) => {
+                  const start = touchStartX.current;
+                  const end = e.changedTouches?.[0]?.clientX ?? null;
+                  touchStartX.current = null;
+                  if (start == null || end == null) return;
+                  const dx = end - start;
+                  const threshold = 50;
+                  if (dx > threshold) setMobileCardIndex(0);
+                  if (dx < -threshold) setMobileCardIndex(1);
+                }}
+              >
+                <div
+                  className="flex transition-transform duration-300 ease-out"
+                  style={{ transform: `translateX(-${mobileCardIndex * 100}%)` }}
+                >
+                  <div className="min-w-full">
+                    <MedTrackerCard
+                      title="AH"
+                      onAddSuccess={setNotification}
+                      isSelectingTime={activeTimeSelection === 'AH'}
+                      selectedTime={selectedTimeMap.AH}
+                      onStartTimeSelection={handleStartTimeSelection}
+                      onCancelTimeSelection={handleCancelTimeSelection}
+                      onResetTimeSelection={handleResetTimeSelection}
+                    />
+                  </div>
+                  <div className="min-w-full">
+                    <MedTrackerCard
+                      title="EI"
+                      onAddSuccess={setNotification}
+                      isSelectingTime={activeTimeSelection === 'EI'}
+                      selectedTime={selectedTimeMap.EI}
+                      onStartTimeSelection={handleStartTimeSelection}
+                      onCancelTimeSelection={handleCancelTimeSelection}
+                      onResetTimeSelection={handleResetTimeSelection}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Dots */}
+              <div className="mt-2 flex justify-center gap-2">
+                {[0, 1].map((idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setMobileCardIndex(idx)}
+                    className="h-2.5 w-2.5 rounded-full"
+                    style={{
+                      background: idx === mobileCardIndex ? 'var(--text-primary)' : 'rgba(0,0,0,0.18)',
+                      opacity: idx === mobileCardIndex ? 0.8 : 0.45
+                    }}
+                    aria-label={idx === 0 ? 'Show AH card' : 'Show EI card'}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div
+              className="rounded-[2.5rem] pt-6 shadow-soft-strong border border-[var(--border)] flex flex-col overflow-hidden"
+              style={{
+                background: 'var(--surface)',
+                // Fixed viewport for the timeline window.
+                // One full day (24h) is mapped to this height; scrolling moves across days, not within a day.
+                height: '600px'
+              }}
+            >
+              <h2 className="text-center text-xl font-black text-[var(--text-primary)] uppercase tracking-tight">{timelineHeading}</h2>
+              {activeTimeSelection && (
+                <div className="text-center text-xs font-semibold text-[var(--text-secondary)] mb-2">
+                  Оберіть час на таймлайні
+                </div>
+              )}
+              <TimelineHistory
+                onDayChange={(label) => setTimelineHeading(label || TIMELINE_TITLE_DEFAULT)}
+                selectedId={selectedIntakeId}
+                onSelectIntake={handleSelectIntake}
+                isSelectingTime={Boolean(activeTimeSelection)}
+                onTimeSelected={handleTimeSelected}
+              />
+            </div>
+          </>
+        )}
       </main>
 
       {showSettings && (
