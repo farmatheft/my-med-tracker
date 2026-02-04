@@ -284,7 +284,10 @@ export default function App() {
             <ThemeSelector
               themes={themes}
               currentTheme={currentTheme}
-              onSelect={(theme) => setCurrentTheme(theme)}
+              onSelect={(theme) => {
+                setCurrentTheme(theme);
+                setShowSettings(false);
+              }}
             />
           </div>
         </div>
