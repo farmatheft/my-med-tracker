@@ -1,8 +1,14 @@
 {
   "name": "gundam wing",
   "isDark": false,
-  "backgroundGradient": ["#F0F0F0", "#E0E0E0"],
-  "cardBackground": ["rgba(255, 255, 255, 0.96)", "rgba(255, 255, 255, 0.85)"],
+  "backgroundGradient": [
+    "#F0F0F0",
+    "#E0E0E0"
+  ],
+  "cardBackground": [
+    "rgba(255, 255, 255, 0.96)",
+    "rgba(255, 255, 255, 0.85)"
+  ],
   "textPrimary": "#1A1A1B",
   "textSecondary": "#4A4A4F",
   "accentAH": "#0D47A1",
@@ -10,8 +16,14 @@
   "border": "#D1D1D6",
   "timelineLine": "#C7C7CC",
   "markerColor": "#0D47A1",
-  "timelineBackground": ["rgba(240, 240, 240, 0.85)", "rgba(240, 240, 240, 0.55)"],
-  "timelineSecondaryBackground": ["rgba(224, 224, 224, 0.95)", "rgba(224, 224, 224, 0.7)"],
+  "timelineBackground": [
+    "rgba(240, 240, 240, 0.85)",
+    "rgba(240, 240, 240, 0.55)"
+  ],
+  "timelineSecondaryBackground": [
+    "rgba(224, 224, 224, 0.95)",
+    "rgba(224, 224, 224, 0.7)"
+  ],
   "success": "#2E7D32",
   "subtypeColors": {
     "iv": "#3b82f6",
@@ -29,5 +41,11 @@
     "text": "#2E7D32",
     "border": "rgba(255, 255, 255, 0.18)",
     "glow": "#2E7D32"
+  },
+  "gradientHeader": {
+    "start": "#E53935",
+    "end": "#0D47A1",
+    "overlay": "rgba(255, 255, 255, 0.5)",
+    "textColor": "#1A1A1A"
   }
 }

@@ -97,105 +97,105 @@ const MedTrackerCard = ({
 
   return (
     <div className="flex-1 rounded-[2rem] overflow-hidden border border-[var(--border)] shadow-soft-strong">
-      {/* Header Panel - Solid, rounded corners, separate from body */}
+      {/* Header Panel - Gradient with overlay */}
       <div
         className="p-3 rounded-t-[2rem]"
         style={{
-          background: 'var(--add-btn-bg)',
+          background: `linear-gradient(135deg, var(--gradient-header-start), var(--gradient-header-end))`,
           borderBottom: '2px solid var(--add-btn-border)'
         }}
       >
-        <div className="flex items-center justify-between gap-2">
-          {/* Title Badge */}
-          <div
-            className="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm shrink-0"
-            style={{
-              background: 'var(--success-color)',
-              color: 'var(--add-btn-bg)',
-              boxShadow: '0 0 12px var(--success-color)'
-            }}
-          >
-            {title}
-          </div>
+        {/* Dark overlay for contrast */}
+        <div
+          className="rounded-[1.5rem] p-2"
+          style={{ backgroundColor: 'var(--gradient-header-overlay)' }}
+        >
+          <div className="flex items-center justify-between gap-2">
+            {/* Title Badge */}
+            <div
+              className="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm shrink-0"
+              style={{
+                background: 'var(--success-color)',
+                color: 'var(--add-btn-bg)',
+                boxShadow: '0 0 12px var(--success-color)'
+              }}
+            >
+              {title}
+            </div>
 
-          {/* Unit Toggle */}
-          <div
-            className="flex items-center rounded-xl p-1 border shrink-0"
-            style={{
-              background: 'var(--surface)',
-              borderColor: 'var(--add-btn-border)'
-            }}
-          >
-            {['mg', 'ml'].map((u) => (
-              <button
-                key={u}
-                type="button"
-                onClick={() => handleUnitChange(u)}
-                className="px-3 py-1 rounded-lg text-[10px] font-bold tracking-wide transition"
-                style={
-                  unit === u
-                    ? {
-                        background: 'var(--success-color)',
-                        color: 'var(--add-btn-bg)'
-                      }
-                    : { color: 'var(--add-btn-text)', opacity: 0.7 }
-                }
-              >
-                {u.toUpperCase()}
-              </button>
-            ))}
-          </div>
-
-          {/* Subtype Selector */}
-          <div
-            className="flex justify-center items-center gap-1 px-2 py-1 rounded-xl"
-            style={{
-              background: 'var(--subtype-panel-bg)',
-              border: '1px solid var(--subtype-panel-border)'
-            }}
-          >
-            {SUBTYPE_OPTIONS.map((option) => {
-              const isActive = subtype === option.value;
-              const Icon = option.icon;
-              const cssColor =
-                option.value === 'IV' ? 'var(--subtype-iv)' :
-                option.value === 'IM' ? 'var(--subtype-im)' :
-                option.value === 'PO' ? 'var(--subtype-po)' :
-                option.value === 'IV+PO' ? 'var(--subtype-po)' :
-                option.value === 'VTRK' ? 'var(--subtype-vtrk)' :
-                'var(--text-secondary)';
-              
-              return (
+            {/* Unit Toggle */}
+            <div
+              className="flex items-center rounded-xl p-1 shrink-0"
+              style={{ background: 'rgba(255,255,255,0.15)' }}
+            >
+              {['mg', 'ml'].map((u) => (
                 <button
-                  key={option.value}
+                  key={u}
                   type="button"
-                  onClick={() => setSubtype(option.value)}
-                  className="flex flex-col items-center gap-0.5 transition-opacity"
-                  style={{ opacity: isActive ? 1 : 0.5 }}
+                  onClick={() => handleUnitChange(u)}
+                  className="px-3 py-1 rounded-lg text-[10px] font-bold tracking-wide transition"
+                  style={
+                    unit === u
+                      ? {
+                          background: 'var(--success-color)',
+                          color: 'var(--add-btn-bg)'
+                        }
+                      : { color: 'var(--gradient-header-text)', opacity: 0.8 }
+                  }
                 >
-                  <div
-                    className="w-7 h-7 rounded-lg border flex items-center justify-center"
-                    style={
-                      isActive
-                        ? { borderColor: cssColor, background: `color-mix(in srgb, ${cssColor} 20%, transparent)`, color: cssColor }
-                        : { borderColor: 'var(--border)', background: 'var(--surface)', color: 'var(--text-secondary)' }
-                    }
-                  >
-                    <span className="flex items-center gap-0.5">
-                      <Icon className="text-xs" />
-                      {option.value === 'IV+PO' && <FaPills className="text-[6px]" />}
-                    </span>
-                  </div>
+                  {u.toUpperCase()}
                 </button>
-              );
-            })}
+              ))}
+            </div>
+
+            {/* Subtype Selector */}
+            <div
+              className="flex justify-center items-center gap-1 px-2 py-1 rounded-xl"
+              style={{ background: 'rgba(255,255,255,0.1)' }}
+            >
+              {SUBTYPE_OPTIONS.map((option) => {
+                const isActive = subtype === option.value;
+                const Icon = option.icon;
+                const cssColor =
+                  option.value === 'IV' ? 'var(--subtype-iv)' :
+                  option.value === 'IM' ? 'var(--subtype-im)' :
+                  option.value === 'PO' ? 'var(--subtype-po)' :
+                  option.value === 'IV+PO' ? 'var(--subtype-po)' :
+                  option.value === 'VTRK' ? 'var(--subtype-vtrk)' :
+                  'var(--text-secondary)';
+                
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => setSubtype(option.value)}
+                    className="flex flex-col items-center gap-0.5 transition-opacity"
+                    style={{ opacity: isActive ? 1 : 0.5 }}
+                  >
+                    <div
+                      className="w-7 h-7 rounded-lg border flex items-center justify-center"
+                      style={
+                        isActive
+                          ? { borderColor: cssColor, background: `color-mix(in srgb, ${cssColor} 30%, transparent)`, color: cssColor }
+                          : { borderColor: 'rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.1)', color: 'var(--gradient-header-text)' }
+                      }
+                    >
+                      <span className="flex items-center gap-0.5">
+                        <Icon className="text-xs" />
+                        {option.value === 'IV+PO' && <FaPills className="text-[6px]" />}
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Body Panel - With small gap from header, rounded top */}
+      {/* Body Panel - With small gap from header */}
       <div
-        className="mt-1 p-4 rounded-t-[1.5rem] flex flex-col gap-4"
+        className="mt-1 p-4 sm:p-5 rounded-t-[1.5rem] flex flex-col gap-4 sm:gap-5"
         style={{ background: 'var(--surface-2)' }}
       >
         {/* Dosage Control with Large Value Indicator */}
@@ -237,7 +237,7 @@ const MedTrackerCard = ({
         </div>
 
         {/* Slider */}
-        <div>
+        <div className="mt-1">
           <SyringeSlider
             value={currentDosage}
             onChange={setCurrentDosage}
@@ -250,7 +250,7 @@ const MedTrackerCard = ({
         </div>
 
         {/* Time Selection */}
-        <div className="flex flex-col items-center gap-1">
+        <div className="flex flex-col items-center gap-1 mt-2">
           <button
             type="button"
             onClick={() => (isSelectingTime ? onCancelTimeSelection(title) : onStartTimeSelection(title))}

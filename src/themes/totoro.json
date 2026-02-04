@@ -1,8 +1,14 @@
 {
   "name": "totoro",
   "isDark": false,
-  "backgroundGradient": ["#FDF5E6", "#F5F5DC"],
-  "cardBackground": ["rgba(255, 255, 255, 0.96)", "rgba(253, 245, 230, 0.85)"],
+  "backgroundGradient": [
+    "#FDF5E6",
+    "#F5F5DC"
+  ],
+  "cardBackground": [
+    "rgba(255, 255, 255, 0.96)",
+    "rgba(253, 245, 230, 0.85)"
+  ],
   "textPrimary": "#1B3022",
   "textSecondary": "#4A5D23",
   "accentAH": "#2F4F4F",
@@ -10,8 +16,14 @@
   "border": "#C2B280",
   "timelineLine": "#A9A9A9",
   "markerColor": "#2F4F4F",
-  "timelineBackground": ["rgba(253, 245, 230, 0.85)", "rgba(253, 245, 230, 0.55)"],
-  "timelineSecondaryBackground": ["rgba(245, 245, 220, 0.95)", "rgba(245, 245, 220, 0.7)"],
+  "timelineBackground": [
+    "rgba(253, 245, 230, 0.85)",
+    "rgba(253, 245, 230, 0.55)"
+  ],
+  "timelineSecondaryBackground": [
+    "rgba(245, 245, 220, 0.95)",
+    "rgba(245, 245, 220, 0.7)"
+  ],
   "success": "#6B8E23",
   "subtypeColors": {
     "iv": "#3b82f6",
@@ -29,5 +41,11 @@
     "text": "#6B8E23",
     "border": "rgba(255, 255, 255, 0.18)",
     "glow": "#6B8E23"
+  },
+  "gradientHeader": {
+    "start": "#F08080",
+    "end": "#2F4F4F",
+    "overlay": "rgba(255, 255, 255, 0.5)",
+    "textColor": "#1A1A1A"
   }
 }

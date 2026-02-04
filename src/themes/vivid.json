@@ -41,5 +41,11 @@
     "text": "#43A047",
     "border": "rgba(255, 255, 255, 0.18)",
     "glow": "#43A047"
+  },
+  "gradientHeader": {
+    "start": "#FFC107",
+    "end": "#FF5722",
+    "overlay": "rgba(255, 255, 255, 0.5)",
+    "textColor": "#1A1A1A"
   }
 }

@@ -1,8 +1,14 @@
 {
   "name": "muad'dib",
   "isDark": false,
-  "backgroundGradient": ["#D2B48C", "#C1A273"],
-  "cardBackground": ["rgba(255, 255, 255, 0.96)", "rgba(245, 245, 220, 0.85)"],
+  "backgroundGradient": [
+    "#D2B48C",
+    "#C1A273"
+  ],
+  "cardBackground": [
+    "rgba(255, 255, 255, 0.96)",
+    "rgba(245, 245, 220, 0.85)"
+  ],
   "textPrimary": "#3E2723",
   "textSecondary": "#5D4037",
   "accentAH": "#8B4513",
@@ -10,8 +16,14 @@
   "border": "#A68966",
   "timelineLine": "#BDBDBD",
   "markerColor": "#8B4513",
-  "timelineBackground": ["rgba(210, 180, 140, 0.85)", "rgba(210, 180, 140, 0.55)"],
-  "timelineSecondaryBackground": ["rgba(193, 162, 115, 0.95)", "rgba(193, 162, 115, 0.7)"],
+  "timelineBackground": [
+    "rgba(210, 180, 140, 0.85)",
+    "rgba(210, 180, 140, 0.55)"
+  ],
+  "timelineSecondaryBackground": [
+    "rgba(193, 162, 115, 0.95)",
+    "rgba(193, 162, 115, 0.7)"
+  ],
   "success": "#4CAF50",
   "subtypeColors": {
     "iv": "#3b82f6",
@@ -29,5 +41,11 @@
     "text": "#4CAF50",
     "border": "rgba(255, 255, 255, 0.18)",
     "glow": "#4CAF50"
+  },
+  "gradientHeader": {
+    "start": "#1E90FF",
+    "end": "#8B4513",
+    "overlay": "rgba(255, 255, 255, 0.5)",
+    "textColor": "#1A1A1A"
   }
 }

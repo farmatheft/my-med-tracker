@@ -56,5 +56,11 @@
     "needle": "#FFAB40",
     "trackFilled": "#FB8C00",
     "trackEmpty": "#FFE0B2"
+  },
+  "gradientHeader": {
+    "start": "#FFB300",
+    "end": "#FB8C00",
+    "overlay": "rgba(255, 255, 255, 0.5)",
+    "textColor": "#1A1A1A"
   }
 }

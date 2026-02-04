@@ -1,8 +1,14 @@
 {
   "name": "tokyo drift",
   "isDark": true,
-  "backgroundGradient": ["#0F0F0F", "#1A1A1A"],
-  "cardBackground": ["rgba(26, 26, 26, 0.95)", "rgba(26, 26, 26, 0.75)"],
+  "backgroundGradient": [
+    "#0F0F0F",
+    "#1A1A1A"
+  ],
+  "cardBackground": [
+    "rgba(26, 26, 26, 0.95)",
+    "rgba(26, 26, 26, 0.75)"
+  ],
   "textPrimary": "#F5F5F5",
   "textSecondary": "#9E9E9E",
   "accentAH": "#42A5F5",
@@ -10,8 +16,14 @@
   "border": "#333333",
   "timelineLine": "#262626",
   "markerColor": "#42A5F5",
-  "timelineBackground": ["rgba(15, 15, 15, 0.6)", "rgba(15, 15, 15, 0.3)"],
-  "timelineSecondaryBackground": ["rgba(15, 15, 15, 0.8)", "rgba(15, 15, 15, 0.5)"],
+  "timelineBackground": [
+    "rgba(15, 15, 15, 0.6)",
+    "rgba(15, 15, 15, 0.3)"
+  ],
+  "timelineSecondaryBackground": [
+    "rgba(15, 15, 15, 0.8)",
+    "rgba(15, 15, 15, 0.5)"
+  ],
   "success": "#66BB6A",
   "subtypeColors": {
     "iv": "#4FC3F7",
@@ -29,5 +41,11 @@
     "text": "rgba(2, 6, 23, 0.92)",
     "border": "rgba(255, 255, 255, 0.18)",
     "glow": "#66BB6A"
+  },
+  "gradientHeader": {
+    "start": "#42A5F5",
+    "end": "#AB47BC",
+    "overlay": "rgba(0, 0, 0, 0.5)",
+    "textColor": "#FFFFFF"
   }
 }

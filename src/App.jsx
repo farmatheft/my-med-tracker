@@ -108,6 +108,13 @@ export default function App() {
     root.style.setProperty('--add-btn-border', addButton.border || (isDark ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.12)'));
     root.style.setProperty('--add-btn-glow', addButton.glow || currentTheme.success);
 
+    // --- Gradient header colors (theme-driven)
+    const gradientHeader = currentTheme.gradientHeader || {};
+    root.style.setProperty('--gradient-header-start', gradientHeader.start || (isDark ? currentTheme.accentAH : currentTheme.accentEI));
+    root.style.setProperty('--gradient-header-end', gradientHeader.end || (isDark ? currentTheme.accentEI : currentTheme.accentAH));
+    root.style.setProperty('--gradient-header-overlay', gradientHeader.overlay || (isDark ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'));
+    root.style.setProperty('--gradient-header-text', gradientHeader.textColor || (isDark ? '#FFFFFF' : '#1A1A1A'));
+
     localStorage.setItem('theme', currentTheme.name);
   }, [currentTheme]);
 
