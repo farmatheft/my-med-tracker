@@ -46,6 +46,12 @@ export default function Statistics({ onBack }) {
       intake.timestamp >= startDate && intake.timestamp <= today
     );
 
+    // Debug: Log filtered intakes for troubleshooting
+    // console.log('Filtered intakes for ' + dateRange + ' days:', filteredIntakes.length, 'from', startDate, 'to', today);
+    // console.log('All intakes:', intakes.length, intakes.map(i => i.patientId));
+    // console.log('Start date:', startDate, 'Today:', today);
+    // console.log('Intakes with patientId:', intakes.filter(i => i.patientId).length, 'vs no patientId:', intakes.filter(i => !i.patientId).length);
+
     // Group by day
     const dailyStats = {};
     for (let i = 0; i < daysToShow; i++) {
@@ -65,26 +71,26 @@ export default function Statistics({ onBack }) {
 
     filteredIntakes.forEach(intake => {
       const dateStr = intake.timestamp.toLocaleDateString('uk-UA', { day: '2-digit', month: '2-digit' });
-      const patient = intake.patient || 'AH';
+      const patientId = intake.patientId || 'AH';
       const subtype = intake.subtype || 'PO';
       
       if (dailyStats[dateStr]) {
-        dailyStats[dateStr][patient] = (dailyStats[dateStr][patient] || 0) + 1;
+        dailyStats[dateStr][patientId] = (dailyStats[dateStr][patientId] || 0) + 1;
         dailyStats[dateStr].total = (dailyStats[dateStr].total || 0) + 1;
-        const subtypesKey = `${patient}_subtypes`;
+        const subtypesKey = `${patientId}_subtypes`;
         dailyStats[dateStr][subtypesKey][subtype] = (dailyStats[dateStr][subtypesKey][subtype] || 0) + 1;
       }
     });
 
     const chartData = Object.values(dailyStats).reverse();
 
-    // Subtype distribution for each patient
+    // Subtype distribution for each patientId
     const ahSubtypeDistribution = {};
     const eiSubtypeDistribution = {};
     filteredIntakes.forEach(intake => {
-      const patient = intake.patient || 'AH';
+      const patientId = intake.patientId || 'AH';
       const subtype = intake.subtype || 'PO';
-      if (patient === 'AH') {
+      if (patientId === 'AH') {
         ahSubtypeDistribution[subtype] = (ahSubtypeDistribution[subtype] || 0) + 1;
       } else {
         eiSubtypeDistribution[subtype] = (eiSubtypeDistribution[subtype] || 0) + 1;
@@ -94,32 +100,35 @@ export default function Statistics({ onBack }) {
     const ahSubtypePieData = Object.entries(ahSubtypeDistribution).map(([name, value]) => ({ name, value }));
     const eiSubtypePieData = Object.entries(eiSubtypeDistribution).map(([name, value]) => ({ name, value }));
 
-    // Patient totals
-    const patientTotals = { AH: 0, EI: 0 };
+    // patientId totals
+    const patientIdTotals = { AH: 0, EI: 0 };
     filteredIntakes.forEach(intake => {
-      const patient = intake.patient || 'AH';
-      patientTotals[patient] = (patientTotals[patient] || 0) + 1;
+      const patientId = intake.patientId || 'AH';
+      patientIdTotals[patientId] = (patientIdTotals[patientId] || 0) + 1;
     });
 
-    // Average per day per patient
+    // Debug: Log patientId totals
+    console.log('patientId totals:', patientIdTotals);
+
+    // Average per day per patientId
     const avgPerDay = {
-      AH: (patientTotals.AH / daysToShow).toFixed(1),
-      EI: (patientTotals.EI / daysToShow).toFixed(1)
+      AH: (patientIdTotals.AH / daysToShow).toFixed(1),
+      EI: (patientIdTotals.EI / daysToShow).toFixed(1)
     };
 
     // Comparison data
     const comparison = {
-      AH: patientTotals.AH,
-      EI: patientTotals.EI,
-      difference: Math.abs(patientTotals.AH - patientTotals.EI),
-      leader: patientTotals.AH > patientTotals.EI ? 'AH' : patientTotals.EI > patientTotals.AH ? 'EI' : null
+      AH: patientIdTotals.AH,
+      EI: patientIdTotals.EI,
+      difference: Math.abs(patientIdTotals.AH - patientIdTotals.EI),
+      leader: patientIdTotals.AH > patientIdTotals.EI ? 'AH' : patientIdTotals.EI > patientIdTotals.AH ? 'EI' : null
     };
 
     return {
       chartData,
       ahSubtypePieData,
       eiSubtypePieData,
-      patientTotals,
+      patientIdTotals,
       avgPerDay,
       total: filteredIntakes.length,
       comparison
@@ -169,7 +178,7 @@ export default function Statistics({ onBack }) {
             <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-wide mb-4 text-center">Порівняння AH vs EI</h3>
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center">
-                <div className="text-3xl font-black text-[var(--accent-ah)]">{stats.patientTotals.AH}</div>
+                <div className="text-3xl font-black text-[var(--accent-ah)]">{stats.patientIdTotals.AH}</div>
                 <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wide">AH</div>
               </div>
               <div className="text-center flex flex-col justify-center">
@@ -183,7 +192,7 @@ export default function Statistics({ onBack }) {
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-black text-[var(--accent-ei)]">{stats.patientTotals.EI}</div>
+                <div className="text-3xl font-black text-[var(--accent-ei)]">{stats.patientIdTotals.EI}</div>
                 <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wide">EI</div>
               </div>
             </div>
@@ -235,7 +244,7 @@ export default function Statistics({ onBack }) {
             </ResponsiveContainer>
           </div>
 
-          {/* Separate Pie Charts for Each Patient */}
+          {/* Separate Pie Charts for Each patientId */}
           <div className="grid grid-cols-2 gap-3">
             {/* AH Subtypes */}
             <div className="rounded-3xl p-4 border border-[var(--border)]" style={{ background: 'var(--surface)' }}>
