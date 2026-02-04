@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, Legend } from 'recharts';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from '../firebase';
 import { getStartOfDay } from '../utils/time';
@@ -58,7 +58,8 @@ export default function Statistics({ onBack }) {
         AH: 0,
         EI: 0,
         total: 0,
-        subtypes: {}
+        AH_subtypes: {},
+        EI_subtypes: {}
       };
     }
 
@@ -70,20 +71,28 @@ export default function Statistics({ onBack }) {
       if (dailyStats[dateStr]) {
         dailyStats[dateStr][patient] = (dailyStats[dateStr][patient] || 0) + 1;
         dailyStats[dateStr].total = (dailyStats[dateStr].total || 0) + 1;
-        dailyStats[dateStr].subtypes[subtype] = (dailyStats[dateStr].subtypes[subtype] || 0) + 1;
+        const subtypesKey = `${patient}_subtypes`;
+        dailyStats[dateStr][subtypesKey][subtype] = (dailyStats[dateStr][subtypesKey][subtype] || 0) + 1;
       }
     });
 
     const chartData = Object.values(dailyStats).reverse();
 
-    // Subtype distribution for the period
-    const subtypeDistribution = {};
+    // Subtype distribution for each patient
+    const ahSubtypeDistribution = {};
+    const eiSubtypeDistribution = {};
     filteredIntakes.forEach(intake => {
+      const patient = intake.patient || 'AH';
       const subtype = intake.subtype || 'PO';
-      subtypeDistribution[subtype] = (subtypeDistribution[subtype] || 0) + 1;
+      if (patient === 'AH') {
+        ahSubtypeDistribution[subtype] = (ahSubtypeDistribution[subtype] || 0) + 1;
+      } else {
+        eiSubtypeDistribution[subtype] = (eiSubtypeDistribution[subtype] || 0) + 1;
+      }
     });
 
-    const subtypePieData = Object.entries(subtypeDistribution).map(([name, value]) => ({ name, value }));
+    const ahSubtypePieData = Object.entries(ahSubtypeDistribution).map(([name, value]) => ({ name, value }));
+    const eiSubtypePieData = Object.entries(eiSubtypeDistribution).map(([name, value]) => ({ name, value }));
 
     // Patient totals
     const patientTotals = { AH: 0, EI: 0 };
@@ -92,15 +101,28 @@ export default function Statistics({ onBack }) {
       patientTotals[patient] = (patientTotals[patient] || 0) + 1;
     });
 
-    // Average per day
-    const avgPerDay = filteredIntakes.length / daysToShow;
+    // Average per day per patient
+    const avgPerDay = {
+      AH: (patientTotals.AH / daysToShow).toFixed(1),
+      EI: (patientTotals.EI / daysToShow).toFixed(1)
+    };
+
+    // Comparison data
+    const comparison = {
+      AH: patientTotals.AH,
+      EI: patientTotals.EI,
+      difference: Math.abs(patientTotals.AH - patientTotals.EI),
+      leader: patientTotals.AH > patientTotals.EI ? 'AH' : patientTotals.EI > patientTotals.AH ? 'EI' : null
+    };
 
     return {
       chartData,
-      subtypePieData,
+      ahSubtypePieData,
+      eiSubtypePieData,
       patientTotals,
+      avgPerDay,
       total: filteredIntakes.length,
-      avgPerDay: avgPerDay.toFixed(1)
+      comparison
     };
   }, [intakes, dateRange]);
 
@@ -142,23 +164,32 @@ export default function Statistics({ onBack }) {
         </div>
       ) : (
         <>
-          {/* Summary Cards */}
-          <div className="grid grid-cols-3 gap-3">
-            <div className="rounded-2xl p-4 border border-[var(--border)] text-center" style={{ background: 'linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end))' }}>
-              <div className="text-3xl font-black text-[var(--accent-ah)]">{stats.patientTotals.AH}</div>
-              <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wide">AH</div>
-            </div>
-            <div className="rounded-2xl p-4 border border-[var(--border)] text-center" style={{ background: 'linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end))' }}>
-              <div className="text-3xl font-black text-[var(--accent-ei)]">{stats.patientTotals.EI}</div>
-              <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wide">EI</div>
-            </div>
-            <div className="rounded-2xl p-4 border border-[var(--border)] text-center" style={{ background: 'linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end))' }}>
-              <div className="text-3xl font-black text-[var(--text-primary)]">{stats.total}</div>
-              <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wide">Всього</div>
+          {/* Comparison Summary */}
+          <div className="rounded-3xl p-4 border border-[var(--border)]" style={{ background: 'var(--surface)' }}>
+            <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-wide mb-4 text-center">Порівняння AH vs EI</h3>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center">
+                <div className="text-3xl font-black text-[var(--accent-ah)]">{stats.patientTotals.AH}</div>
+                <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wide">AH</div>
+              </div>
+              <div className="text-center flex flex-col justify-center">
+                <div className="text-xl font-bold text-[var(--text-primary)]">VS</div>
+                <div className="text-xs text-[var(--text-secondary)] mt-1">
+                  {stats.comparison.difference > 0 ? (
+                    <span>{stats.comparison.leader} +{stats.comparison.difference}</span>
+                  ) : (
+                    <span>Порівну</span>
+                  )}
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-black text-[var(--accent-ei)]">{stats.patientTotals.EI}</div>
+                <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wide">EI</div>
+              </div>
             </div>
           </div>
 
-          {/* Daily Chart */}
+          {/* Daily Chart - Side by Side Comparison */}
           <div className="rounded-3xl p-4 border border-[var(--border)]" style={{ background: 'var(--surface)' }}>
             <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-wide mb-4">Кількість прийомів за день</h3>
             <ResponsiveContainer width="100%" height={200}>
@@ -174,29 +205,53 @@ export default function Statistics({ onBack }) {
                   }}
                   labelStyle={{ color: 'var(--text-primary)' }}
                 />
-                <Bar dataKey="AH" fill="var(--accent-ah)" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="EI" fill="var(--accent-ei)" radius={[4, 4, 0, 0]} />
+                <Legend />
+                <Bar dataKey="AH" fill="var(--accent-ah)" radius={[4, 4, 0, 0]} name="AH" />
+                <Bar dataKey="EI" fill="var(--accent-ei)" radius={[4, 4, 0, 0]} name="EI" />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
-          {/* Stats Grid */}
+          {/* Separate Trend Lines */}
+          <div className="rounded-3xl p-4 border border-[var(--border)]" style={{ background: 'var(--surface)' }}>
+            <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-wide mb-4">Динаміка AH vs EI</h3>
+            <ResponsiveContainer width="100%" height={200}>
+              <LineChart data={stats.chartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                <XAxis dataKey="date" stroke="var(--text-secondary)" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
+                <YAxis stroke="var(--text-secondary)" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
+                <Tooltip 
+                  contentStyle={{ 
+                    background: 'var(--surface)', 
+                    border: '1px solid var(--border)',
+                    borderRadius: '8px'
+                  }}
+                  labelStyle={{ color: 'var(--text-primary)' }}
+                />
+                <Legend />
+                <Line type="monotone" dataKey="AH" stroke="var(--accent-ah)" strokeWidth={2} dot={{ fill: 'var(--accent-ah)' }} name="AH" />
+                <Line type="monotone" dataKey="EI" stroke="var(--accent-ei)" strokeWidth={2} dot={{ fill: 'var(--accent-ei)' }} name="EI" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Separate Pie Charts for Each Patient */}
           <div className="grid grid-cols-2 gap-3">
-            {/* Subtype Pie Chart */}
+            {/* AH Subtypes */}
             <div className="rounded-3xl p-4 border border-[var(--border)]" style={{ background: 'var(--surface)' }}>
-              <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-wide mb-4 text-center">Типи прийому</h3>
-              <ResponsiveContainer width="100%" height={150}>
+              <h3 className="text-sm font-black text-[var(--accent-ah)] uppercase tracking-wide mb-4 text-center">Типи прийому AH</h3>
+              <ResponsiveContainer width="100%" height={120}>
                 <PieChart>
                   <Pie
-                    data={stats.subtypePieData}
+                    data={stats.ahSubtypePieData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={30}
-                    outerRadius={60}
+                    innerRadius={20}
+                    outerRadius={50}
                     paddingAngle={2}
                     dataKey="value"
                   >
-                    {stats.subtypePieData.map((entry, index) => (
+                    {stats.ahSubtypePieData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={SUBTYPE_COLORS[entry.name] || COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
@@ -210,8 +265,8 @@ export default function Statistics({ onBack }) {
                   />
                 </PieChart>
               </ResponsiveContainer>
-              <div className="flex flex-wrap justify-center gap-2 mt-2">
-                {stats.subtypePieData.map((entry, index) => (
+              <div className="flex flex-wrap justify-center gap-2">
+                {stats.ahSubtypePieData.map((entry, index) => (
                   <div key={index} className="flex items-center gap-1">
                     <div 
                       className="w-3 h-3 rounded-full"
@@ -223,48 +278,58 @@ export default function Statistics({ onBack }) {
               </div>
             </div>
 
-            {/* Stats Summary */}
-            <div className="rounded-3xl p-4 border border-[var(--border)] flex flex-col justify-center" style={{ background: 'var(--surface)' }}>
-              <div className="text-center mb-4">
-                <div className="text-4xl font-black text-[var(--text-primary)]">{stats.avgPerDay}</div>
-                <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wide">Середнє за день</div>
-              </div>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-[var(--text-secondary)]">AH</span>
-                  <span className="font-semibold text-[var(--accent-ah)]">{stats.patientTotals.AH}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-[var(--text-secondary)]">EI</span>
-                  <span className="font-semibold text-[var(--accent-ei)]">{stats.patientTotals.EI}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-[var(--text-secondary)]">Днів у періоді</span>
-                  <span className="font-semibold text-[var(--text-primary)]">{dateRange}</span>
-                </div>
+            {/* EI Subtypes */}
+            <div className="rounded-3xl p-4 border border-[var(--border)]" style={{ background: 'var(--surface)' }}>
+              <h3 className="text-sm font-black text-[var(--accent-ei)] uppercase tracking-wide mb-4 text-center">Типи прийому EI</h3>
+              <ResponsiveContainer width="100%" height={120}>
+                <PieChart>
+                  <Pie
+                    data={stats.eiSubtypePieData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={20}
+                    outerRadius={50}
+                    paddingAngle={2}
+                    dataKey="value"
+                  >
+                    {stats.eiSubtypePieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={SUBTYPE_COLORS[entry.name] || COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{ 
+                      background: 'var(--surface)', 
+                      border: '1px solid var(--border)',
+                      borderRadius: '8px'
+                    }}
+                    labelStyle={{ color: 'var(--text-primary)' }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="flex flex-wrap justify-center gap-2">
+                {stats.eiSubtypePieData.map((entry, index) => (
+                  <div key={index} className="flex items-center gap-1">
+                    <div 
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: SUBTYPE_COLORS[entry.name] || COLORS[index % COLORS.length] }}
+                    />
+                    <span className="text-xs text-[var(--text-secondary)]">{entry.name}: {entry.value}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
 
-          {/* Daily Trend */}
-          <div className="rounded-3xl p-4 border border-[var(--border)]" style={{ background: 'var(--surface)' }}>
-            <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-wide mb-4">Динаміка за період</h3>
-            <ResponsiveContainer width="100%" height={150}>
-              <LineChart data={stats.chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                <XAxis dataKey="date" stroke="var(--text-secondary)" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
-                <YAxis stroke="var(--text-secondary)" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
-                <Tooltip 
-                  contentStyle={{ 
-                    background: 'var(--surface)', 
-                    border: '1px solid var(--border)',
-                    borderRadius: '8px'
-                  }}
-                  labelStyle={{ color: 'var(--text-primary)' }}
-                />
-                <Line type="monotone" dataKey="total" stroke="var(--text-primary)" strokeWidth={2} dot={{ fill: 'var(--text-primary)' }} />
-              </LineChart>
-            </ResponsiveContainer>
+          {/* Average per day comparison */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-3xl p-4 border border-[var(--border)] text-center" style={{ background: 'linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end))' }}>
+              <div className="text-2xl font-black text-[var(--accent-ah)]">{stats.avgPerDay.AH}</div>
+              <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wide">Середнє AH/день</div>
+            </div>
+            <div className="rounded-3xl p-4 border border-[var(--border)] text-center" style={{ background: 'linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end))' }}>
+              <div className="text-2xl font-black text-[var(--accent-ei)]">{stats.avgPerDay.EI}</div>
+              <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wide">Середнє EI/день</div>
+            </div>
           </div>
         </>
       )}
