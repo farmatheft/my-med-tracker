@@ -14,6 +14,14 @@ const SUBTYPE_COLORS = {
   'VTRK': 'var(--subtype-vtrk)'
 };
 
+// Convert dosage to mg (1 ml = 20 mg)
+const convertToMg = (dosage, unit) => {
+  if (unit === 'ml') {
+    return dosage * 20;
+  }
+  return dosage;
+};
+
 export default function Statistics({ onBack }) {
   const [intakes, setIntakes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,12 +54,6 @@ export default function Statistics({ onBack }) {
       intake.timestamp >= startDate && intake.timestamp <= today
     );
 
-    // Debug: Log filtered intakes for troubleshooting
-    // console.log('Filtered intakes for ' + dateRange + ' days:', filteredIntakes.length, 'from', startDate, 'to', today);
-    // console.log('All intakes:', intakes.length, intakes.map(i => i.patientId));
-    // console.log('Start date:', startDate, 'Today:', today);
-    // console.log('Intakes with patientId:', intakes.filter(i => i.patientId).length, 'vs no patientId:', intakes.filter(i => !i.patientId).length);
-
     // Group by day
     const dailyStats = {};
     for (let i = 0; i < daysToShow; i++) {
@@ -63,6 +65,8 @@ export default function Statistics({ onBack }) {
         fullDate: date,
         AH: 0,
         EI: 0,
+        AH_mg: 0,
+        EI_mg: 0,
         total: 0,
         AH_subtypes: {},
         EI_subtypes: {}
@@ -73,9 +77,13 @@ export default function Statistics({ onBack }) {
       const dateStr = intake.timestamp.toLocaleDateString('uk-UA', { day: '2-digit', month: '2-digit' });
       const patientId = intake.patientId || 'AH';
       const subtype = intake.subtype || 'PO';
+      const dosage = intake.dosage || 0;
+      const unit = intake.unit || 'mg';
+      const mgAmount = convertToMg(dosage, unit);
       
       if (dailyStats[dateStr]) {
         dailyStats[dateStr][patientId] = (dailyStats[dateStr][patientId] || 0) + 1;
+        dailyStats[dateStr][`${patientId}_mg`] = (dailyStats[dateStr][`${patientId}_mg`] || 0) + mgAmount;
         dailyStats[dateStr].total = (dailyStats[dateStr].total || 0) + 1;
         const subtypesKey = `${patientId}_subtypes`;
         dailyStats[dateStr][subtypesKey][subtype] = (dailyStats[dateStr][subtypesKey][subtype] || 0) + 1;
@@ -100,38 +108,57 @@ export default function Statistics({ onBack }) {
     const ahSubtypePieData = Object.entries(ahSubtypeDistribution).map(([name, value]) => ({ name, value }));
     const eiSubtypePieData = Object.entries(eiSubtypeDistribution).map(([name, value]) => ({ name, value }));
 
-    // patientId totals
-    const patientIdTotals = { AH: 0, EI: 0 };
+    // Patient totals
+    const patientTotals = { AH: 0, EI: 0 };
+    const patientMgTotals = { AH: 0, EI: 0 };
     filteredIntakes.forEach(intake => {
       const patientId = intake.patientId || 'AH';
-      patientIdTotals[patientId] = (patientIdTotals[patientId] || 0) + 1;
+      const dosage = intake.dosage || 0;
+      const unit = intake.unit || 'mg';
+      const mgAmount = convertToMg(dosage, unit);
+      patientTotals[patientId] = (patientTotals[patientId] || 0) + 1;
+      patientMgTotals[patientId] = (patientMgTotals[patientId] || 0) + mgAmount;
     });
 
-    // Debug: Log patientId totals
-    console.log('patientId totals:', patientIdTotals);
-
-    // Average per day per patientId
+    // Average per day per patient
     const avgPerDay = {
-      AH: (patientIdTotals.AH / daysToShow).toFixed(1),
-      EI: (patientIdTotals.EI / daysToShow).toFixed(1)
+      AH: (patientTotals.AH / daysToShow).toFixed(1),
+      EI: (patientTotals.EI / daysToShow).toFixed(1)
+    };
+
+    // Average mg per day per patient
+    const avgMgPerDay = {
+      AH: (patientMgTotals.AH / daysToShow).toFixed(0),
+      EI: (patientMgTotals.EI / daysToShow).toFixed(0)
     };
 
     // Comparison data
     const comparison = {
-      AH: patientIdTotals.AH,
-      EI: patientIdTotals.EI,
-      difference: Math.abs(patientIdTotals.AH - patientIdTotals.EI),
-      leader: patientIdTotals.AH > patientIdTotals.EI ? 'AH' : patientIdTotals.EI > patientIdTotals.AH ? 'EI' : null
+      AH: patientTotals.AH,
+      EI: patientTotals.EI,
+      difference: Math.abs(patientTotals.AH - patientTotals.EI),
+      leader: patientTotals.AH > patientTotals.EI ? 'AH' : patientTotals.EI > patientTotals.AH ? 'EI' : null
+    };
+
+    // MG comparison data
+    const mgComparison = {
+      AH: Math.round(patientMgTotals.AH),
+      EI: Math.round(patientMgTotals.EI),
+      difference: Math.abs(Math.round(patientMgTotals.AH) - Math.round(patientMgTotals.EI)),
+      leader: patientMgTotals.AH > patientMgTotals.EI ? 'AH' : patientMgTotals.EI > patientMgTotals.AH ? 'EI' : null
     };
 
     return {
       chartData,
       ahSubtypePieData,
       eiSubtypePieData,
-      patientIdTotals,
+      patientTotals,
+      patientMgTotals: mgComparison,
       avgPerDay,
+      avgMgPerDay,
       total: filteredIntakes.length,
-      comparison
+      comparison,
+      mgComparison
     };
   }, [intakes, dateRange]);
 
@@ -173,12 +200,61 @@ export default function Statistics({ onBack }) {
         </div>
       ) : (
         <>
-          {/* Comparison Summary */}
+          {/* MG Comparison Summary */}
           <div className="rounded-3xl p-4 border border-[var(--border)]" style={{ background: 'var(--surface)' }}>
-            <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-wide mb-4 text-center">Порівняння AH vs EI</h3>
+            <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-wide mb-4 text-center">Порівняння мг (AH vs EI)</h3>
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center">
-                <div className="text-3xl font-black text-[var(--accent-ah)]">{stats.patientIdTotals.AH}</div>
+                <div className="text-3xl font-black text-[var(--accent-ah)]">{stats.mgComparison.AH} мг</div>
+                <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wide">AH</div>
+              </div>
+              <div className="text-center flex flex-col justify-center">
+                <div className="text-xl font-bold text-[var(--text-primary)]">VS</div>
+                <div className="text-xs text-[var(--text-secondary)] mt-1">
+                  {stats.mgComparison.difference > 0 ? (
+                    <span>{stats.mgComparison.leader} +{stats.mgComparison.difference} мг</span>
+                  ) : (
+                    <span>Порівну</span>
+                  )}
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-black text-[var(--accent-ei)]">{stats.mgComparison.EI} мг</div>
+                <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wide">EI</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Daily MG Chart - Side by Side Comparison */}
+          <div className="rounded-3xl p-4 border border-[var(--border)]" style={{ background: 'var(--surface)' }}>
+            <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-wide mb-4">Мг за день (1 мл = 20 мг)</h3>
+            <ResponsiveContainer width="100%" height={200}>
+              <BarChart data={stats.chartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                <XAxis dataKey="date" stroke="var(--text-secondary)" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
+                <YAxis stroke="var(--text-secondary)" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
+                <Tooltip 
+                  contentStyle={{ 
+                    background: 'var(--surface)', 
+                    border: '1px solid var(--border)',
+                    borderRadius: '8px'
+                  }}
+                  labelStyle={{ color: 'var(--text-primary)' }}
+                  formatter={(value) => [`${value} мг`, '']}
+                />
+                <Legend />
+                <Bar dataKey="AH_mg" fill="var(--accent-ah)" radius={[4, 4, 0, 0]} name="AH (мг)" />
+                <Bar dataKey="EI_mg" fill="var(--accent-ei)" radius={[4, 4, 0, 0]} name="EI (мг)" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Count Comparison Summary */}
+          <div className="rounded-3xl p-4 border border-[var(--border)]" style={{ background: 'var(--surface)' }}>
+            <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-wide mb-4 text-center">Кількість прийомів (AH vs EI)</h3>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center">
+                <div className="text-3xl font-black text-[var(--accent-ah)]">{stats.patientTotals.AH}</div>
                 <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wide">AH</div>
               </div>
               <div className="text-center flex flex-col justify-center">
@@ -192,13 +268,13 @@ export default function Statistics({ onBack }) {
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-black text-[var(--accent-ei)]">{stats.patientIdTotals.EI}</div>
+                <div className="text-3xl font-black text-[var(--accent-ei)]">{stats.patientTotals.EI}</div>
                 <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wide">EI</div>
               </div>
             </div>
           </div>
 
-          {/* Daily Chart - Side by Side Comparison */}
+          {/* Daily Count Chart */}
           <div className="rounded-3xl p-4 border border-[var(--border)]" style={{ background: 'var(--surface)' }}>
             <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-wide mb-4">Кількість прийомів за день</h3>
             <ResponsiveContainer width="100%" height={200}>
@@ -221,9 +297,21 @@ export default function Statistics({ onBack }) {
             </ResponsiveContainer>
           </div>
 
+          {/* Average Stats */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-3xl p-4 border border-[var(--border)] text-center" style={{ background: 'linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end))' }}>
+              <div className="text-xl font-black text-[var(--accent-ah)]">{stats.avgMgPerDay.AH} мг</div>
+              <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wide">Середнє AH/день</div>
+            </div>
+            <div className="rounded-3xl p-4 border border-[var(--border)] text-center" style={{ background: 'linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end))' }}>
+              <div className="text-xl font-black text-[var(--accent-ei)]">{stats.avgMgPerDay.EI} мг</div>
+              <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wide">Середнє EI/день</div>
+            </div>
+          </div>
+
           {/* Separate Trend Lines */}
           <div className="rounded-3xl p-4 border border-[var(--border)]" style={{ background: 'var(--surface)' }}>
-            <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-wide mb-4">Динаміка AH vs EI</h3>
+            <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-wide mb-4">Динаміка кількості AH vs EI</h3>
             <ResponsiveContainer width="100%" height={200}>
               <LineChart data={stats.chartData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
@@ -244,7 +332,7 @@ export default function Statistics({ onBack }) {
             </ResponsiveContainer>
           </div>
 
-          {/* Separate Pie Charts for Each patientId */}
+          {/* Separate Pie Charts for Each Patient */}
           <div className="grid grid-cols-2 gap-3">
             {/* AH Subtypes */}
             <div className="rounded-3xl p-4 border border-[var(--border)]" style={{ background: 'var(--surface)' }}>
@@ -326,18 +414,6 @@ export default function Statistics({ onBack }) {
                   </div>
                 ))}
               </div>
-            </div>
-          </div>
-
-          {/* Average per day comparison */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-3xl p-4 border border-[var(--border)] text-center" style={{ background: 'linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end))' }}>
-              <div className="text-2xl font-black text-[var(--accent-ah)]">{stats.avgPerDay.AH}</div>
-              <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wide">Середнє AH/день</div>
-            </div>
-            <div className="rounded-3xl p-4 border border-[var(--border)] text-center" style={{ background: 'linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end))' }}>
-              <div className="text-2xl font-black text-[var(--accent-ei)]">{stats.avgPerDay.EI}</div>
-              <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wide">Середнє EI/день</div>
             </div>
           </div>
         </>
