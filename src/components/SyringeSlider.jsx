@@ -156,7 +156,7 @@ const SyringeSlider = ({ value, max, min = 0, step = 1, onChange, color = '#22c5
       </div>
 
       {/* Control Slider */}
-      <div className="slider-control w-full px-2 mt-1">
+      {/* <div className="slider-control w-full px-2 mt-1">
         <input
           type="range"
           min={min}
@@ -169,7 +169,7 @@ const SyringeSlider = ({ value, max, min = 0, step = 1, onChange, color = '#22c5
             background: `linear-gradient(to right, ${color} 0%, ${color} ${percentage}%, #e2e8f0 ${percentage}%, #e2e8f0 100%)`
           }}
         />
-      </div>
+      </div> */}
       <style>{`
         @keyframes bubble-float {
           0%, 100% { transform: translateY(0); }
