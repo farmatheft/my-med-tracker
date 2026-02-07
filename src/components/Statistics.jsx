@@ -46,12 +46,14 @@ export default function Statistics({ onBack }) {
 
     const daysToShow = parseInt(dateRange);
     const today = getStartOfDay(new Date());
+    const endOfToday = new Date(today);
+    endOfToday.setHours(23, 59, 59, 999);
     const startDate = new Date(today);
     startDate.setDate(startDate.getDate() - daysToShow + 1);
 
     // Filter intakes within date range
     const filteredIntakes = intakes.filter(intake => 
-      intake.timestamp >= startDate && intake.timestamp <= today
+      intake.timestamp >= startDate && intake.timestamp <= endOfToday
     );
 
     // Group by day
@@ -161,8 +163,50 @@ export default function Statistics({ onBack }) {
       leader: patientMgTotals.AH > patientMgTotals.EI ? 'AH' : patientMgTotals.EI > patientMgTotals.AH ? 'EI' : null
     };
 
+    // Hourly stats for 1-day and 3-day views
+    const hourlyStats = {};
+    if (daysToShow <= 3) {
+      const intervalHours = daysToShow === 1 ? 1 : 3;
+      const totalHours = daysToShow * 24;
+      
+      for (let i = 0; i < totalHours; i += intervalHours) {
+        const hourDate = new Date(today);
+        hourDate.setHours(i, 0, 0, 0);
+        const hourStr = hourDate.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
+        hourlyStats[hourStr] = {
+          time: hourStr,
+          fullDate: hourDate,
+          AH: 0,
+          EI: 0,
+          AH_mg: 0,
+          EI_mg: 0
+        };
+      }
+
+      filteredIntakes.forEach(intake => {
+        const intakeDate = new Date(intake.timestamp);
+        const hoursSinceMidnight = (intakeDate - today) / (1000 * 60 * 60);
+        const intervalIndex = Math.floor(hoursSinceMidnight / intervalHours);
+        const intervalKeys = Object.keys(hourlyStats).sort((a, b) => {
+          return new Date('1970-01-01 ' + a) - new Date('1970-01-01 ' + b);
+        });
+        const key = intervalKeys[intervalIndex];
+        
+        if (key && hourlyStats[key]) {
+          const patientId = intake.patientId || 'AH';
+          const dosage = intake.dosage || 0;
+          const unit = intake.unit || 'mg';
+          const mgAmount = convertToMg(dosage, unit);
+          
+          hourlyStats[key][patientId] = (hourlyStats[key][patientId] || 0) + 1;
+          hourlyStats[key][`${patientId}_mg`] = (hourlyStats[key][`${patientId}_mg`] || 0) + mgAmount;
+        }
+      });
+    }
+
     return {
       chartData,
+      hourlyStats: Object.values(hourlyStats),
       ahSubtypePieData,
       eiSubtypePieData,
       patientTotals,
@@ -171,7 +215,8 @@ export default function Statistics({ onBack }) {
       avgMgPerDay,
       total: filteredIntakes.length,
       comparison,
-      mgComparison
+      mgComparison,
+      daysToShow
     };
   }, [intakes, dateRange]);
 
@@ -201,6 +246,8 @@ export default function Statistics({ onBack }) {
           onChange={(e) => setDateRange(e.target.value)}
           className="px-3 py-2 rounded-full border border-[var(--border)] text-[var(--text-primary)] text-sm font-semibold bg-[var(--surface)]"
         >
+          <option value="1">1 день</option>
+          <option value="3">3 дні</option>
           <option value="7">7 днів</option>
           <option value="14">14 днів</option>
           <option value="30">30 днів</option>
@@ -213,6 +260,60 @@ export default function Statistics({ onBack }) {
         </div>
       ) : (
         <>
+          {/* Hourly Chart for 1-day and 3-day views */}
+          {stats.daysToShow <= 3 && stats.hourlyStats.length > 0 && (
+            <>
+              <div className="rounded-3xl p-4 border border-[var(--border)]" style={{ background: 'var(--surface)' }}>
+                <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-wide mb-4">
+                  {stats.daysToShow === 1 ? 'По годинах (1 день)' : 'По 3 години (3 дні)'}
+                </h3>
+                <ResponsiveContainer width="100%" height={200}>
+                  <BarChart data={stats.hourlyStats}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                    <XAxis dataKey="time" stroke="var(--text-secondary)" tick={{ fill: 'var(--text-secondary)', fontSize: 10 }} interval={Math.ceil(stats.hourlyStats.length / 8)} />
+                    <YAxis stroke="var(--text-secondary)" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
+                    <Tooltip 
+                      contentStyle={{ 
+                        background: 'var(--surface)', 
+                        border: '1px solid var(--border)',
+                        borderRadius: '8px'
+                      }}
+                      labelStyle={{ color: 'var(--text-primary)' }}
+                    />
+                    <Legend />
+                    <Bar dataKey="AH" fill="var(--accent-ah)" radius={[4, 4, 0, 0]} name="AH" />
+                    <Bar dataKey="EI" fill="var(--accent-ei)" radius={[4, 4, 0, 0]} name="EI" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="rounded-3xl p-4 border border-[var(--border)]" style={{ background: 'var(--surface)' }}>
+                <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-wide mb-4">
+                  Мг по {stats.daysToShow === 1 ? 'годинах' : '3 години'}
+                </h3>
+                <ResponsiveContainer width="100%" height={200}>
+                  <BarChart data={stats.hourlyStats}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                    <XAxis dataKey="time" stroke="var(--text-secondary)" tick={{ fill: 'var(--text-secondary)', fontSize: 10 }} interval={Math.ceil(stats.hourlyStats.length / 8)} />
+                    <YAxis stroke="var(--text-secondary)" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
+                    <Tooltip 
+                      contentStyle={{ 
+                        background: 'var(--surface)', 
+                        border: '1px solid var(--border)',
+                        borderRadius: '8px'
+                      }}
+                      labelStyle={{ color: 'var(--text-primary)' }}
+                      formatter={(value) => [`${value} мг`, '']}
+                    />
+                    <Legend />
+                    <Bar dataKey="AH_mg" fill="var(--accent-ah)" radius={[4, 4, 0, 0]} name="AH (мг)" />
+                    <Bar dataKey="EI_mg" fill="var(--accent-ei)" radius={[4, 4, 0, 0]} name="EI (мг)" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </>
+          )}
+
           {/* MG Comparison Summary */}
           <div className="rounded-3xl p-4 border border-[var(--border)]" style={{ background: 'var(--surface)' }}>
             <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-wide mb-4 text-center">Порівняння мг (AH vs EI)</h3>
