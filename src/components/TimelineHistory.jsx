@@ -401,29 +401,31 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
               <div className="absolute inset-0 pointer-events-none z-0">
                 {(() => {
                   // Calculate marker intervals based on zoom level
-                  let majorInterval, minorInterval;
-                  if (zoomLevel <= 1) {
-                    majorInterval = 180; // Every 3 hours
-                    minorInterval = 0;
-                  } else if (zoomLevel <= 2) {
-                    majorInterval = 120; // Every 2 hours
-                    minorInterval = 0;
-                  } else if (zoomLevel <= 3) {
-                    majorInterval = 60; // Every 1 hour
-                    minorInterval = 0;
-                  } else if (zoomLevel <= 4) {
-                    majorInterval = 60; // Every 1 hour
-                    minorInterval = 30; // Every 30 min
+                  // 0.5x: every 180 mins, 1x: every 120 mins, 2x: every 60 mins
+                  // 3x: every 30 mins, 4x: every 10 mins, 5x: every 5 mins
+                  let interval;
+                  if (zoomLevel <= 0.75) {
+                    interval = 180; // Every 3 hours
+                  } else if (zoomLevel <= 1.5) {
+                    interval = 120; // Every 2 hours
+                  } else if (zoomLevel <= 2.5) {
+                    interval = 60; // Every 1 hour
+                  } else if (zoomLevel <= 3.5) {
+                    interval = 30; // Every 30 min
+                  } else if (zoomLevel <= 4.5) {
+                    interval = 10; // Every 10 min
                   } else {
-                    majorInterval = 60; // Every 1 hour
-                    minorInterval = 15; // Every 15 min
+                    interval = 5; // Every 5 min
                   }
 
-                  // Generate all markers - use minorInterval as step, or majorInterval if no minor
-                  const step = minorInterval > 0 ? minorInterval : majorInterval;
+                  // Generate all markers
                   const markers = [];
-                  for (let mins = 0; mins < 1440; mins += step) {
-                    markers.push({ mins, isMajor: mins % majorInterval === 0 });
+                  for (let mins = 0; mins < 1440; mins += interval) {
+                    const hour = Math.floor(mins / 60);
+                    const min = mins % 60;
+                    // Show label only at hour marks
+                    const showLabel = min === 0;
+                    markers.push({ mins, hour, min, showLabel });
                   }
 
                   const tickWidth = 4 * zoomLevel;
@@ -432,7 +434,7 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
 
                   return (
                     <>
-                      {markers.map(({ mins, isMajor }) => {
+                      {markers.map(({ mins, hour, min, showLabel }) => {
                         const top = getTimeTop(new Date(day.date.getTime() + mins * 60000));
                         return (
                           <div key={mins} className="absolute flex items-center" style={{ top: `${top}px`, transform: 'translateY(-50%)', left: '50%', width: '0', height: '0' }}>
@@ -441,8 +443,8 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                               className="h-px absolute"
                               style={{ 
                                 background: 'var(--marker-color)', 
-                                opacity: isMajor ? 0.28 : 0.14,
-                                width: `${isMajor ? tickWidth : tickWidth * 0.6}px`,
+                                opacity: showLabel ? 0.28 : 0.14,
+                                width: `${showLabel ? tickWidth : tickWidth * 0.6}px`,
                                 right: `calc(50% + ${tickOffset}px)`
                               }} 
                             />
@@ -451,12 +453,12 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                               className="h-px absolute"
                               style={{ 
                                 background: 'var(--marker-color)', 
-                                opacity: isMajor ? 0.28 : 0.14,
-                                width: `${isMajor ? tickWidth : tickWidth * 0.6}px`,
+                                opacity: showLabel ? 0.28 : 0.14,
+                                width: `${showLabel ? tickWidth : tickWidth * 0.6}px`,
                                 left: `calc(50% + ${tickOffset}px)`
                               }} 
                             />
-                            {isMajor && (
+                            {showLabel && (
                               <>
                                 <span
                                   className="absolute text-[10px] font-semibold"
@@ -466,17 +468,17 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                                     right: `calc(50% + ${labelOffset}px)`
                                   }}
                                 >
-                                  {String(Math.floor(mins / 60)).padStart(2, '0')}:{String(mins % 60).padStart(2, '0')}
+                                  {String(hour).padStart(2, '0')}:{String(min).padStart(2, '0')}
                                 </span>
                                 <span
                                   className="absolute text-[10px] font-semibold"
-                                  style={{ 
+                                  style={{
                                     color: 'var(--marker-color)', 
                                     opacity: 0.6,
                                     left: `calc(50% + ${labelOffset}px)`
                                   }}
                                 >
-                                  {String(Math.floor(mins / 60)).padStart(2, '0')}:{String(mins % 60).padStart(2, '0')}
+                                  {String(hour).padStart(2, '0')}:{String(min).padStart(2, '0')}
                                 </span>
                               </>
                             )}
