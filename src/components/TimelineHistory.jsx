@@ -1,16 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { GiWaterDrop } from 'react-icons/gi';
-import { FaSyringe, FaPills } from 'react-icons/fa6';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from '../firebase';
 import { formatTime, formatViewedDate, getStartOfDay } from '../utils/time';
 
-const SUBTYPE_BADGES = {
-  IV: { label: 'IV', icon: GiWaterDrop, color: 'var(--subtype-iv)' },
-  IM: { label: 'IM', icon: FaSyringe, color: 'var(--subtype-im)' },
-  PO: { label: 'PO', icon: FaPills, color: 'var(--subtype-po)' },
-  'IV+PO': { label: 'IV+PO', icon: GiWaterDrop, color: 'var(--subtype-ivpo)' },
-  'VTRK': { label: 'VTRK', icon: GiWaterDrop, color: 'var(--subtype-vtrk)' }
+const SUBTYPE_COLORS = {
+  IV: 'var(--subtype-iv)',
+  IM: 'var(--subtype-im)',
+  PO: 'var(--subtype-po)',
+  'IV+PO': 'var(--subtype-ivpo)',
+  'VTRK': 'var(--subtype-vtrk)'
 };
 
 const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingTime, onTimeSelected }) => {
