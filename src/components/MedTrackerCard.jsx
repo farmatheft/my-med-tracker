@@ -101,7 +101,9 @@ const MedTrackerCard = ({
       <div
         className="p-3 rounded-t-[2rem]"
         style={{
-          background: `linear-gradient(135deg, var(--gradient-header-start), var(--gradient-header-end))`,
+          background: title === 'AH' 
+            ? `linear-gradient(135deg, var(--header-gradient-ah-start), var(--header-gradient-ah-end))`
+            : `linear-gradient(135deg, var(--header-gradient-ei-start), var(--header-gradient-ei-end))`,
           borderBottom: '2px solid var(--add-btn-border)'
         }}
       >
@@ -117,7 +119,7 @@ const MedTrackerCard = ({
               style={{
                 background: 'var(--success-color)',
                 color: 'var(--add-btn-bg)',
-                boxShadow: '0 0 12px var(--success-color)'
+                boxShadow: `0 0 12px var(--glow-light)`
               }}
             >
               {title}

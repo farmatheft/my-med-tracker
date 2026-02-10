@@ -69,6 +69,7 @@ export default function App() {
     root.style.setProperty('--text-secondary', currentTheme.textSecondary);
     root.style.setProperty('--accent-ah', currentTheme.accentAH);
     root.style.setProperty('--accent-ei', currentTheme.accentEI);
+    root.style.setProperty('--accent-primary', currentTheme.accentPrimary || currentTheme.accentAH);
     root.style.setProperty('--border', currentTheme.border);
     root.style.setProperty('--timeline-line', currentTheme.timelineLine);
     root.style.setProperty('--marker-color', currentTheme.markerColor);
@@ -77,6 +78,16 @@ export default function App() {
     root.style.setProperty('--timeline-bg-alt-start', currentTheme.timelineSecondaryBackground[0]);
     root.style.setProperty('--timeline-bg-alt-end', currentTheme.timelineSecondaryBackground[1]);
     root.style.setProperty('--success-color', currentTheme.success);
+
+    // --- Glow colors: white for dark themes, gray for light themes
+    root.style.setProperty('--glow-light', isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.2)');
+    root.style.setProperty('--glow-dark', isDark ? 'rgba(255, 255, 255, 0.35)' : 'rgba(0, 0, 0, 0.15)');
+
+    // --- Header gradient colors based on title (AH = accentAH, EI = accentEI)
+    root.style.setProperty('--header-gradient-ah-start', currentTheme.accentAH);
+    root.style.setProperty('--header-gradient-ah-end', isDark ? currentTheme.accentAH : 'rgba(255,255,255,0.3)');
+    root.style.setProperty('--header-gradient-ei-start', currentTheme.accentEI);
+    root.style.setProperty('--header-gradient-ei-end', isDark ? currentTheme.accentEI : 'rgba(255,255,255,0.3)');
 
     // --- Derived surfaces & shadows (keeps themes working without requiring new JSON keys)
     root.style.setProperty('--surface', isDark ? 'rgba(15, 23, 42, 0.66)' : 'rgba(255, 255, 255, 0.96)');
@@ -103,17 +114,17 @@ export default function App() {
       subtypePanel.border || (isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)')
     );
 
-    // --- Add button colors (theme-driven; dark-on-light, light-on-dark)
+    // --- Add button colors (theme-driven)
+    // Dark themes: white bg, accent-primary text, accent-primary glow
+    // Light themes: accent-primary bg, white text, dark gray glow
     const addButton = currentTheme.addButton || {};
-    root.style.setProperty('--add-btn-bg', addButton.bg || (isDark ? 'rgba(255,255,255,0.92)' : 'rgba(2, 6, 23, 0.86)'));
-    root.style.setProperty('--add-btn-text', addButton.text || (isDark ? 'rgba(2, 6, 23, 0.92)' : currentTheme.success));
+    root.style.setProperty('--add-btn-bg', addButton.bg || (isDark ? '#FFFFFF' : 'var(--accent-primary)'));
+    root.style.setProperty('--add-btn-text', addButton.text || (isDark ? 'var(--accent-primary)' : '#FFFFFF'));
     root.style.setProperty('--add-btn-border', addButton.border || (isDark ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.12)'));
-    root.style.setProperty('--add-btn-glow', addButton.glow || currentTheme.success);
+    root.style.setProperty('--add-btn-glow', addButton.glow || (isDark ? 'var(--accent-primary)' : 'rgba(0,0,0,0.3)'));
 
-    // --- Gradient header colors (theme-driven)
+    // --- Gradient header overlay (kept for compatibility)
     const gradientHeader = currentTheme.gradientHeader || {};
-    root.style.setProperty('--gradient-header-start', gradientHeader.start || (isDark ? currentTheme.accentAH : currentTheme.accentEI));
-    root.style.setProperty('--gradient-header-end', gradientHeader.end || (isDark ? currentTheme.accentEI : currentTheme.accentAH));
     root.style.setProperty('--gradient-header-overlay', gradientHeader.overlay || (isDark ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'));
     root.style.setProperty('--gradient-header-text', gradientHeader.textColor || (isDark ? '#FFFFFF' : '#1A1A1A'));
 

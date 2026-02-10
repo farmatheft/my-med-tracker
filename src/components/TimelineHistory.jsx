@@ -348,7 +348,7 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
 
               return (
                 <>
-                  {/* AH labels on left side (between lines or left of left line) */}
+                  {/* AH labels on left side (left of left line) */}
                   {ahLabels.map((g) => (
                     <div
                       key={`ah-gap-${g.id}`}
@@ -356,7 +356,7 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                       style={{
                         top: `${g.y}px`,
                         transform: 'translateY(-50%)',
-                        left: 'calc(50% - 20px)',
+                        left: 'calc(50% - 130px)',
                         ...commonStyle
                       }}
                     >
@@ -364,7 +364,7 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                     </div>
                   ))}
 
-                  {/* EI labels on right side (between lines or right of right line) */}
+                  {/* EI labels on right side (right of right line) */}
                   {eiLabels.map((g) => (
                     <div
                       key={`ei-gap-${g.id}`}
@@ -372,7 +372,8 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                       style={{
                         top: `${g.y}px`,
                         transform: 'translateY(-50%)',
-                        left: 'calc(50% + 20px)',
+                        right: 'calc(50% - 130px)',
+                        left: 'auto',
                         ...commonStyle
                       }}
                     >
@@ -398,61 +399,93 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
             >
               {/* Markers - horizontal lines with tick marks on outer sides of parallel lines */}
               <div className="absolute inset-0 pointer-events-none z-0">
-                {[...Array(24)].map((_, hour) => {
-                  const mins = hour * 60;
-                  const top = getTimeTop(new Date(day.date.getTime() + mins * 60000));
-                  const isLabel = mins % 180 === 0;
-                  const tickWidth = 4 * zoomLevel; // Scale tick width
-                  const tickOffset = 8; // Distance from parallel lines
+                {(() => {
+                  // Calculate marker intervals based on zoom level
+                  let majorInterval, minorInterval;
+                  if (zoomLevel <= 1) {
+                    majorInterval = 180; // Every 3 hours
+                    minorInterval = 0;
+                  } else if (zoomLevel <= 2) {
+                    majorInterval = 120; // Every 2 hours
+                    minorInterval = 0;
+                  } else if (zoomLevel <= 3) {
+                    majorInterval = 60; // Every 1 hour
+                    minorInterval = 0;
+                  } else if (zoomLevel <= 4) {
+                    majorInterval = 60; // Every 1 hour
+                    minorInterval = 30; // Every 30 min
+                  } else {
+                    majorInterval = 60; // Every 1 hour
+                    minorInterval = 15; // Every 15 min
+                  }
+
+                  // Generate all markers - use minorInterval as step, or majorInterval if no minor
+                  const step = minorInterval > 0 ? minorInterval : majorInterval;
+                  const markers = [];
+                  for (let mins = 0; mins < 1440; mins += step) {
+                    markers.push({ mins, isMajor: mins % majorInterval === 0 });
+                  }
+
+                  const tickWidth = 4 * zoomLevel;
+                  const tickOffset = 8;
+                  const labelOffset = tickOffset + 20;
+
                   return (
-                    <div key={hour} className="absolute flex items-center" style={{ top: `${top}px`, transform: 'translateY(-50%)', left: '50%', width: '0', height: '0' }}>
-                      {/* Left tick (for left line) */}
-                      <div 
-                        className="h-px absolute"
-                        style={{ 
-                          background: 'var(--marker-color)', 
-                          opacity: 0.28,
-                          width: `${tickWidth}px`,
-                          right: `calc(50% + ${tickOffset}px)`
-                        }} 
-                      />
-                      {/* Right tick (for right line) */}
-                      <div 
-                        className="h-px absolute"
-                        style={{ 
-                          background: 'var(--marker-color)', 
-                          opacity: 0.28,
-                          width: `${tickWidth}px`,
-                          left: `calc(50% + ${tickOffset}px)`
-                        }} 
-                      />
-                      {isLabel && (
-                        <>
-                          <span
-                            className="absolute text-[10px] font-semibold"
-                            style={{ 
-                              color: 'var(--marker-color)', 
-                              opacity: 0.6,
-                              right: `calc(50% + ${tickOffset + 20}px)`
-                            }}
-                          >
-                            {String(hour).padStart(2, '0')}:00
-                          </span>
-                          <span
-                            className="absolute text-[10px] font-semibold"
-                            style={{ 
-                              color: 'var(--marker-color)', 
-                              opacity: 0.6,
-                              left: `calc(50% + ${tickOffset + 20}px)`
-                            }}
-                          >
-                            {String(hour).padStart(2, '0')}:00
-                          </span>
-                        </>
-                      )}
-                    </div>
+                    <>
+                      {markers.map(({ mins, isMajor }) => {
+                        const top = getTimeTop(new Date(day.date.getTime() + mins * 60000));
+                        return (
+                          <div key={mins} className="absolute flex items-center" style={{ top: `${top}px`, transform: 'translateY(-50%)', left: '50%', width: '0', height: '0' }}>
+                            {/* Left tick (for left line) */}
+                            <div 
+                              className="h-px absolute"
+                              style={{ 
+                                background: 'var(--marker-color)', 
+                                opacity: isMajor ? 0.28 : 0.14,
+                                width: `${isMajor ? tickWidth : tickWidth * 0.6}px`,
+                                right: `calc(50% + ${tickOffset}px)`
+                              }} 
+                            />
+                            {/* Right tick (for right line) */}
+                            <div 
+                              className="h-px absolute"
+                              style={{ 
+                                background: 'var(--marker-color)', 
+                                opacity: isMajor ? 0.28 : 0.14,
+                                width: `${isMajor ? tickWidth : tickWidth * 0.6}px`,
+                                left: `calc(50% + ${tickOffset}px)`
+                              }} 
+                            />
+                            {isMajor && (
+                              <>
+                                <span
+                                  className="absolute text-[10px] font-semibold"
+                                  style={{ 
+                                    color: 'var(--marker-color)', 
+                                    opacity: 0.6,
+                                    right: `calc(50% + ${labelOffset}px)`
+                                  }}
+                                >
+                                  {String(Math.floor(mins / 60)).padStart(2, '0')}:{String(mins % 60).padStart(2, '0')}
+                                </span>
+                                <span
+                                  className="absolute text-[10px] font-semibold"
+                                  style={{ 
+                                    color: 'var(--marker-color)', 
+                                    opacity: 0.6,
+                                    left: `calc(50% + ${labelOffset}px)`
+                                  }}
+                                >
+                                  {String(Math.floor(mins / 60)).padStart(2, '0')}:{String(mins % 60).padStart(2, '0')}
+                                </span>
+                              </>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </>
                   );
-                })}
+                })()}
               </div>
 
               {/* Two Parallel Lines in Center */}
@@ -497,14 +530,47 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                   className="absolute left-0 right-0 z-10 pointer-events-none" 
                   style={{ top: `${getTimeTop(currentTime)}px`, transform: 'translateY(-50%)' }}
                 >
+                  {/* Left marker */}
                   <div 
-                    className="w-full h-px" 
+                    className="absolute h-px"
                     style={{ 
-                      background: 'var(--accent-ah)', 
-                      opacity: 0.18,
-                      boxShadow: '0 0 10px var(--accent-ah)'
+                      background: 'var(--accent-ah)',
+                      width: 'calc(50% - 20px)',
+                      right: 'calc(50% - 20px)',
+                      opacity: 0.5
                     }} 
                   />
+                  {/* Center dot */}
+                  <div 
+                    className="absolute w-2.5 h-2.5 rounded-full"
+                    style={{ 
+                      background: 'var(--accent-ah)',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      boxShadow: '0 0 12px var(--accent-ah)'
+                    }}
+                  />
+                  {/* Right marker */}
+                  <div 
+                    className="absolute h-px"
+                    style={{ 
+                      background: 'var(--accent-ah)',
+                      width: 'calc(50% - 20px)',
+                      left: 'calc(50% - 20px)',
+                      opacity: 0.5
+                    }} 
+                  />
+                  {/* Time label */}
+                  <div 
+                    className="absolute left-1/2 -translate-x-1/2 -top-5 px-2 py-0.5 rounded text-[9px] font-bold whitespace-nowrap"
+                    style={{ 
+                      color: 'var(--accent-ah)',
+                      background: 'color-mix(in srgb, var(--surface) 85%, transparent)',
+                      boxShadow: '0 2px 8px var(--shadow-color)'
+                    }}
+                  >
+                    {formatTime(currentTime)}
+                  </div>
                 </div>
               )}
 
@@ -583,7 +649,7 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                         style={{
                           background: `color-mix(in srgb, ${subtype || mainAccent} 85%, white)`,
                           borderColor: 'var(--surface-2)',
-                          boxShadow: `0 0 16px ${subtype || mainAccent}`
+                          boxShadow: `0 0 16px var(--glow-light)`
                         }}
                       />
                       {/* Colored Frame/Border for Subtype */}
@@ -606,8 +672,8 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                           background: bubbleBg,
                           borderColor: subtype ? subtypeBorderColor : 'rgba(255,255,255,0.55)',
                           boxShadow: isSelected 
-                            ? `0 18px 44px var(--shadow-color-strong), ${subtypeGlow}`
-                            : '0 10px 24px var(--shadow-color)',
+                            ? `0 18px 44px var(--shadow-color-strong), 0 0 20px var(--glow-light)`
+                            : '0 10px 24px var(--shadow-color), 0 0 8px var(--glow-dark)',
                           transform: isSelected ? 'scale(1.02)' : 'scale(1)',
                           backdropFilter: 'blur(8px)'
                         }}
