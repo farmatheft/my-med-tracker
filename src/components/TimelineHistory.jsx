@@ -1,6 +1,4 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { GiWaterDrop } from 'react-icons/gi';
-import { FaSyringe, FaPills } from 'react-icons/fa6';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from '../firebase';
 import { DAY_HEIGHT, formatTime, formatViewedDate, getStartOfDay } from '../utils/time';
@@ -261,7 +259,6 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
               const top = getTimeTop(intake.timestamp);
 
               const subtypeBadge = intake.subtype ? SUBTYPE_BADGES[intake.subtype] : null;
-              const SubtypeIcon = subtypeBadge?.icon;
 
               return (
                 <div
@@ -271,7 +268,7 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                     onSelectIntake(isSelected ? null : intake);
                   }}
                   className={`absolute flex items-center transition-all duration-300 cursor-pointer ${
-                    isAH ? 'right-1/2 pr-4 justify-end' : 'left-1/2 pl-4'
+                    isAH ? 'left-1/2 pl-4 justify-start' : 'right-1/2 pr-4 justify-end'
                   } ${selectedId && !isSelected ? 'opacity-30 scale-95' : 'opacity-100 scale-100'}`}
                   style={{ 
                     top: `${top}%`, 
@@ -281,37 +278,27 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                   }}
                 >
                   <div
-                    className={`flex flex-col ${isAH ? 'items-end' : 'items-start'} ${
+                    className={`flex items-center gap-1.5 px-2 py-0.5 rounded-lg transition-all ${
                       isSelected 
-                        ? 'bg-white/20 backdrop-blur-sm p-2.5 rounded-2xl ring-2 ring-[var(--border)] shadow-lg' 
-                        : 'hover:bg-white/10 p-1 rounded-xl transition-all'
+                        ? 'bg-white/20 backdrop-blur-sm' 
+                        : 'hover:bg-white/10'
                     }`}
+                    style={{
+                      border: subtypeBadge ? `2px solid ${subtypeBadge.color}` : '2px solid transparent',
+                      boxShadow: subtypeBadge ? `0 0 8px ${subtypeBadge.color}40, 0 0 16px ${subtypeBadge.color}20` : 'none'
+                    }}
                   >
-                    <div className="flex items-center gap-2">
-                      <span 
-                        className={`text-lg font-black drop-shadow-sm ${isAH ? 'text-[var(--accent-ah)]' : 'text-[var(--accent-ei)]'}`}
-                      >
-                        {intake.dosage}
-                      </span>
-                      <span className="text-[10px] font-bold text-[var(--text-secondary)]">{intake.unit}</span>
-                      <span className="text-xs font-bold text-[var(--text-primary)] opacity-70">{formatTime(intake.timestamp)}</span>
-                      {subtypeBadge && SubtypeIcon && (
-                        <span
-                          className="ml-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold text-white shadow-sm"
-                          style={{ backgroundColor: subtypeBadge.color }}
-                        >
-                          <span className="flex items-center gap-0.5 text-[10px]">
-                            <SubtypeIcon className="text-[10px]" />
-                            {subtypeBadge.label === 'IV+PO' && <FaPills className="text-[9px]" />}
-                          </span>
-                          {subtypeBadge.label}
-                        </span>
-                      )}
-                    </div>
+                    <span 
+                      className={`text-sm font-black drop-shadow-sm ${isAH ? 'text-[var(--accent-ah)]' : 'text-[var(--accent-ei)]'}`}
+                    >
+                      {intake.dosage}
+                    </span>
+                    <span className="text-[9px] font-bold text-[var(--text-secondary)]">{intake.unit}</span>
+                    <span className="text-xs font-bold text-[var(--text-primary)] opacity-70">{formatTime(intake.timestamp)}</span>
                   </div>
                   <div
-                    className={`absolute w-3.5 h-3.5 rounded-full border-2 border-white shadow-md ${
-                      isAH ? '-right-1.5' : '-left-1.5'
+                    className={`absolute w-2.5 h-2.5 rounded-full border border-white shadow-md ${
+                      isAH ? '-left-1' : '-right-1'
                     } ${isAH ? 'bg-[var(--accent-ah)]' : 'bg-[var(--accent-ei)]'}`}
                     style={{ zIndex: 21 }}
                   />
