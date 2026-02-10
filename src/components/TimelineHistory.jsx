@@ -28,6 +28,7 @@ const SUBTYPE_BORDER_COLORS = {
 };
 
 const ZOOM_LEVELS = [
+  { value: 0.25, label: '0.25x' },
   { value: 0.5, label: '0.5x' },
   { value: 0.75, label: '0.75x' },
   { value: 1, label: '1x' },
@@ -36,8 +37,14 @@ const ZOOM_LEVELS = [
   { value: 2, label: '2x' },
   { value: 2.5, label: '2.5x' },
   { value: 3, label: '3x' },
+  { value: 3.5, label: '3.5x' },
   { value: 4, label: '4x' },
-  { value: 5, label: '5x' }
+  { value: 4.5, label: '4.5x' },
+  { value: 5, label: '5x' },
+  { value: 5.5, label: '5.5x' },
+  { value: 6, label: '6x' },
+  { value: 8, label: '8x' },
+  { value: 10, label: '10x' }
 ];
 
 // Base height for 24 hours in pixels (1 minute = 1 pixel at 1x zoom)
@@ -401,30 +408,62 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
               <div className="absolute inset-0 pointer-events-none z-0">
                 {(() => {
                   // Calculate marker intervals based on zoom level
-                  // 0.5x: every 180 mins, 1x: every 120 mins, 2x: every 60 mins
-                  // 3x: every 30 mins, 4x: every 10 mins, 5x: every 5 mins
-                  let interval;
-                  if (zoomLevel <= 0.75) {
-                    interval = 180; // Every 3 hours
-                  } else if (zoomLevel <= 1.5) {
-                    interval = 120; // Every 2 hours
-                  } else if (zoomLevel <= 2.5) {
-                    interval = 60; // Every 1 hour
-                  } else if (zoomLevel <= 3.5) {
-                    interval = 30; // Every 30 min
-                  } else if (zoomLevel <= 4.5) {
-                    interval = 10; // Every 10 min
+                  // Format: tickInterval, labelInterval
+                  let tickInterval, labelInterval;
+                  if (zoomLevel <= 0.375) {
+                    tickInterval = 180; // Every 3 hours
+                    labelInterval = 60; // Every 1 hour
+                  } else if (zoomLevel <= 0.625) {
+                    tickInterval = 180; // Every 3 hours
+                    labelInterval = 30; // Every 30 min
+                  } else if (zoomLevel <= 0.875) {
+                    tickInterval = 180; // Every 3 hours
+                    labelInterval = 30; // Every 30 min
+                  } else if (zoomLevel <= 1.375) {
+                    tickInterval = 120; // Every 2 hours
+                    labelInterval = 15; // Every 15 min
+                  } else if (zoomLevel <= 1.75) {
+                    tickInterval = 120; // Every 2 hours
+                    labelInterval = 15; // Every 15 min
+                  } else if (zoomLevel <= 2.25) {
+                    tickInterval = 60; // Every 1 hour
+                    labelInterval = 15; // Every 15 min
+                  } else if (zoomLevel <= 2.75) {
+                    tickInterval = 30; // Every 30 min
+                    labelInterval = 15; // Every 15 min
+                  } else if (zoomLevel <= 3.25) {
+                    tickInterval = 30; // Every 30 min
+                    labelInterval = 10; // Every 10 min
+                  } else if (zoomLevel <= 3.75) {
+                    tickInterval = 30; // Every 30 min
+                    labelInterval = 10; // Every 10 min
+                  } else if (zoomLevel <= 4.25) {
+                    tickInterval = 15; // Every 15 min
+                    labelInterval = 5; // Every 5 min
+                  } else if (zoomLevel <= 4.75) {
+                    tickInterval = 15; // Every 15 min
+                    labelInterval = 5; // Every 5 min
+                  } else if (zoomLevel <= 5.75) {
+                    tickInterval = 10; // Every 10 min
+                    labelInterval = 1; // Every 1 min
+                  } else if (zoomLevel <= 7) {
+                    tickInterval = 10; // Every 10 min
+                    labelInterval = 1; // Every 1 min
+                  } else if (zoomLevel <= 10) {
+                    tickInterval = 5; // Every 5 min
+                    labelInterval = 1; // Every 1 min
                   } else {
-                    interval = 5; // Every 5 min
+                    tickInterval = 1; // Every 1 min
+                    labelInterval = 1; // Every 1 min
                   }
 
                   // Generate all markers
                   const markers = [];
-                  for (let mins = 0; mins < 1440; mins += interval) {
+                  for (let mins = 0; mins < 1440; mins += tickInterval) {
                     const hour = Math.floor(mins / 60);
                     const min = mins % 60;
-                    // Show label only at hour marks
-                    const showLabel = min === 0;
+                    // Show label at labelInterval
+                    const showLabel = mins % labelInterval === 0;
                     markers.push({ mins, hour, min, showLabel });
                   }
 
