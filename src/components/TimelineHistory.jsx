@@ -363,7 +363,7 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                       style={{
                         top: `${g.y}px`,
                         transform: 'translateY(-50%)',
-                        left: 'calc(50% - 130px)',
+                        left: 'calc(50% - 80px)',
                         ...commonStyle
                       }}
                     >
@@ -379,7 +379,7 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                       style={{
                         top: `${g.y}px`,
                         transform: 'translateY(-50%)',
-                        right: 'calc(50% - 130px)',
+                        right: 'calc(50% - 80px)',
                         left: 'auto',
                         ...commonStyle
                       }}
@@ -468,7 +468,7 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                   }
 
                   const tickWidth = 4 * zoomLevel;
-                  const tickOffset = 8;
+                  const tickOffset = 20;
                   const labelOffset = tickOffset + 20;
 
                   return (
@@ -530,37 +530,37 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
               </div>
 
               {/* Two Parallel Lines in Center */}
-              {/* Left Line */}
+              {/* Left Line - AH */}
               <div
                 className="absolute top-6 bottom-6 z-0"
                 style={{ 
-                  left: 'calc(50% - 8px)',
-                  width: '2px'
+                  left: 'calc(50% - 20px)',
+                  width: '4px'
                 }}
               >
                 <div
                   className="absolute inset-y-0 rounded-full"
                   style={{ 
-                    width: '2px', 
+                    width: '4px', 
                     background: 'var(--timeline-line)', 
-                    opacity: 0.4
+                    opacity: 0.6
                   }}
                 />
               </div>
-              {/* Right Line */}
+              {/* Right Line - EI */}
               <div
                 className="absolute top-6 bottom-6 z-0"
                 style={{ 
-                  left: 'calc(50% + 6px)',
-                  width: '2px'
+                  left: 'calc(50% + 20px)',
+                  width: '4px'
                 }}
               >
                 <div
                   className="absolute inset-y-0 rounded-full"
                   style={{ 
-                    width: '2px', 
+                    width: '4px', 
                     background: 'var(--timeline-line)', 
-                    opacity: 0.4
+                    opacity: 0.6
                   }}
                 />
               </div>
@@ -576,8 +576,8 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                     className="absolute h-px"
                     style={{ 
                       background: 'var(--accent-ah)',
-                      width: 'calc(50% - 20px)',
-                      right: 'calc(50% - 20px)',
+                      width: 'calc(50% - 60px)',
+                      right: 'calc(50% - 60px)',
                       opacity: 0.5
                     }} 
                   />
@@ -588,7 +588,7 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                       background: 'var(--accent-ah)',
                       left: '50%',
                       transform: 'translateX(-50%)',
-                      boxShadow: '0 0 12px var(--accent-ah)'
+                      boxShadow: '0 0 12px var(--glow-light)'
                     }}
                   />
                   {/* Right marker */}
@@ -596,8 +596,8 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                     className="absolute h-px"
                     style={{ 
                       background: 'var(--accent-ah)',
-                      width: 'calc(50% - 20px)',
-                      left: 'calc(50% - 20px)',
+                      width: 'calc(50% - 60px)',
+                      left: 'calc(50% - 60px)',
                       opacity: 0.5
                     }} 
                   />
@@ -680,17 +680,17 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                         width: '46%' 
                       }}
                     >
-                      {/* Connector dot with glow - positioned on the outer side */}
+                      {/* Connector dot with glow - positioned on the line */}
                       <div
-                        className={`absolute w-2.5 h-2.5 rounded-full border-2 z-10 ${
-                          // AH dots on left line (left side of left line)
-                          // EI dots on right line (right side of right line)
-                          isAH ? '-right-1.5' : '-left-1.5'
+                        className={`absolute w-3 h-3 rounded-full border-2 z-10 ${
+                          // AH dots on left line, EI dots on right line
+                          // Position relative to the card container which is positioned from center
+                          isAH ? '-right-[18px]' : '-left-[18px]'
                         }`}
                         style={{
-                          background: `color-mix(in srgb, ${subtype || mainAccent} 85%, white)`,
-                          borderColor: 'var(--surface-2)',
-                          boxShadow: `0 0 16px var(--glow-light)`
+                          background: subtype ? subtypeColor : 'var(--text-secondary)',
+                          borderColor: 'var(--surface)',
+                          boxShadow: `0 0 12px var(--glow-light)`
                         }}
                       />
                       {/* Colored Frame/Border for Subtype */}
