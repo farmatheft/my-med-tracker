@@ -303,8 +303,8 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
 
               const commonStyle = {
                 color: 'var(--text-secondary)',
-                opacity: 0.18,
-                fontSize: '32px',
+                opacity: 0.28,
+                fontSize: '42px',
                 fontWeight: 800,
                 letterSpacing: '0.02em',
                 textShadow: '0 1px 0 rgba(0,0,0,0.08)'
@@ -363,7 +363,7 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                       style={{
                         top: `${g.y}px`,
                         transform: 'translateY(-50%)',
-                        left: 'calc(50% - 80px)',
+                        left: 'calc(40% - 120px)',
                         ...commonStyle
                       }}
                     >
@@ -379,7 +379,7 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                       style={{
                         top: `${g.y}px`,
                         transform: 'translateY(-50%)',
-                        right: 'calc(50% - 80px)',
+                        right: 'calc(40% - 120px)',
                         left: 'auto',
                         ...commonStyle
                       }}
