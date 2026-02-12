@@ -303,11 +303,11 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
 
               const commonStyle = {
                 color: 'var(--text-secondary)',
-                opacity: 0.28,
-                fontSize: '42px',
-                fontWeight: 800,
+                opacity: 0.22,
+                fontSize: '32px',
+                fontWeight: 500,
                 letterSpacing: '0.02em',
-                textShadow: '0 1px 0 rgba(0,0,0,0.08)'
+                textShadow: '0 2px 0 rgba(0,0,0,0.08)'
               };
 
               const buildGapLabels = (patientId) => {
@@ -363,7 +363,7 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                       style={{
                         top: `${g.y}px`,
                         transform: 'translateY(-50%)',
-                        left: 'calc(40% - 120px)',
+                        left: 'calc(50% - 120px)',
                         ...commonStyle
                       }}
                     >
@@ -379,7 +379,7 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                       style={{
                         top: `${g.y}px`,
                         transform: 'translateY(-50%)',
-                        right: 'calc(40% - 120px)',
+                        right: 'calc(50% - 120px)',
                         left: 'auto',
                         ...commonStyle
                       }}
@@ -411,47 +411,47 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                   // Format: tickInterval, labelInterval
                   let tickInterval, labelInterval;
                   if (zoomLevel <= 0.375) {
-                    tickInterval = 180; // Every 3 hours
-                    labelInterval = 60; // Every 1 hour
-                  } else if (zoomLevel <= 0.625) {
-                    tickInterval = 180; // Every 3 hours
-                    labelInterval = 30; // Every 30 min
-                  } else if (zoomLevel <= 0.875) {
-                    tickInterval = 180; // Every 3 hours
-                    labelInterval = 30; // Every 30 min
-                  } else if (zoomLevel <= 1.375) {
-                    tickInterval = 120; // Every 2 hours
-                    labelInterval = 15; // Every 15 min
-                  } else if (zoomLevel <= 1.75) {
-                    tickInterval = 120; // Every 2 hours
-                    labelInterval = 15; // Every 15 min
-                  } else if (zoomLevel <= 2.25) {
                     tickInterval = 60; // Every 1 hour
-                    labelInterval = 15; // Every 15 min
+                    labelInterval = 180; // Every 3 hours
+                  } else if (zoomLevel <= 0.625) {
+                    tickInterval = 30; // Every 30 min
+                    labelInterval = 180; // Every 3 hours
+                  } else if (zoomLevel <= 0.875) {
+                    tickInterval = 30; // Every 30 min
+                    labelInterval = 180; // Every 3 hours
+                  } else if (zoomLevel <= 1.375) {
+                    tickInterval = 15; // Every 15 min
+                    labelInterval = 120; // Every 2 hours
+                  } else if (zoomLevel <= 1.75) {
+                    tickInterval = 15; // Every 15 min
+                    labelInterval = 120; // Every 2 hours
+                  } else if (zoomLevel <= 2.25) {
+                    tickInterval = 15; // Every 15 min
+                    labelInterval = 60; // Every 1 hour
                   } else if (zoomLevel <= 2.75) {
-                    tickInterval = 30; // Every 30 min
-                    labelInterval = 15; // Every 15 min
+                    tickInterval = 15; // Every 15 min
+                    labelInterval = 30; // Every 30 min
                   } else if (zoomLevel <= 3.25) {
-                    tickInterval = 30; // Every 30 min
-                    labelInterval = 10; // Every 10 min
+                    tickInterval = 10; // Every 10 min
+                    labelInterval = 30; // Every 30 min
                   } else if (zoomLevel <= 3.75) {
-                    tickInterval = 30; // Every 30 min
-                    labelInterval = 10; // Every 10 min
+                    tickInterval = 10; // Every 10 min
+                    labelInterval = 30; // Every 30 min
                   } else if (zoomLevel <= 4.25) {
-                    tickInterval = 15; // Every 15 min
-                    labelInterval = 5; // Every 5 min
-                  } else if (zoomLevel <= 4.75) {
-                    tickInterval = 15; // Every 15 min
-                    labelInterval = 5; // Every 5 min
-                  } else if (zoomLevel <= 5.75) {
-                    tickInterval = 10; // Every 10 min
-                    labelInterval = 1; // Every 1 min
-                  } else if (zoomLevel <= 7) {
-                    tickInterval = 10; // Every 10 min
-                    labelInterval = 1; // Every 1 min
-                  } else if (zoomLevel <= 10) {
                     tickInterval = 5; // Every 5 min
-                    labelInterval = 1; // Every 1 min
+                    labelInterval = 15; // Every 15 min
+                  } else if (zoomLevel <= 4.75) {
+                    tickInterval = 5; // Every 5 min
+                    labelInterval = 15; // Every 15 min
+                  } else if (zoomLevel <= 5.75) {
+                    tickInterval = 1; // Every 1 min
+                    labelInterval = 10; // Every 10 min
+                  } else if (zoomLevel <= 7) {
+                    tickInterval = 1; // Every 1 min
+                    labelInterval = 10; // Every 10 min
+                  } else if (zoomLevel <= 10) {
+                    tickInterval = 1; // Every 1 min
+                    labelInterval = 5; // Every 5 min
                   } else {
                     tickInterval = 1; // Every 1 min
                     labelInterval = 1; // Every 1 min
@@ -467,8 +467,8 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                     markers.push({ mins, hour, min, showLabel });
                   }
 
-                  const tickWidth = 4 * zoomLevel;
-                  const tickOffset = 20;
+                  const tickWidth = 4;// * zoomLevel;
+                  const tickOffset = 0;
                   const labelOffset = tickOffset + 20;
 
                   return (
@@ -482,8 +482,8 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                               className="h-px absolute"
                               style={{ 
                                 background: 'var(--marker-color)', 
-                                opacity: showLabel ? 0.28 : 0.14,
-                                width: `${showLabel ? tickWidth : tickWidth * 0.6}px`,
+                                opacity: showLabel ? 0.8 : 0.5,
+                                width: `${showLabel ? tickWidth : tickWidth * 0.8}px`,
                                 right: `calc(50% + ${tickOffset}px)`
                               }} 
                             />
@@ -492,28 +492,28 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                               className="h-px absolute"
                               style={{ 
                                 background: 'var(--marker-color)', 
-                                opacity: showLabel ? 0.28 : 0.14,
-                                width: `${showLabel ? tickWidth : tickWidth * 0.6}px`,
+                                opacity: showLabel ? 0.8 : 0.5,
+                                width: `${showLabel ? tickWidth : tickWidth * 0.8}px`,
                                 left: `calc(50% + ${tickOffset}px)`
                               }} 
                             />
                             {showLabel && (
                               <>
                                 <span
-                                  className="absolute text-[10px] font-semibold"
+                                  className="absolute text-[10px]"
                                   style={{ 
                                     color: 'var(--marker-color)', 
-                                    opacity: 0.6,
+                                    opacity: 0.4,
                                     right: `calc(50% + ${labelOffset}px)`
                                   }}
                                 >
                                   {String(hour).padStart(2, '0')}:{String(min).padStart(2, '0')}
                                 </span>
                                 <span
-                                  className="absolute text-[10px] font-semibold"
+                                  className="absolute text-[10px]"
                                   style={{
                                     color: 'var(--marker-color)', 
-                                    opacity: 0.6,
+                                    opacity: 0.4,
                                     left: `calc(50% + ${labelOffset}px)`
                                   }}
                                 >
@@ -534,14 +534,14 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
               <div
                 className="absolute top-6 bottom-6 z-0"
                 style={{ 
-                  left: 'calc(50% - 20px)',
-                  width: '4px'
+                  left: 'calc(50% - 10px)',
+                  width: '2px'
                 }}
               >
                 <div
                   className="absolute inset-y-0 rounded-full"
                   style={{ 
-                    width: '4px', 
+                    width: '2px', 
                     background: 'var(--timeline-line)', 
                     opacity: 0.6
                   }}
@@ -551,14 +551,14 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
               <div
                 className="absolute top-6 bottom-6 z-0"
                 style={{ 
-                  left: 'calc(50% + 20px)',
-                  width: '4px'
+                  left: 'calc(50% + 10px)',
+                  width: '2px'
                 }}
               >
                 <div
                   className="absolute inset-y-0 rounded-full"
                   style={{ 
-                    width: '4px', 
+                    width: '2px', 
                     background: 'var(--timeline-line)', 
                     opacity: 0.6
                   }}
@@ -588,7 +588,7 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                       background: 'var(--accent-ah)',
                       left: '50%',
                       transform: 'translateX(-50%)',
-                      boxShadow: '0 0 12px var(--glow-light)'
+                      boxShadow: '0 0 5px var(--glow-light)'
                     }}
                   />
                   {/* Right marker */}
@@ -627,7 +627,7 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                     className="w-full h-px" 
                     style={{ 
                       background: 'var(--accent-ei)', 
-                      opacity: 0.35,
+                      opacity: 0.75,
                       boxShadow: '0 0 15px var(--glow-light)'
                     }} 
                   />
@@ -635,7 +635,7 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                     className="absolute left-1/2 -translate-x-1/2 -top-4 px-4 py-1 rounded-full text-[10px] font-black"
                     style={{
                       color: 'var(--text-primary)',
-                      background: 'color-mix(in srgb, var(--success-color) 22%, transparent)',
+                      background: 'color-mix(in srgb, var(--success-color) 42%, transparent)',
                       border: '1px solid color-mix(in srgb, var(--success-color) 55%, transparent)',
                       boxShadow: '0 10px 24px var(--shadow-color)'
                     }}
@@ -655,8 +655,8 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
 
                   const mainAccent = isAH ? 'var(--accent-ah)' : 'var(--accent-ei)';
                   const bubbleBg = isAH
-                    ? 'color-mix(in srgb, var(--accent-ah) 24%, transparent)'
-                    : 'color-mix(in srgb, var(--accent-ei) 24%, transparent)';
+                    ? 'color-mix(in srgb, var(--accent-ah) 9%, transparent)'
+                    : 'color-mix(in srgb, var(--accent-ei) 9%, transparent)';
 
                   // Get subtype-specific colors and effects
                   const subtypeColor = SUBTYPE_COLORS[subtype] || 'var(--text-secondary)';
@@ -672,12 +672,12 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                       }}
                       className={`absolute flex items-center transition-all duration-200 cursor-pointer ${
                         // AH on left of left line, EI on right of right line
-                        !isAH ? 'left-1/2 pr-5 justify-end' : 'right-1/2 pl-5 justify-start'
+                        !isAH ? 'left-[50%] ml-[-7px] pr-5 justify-end' : 'right-[50%] mr-[-9px] pl-5 justify-start'
                       } ${selectedId && !isSelected ? 'opacity-30' : 'opacity-100'}`}
                       style={{ 
                         top: `${top}px`, 
                         transform: 'translateY(-50%)', 
-                        width: '46%' 
+                        width: '50%',
                       }}
                     >
                       {/* Connector dot with glow - positioned on the line */}
@@ -685,12 +685,14 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                         className={`absolute w-3 h-3 rounded-full border-2 z-10 ${
                           // AH dots on left line (right side of AH card, touching left vertical line)
                           // EI dots on right line (left side of EI card, touching right vertical line)
-                          !isAH ? '-left-[-16px]' : '-right-[-11px]'
+                          !isAH ? '-left-[-13px]' : '-right-[-11px]'
                         }`}
                         style={{
-                          background: subtype ? subtypeColor : 'var(--text-secondary)',
-                          borderColor: 'var(--surface)',
-                          boxShadow: `0 0 12px var(--glow-light)`
+                          background: isAH ? 'var(--accent-ah)' : 'var(--accent-ei)', //subtype ? subtypeColor : 'var(--text-secondary)',
+                          borderColor: subtype ? subtypeColor : 'var(--text-secondary)',
+                          opacity: 0.6,
+                          // borderColor: 'var(--surface)',
+                          boxShadow: `0 0 1px var(--glow-light)`
                         }}
                       />
                       {/* Colored Frame/Border for Subtype */}
@@ -702,28 +704,35 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
                           borderColor: subtype ? subtypeBorderColor : 'rgba(255,255,255,0.55)',
                           boxShadow: isSelected 
                             ? `0 18px 44px var(--shadow-color-strong), 0 0 20px var(--glow-light)`
-                            : '0 10px 24px var(--shadow-color), 0 0 8px var(--glow-dark)',
-                          transform: isSelected ? 'scale(1.02)' : 'scale(1)',
+                            : '0 5px 22px var(--shadow-color), 0 0 10px var(--glow-dark)',
+                          transform: isSelected ? 'scale(1.09)' : 'scale(1)',
                           backdropFilter: 'blur(8px)'
                         }}
                       >
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
                           <span className="text-sm font-black" style={{ color: 'var(--text-primary)' }}>
                             {intake.dosage}
                           </span>
                           <span className="text-[10px] font-black" style={{ color: 'var(--text-secondary)', opacity: 0.7 }}>
                             {intake.unit}
                           </span>
-                          <span className="text-[10px] font-semibold" style={{ color: 'var(--text-secondary)', opacity: 0.7 }}>
+                          <span className="text-[10px] font-semibold" style={{ color: 'var(--text-secondary)', opacity: 0.6 }}>
                             {formatTime(intake.timestamp)}
                           </span>
                           
                           {subtype && (
                             <span
-                              className="ml-1 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[9px] font-black"
+                              className={`absolute inline-flex items-center gap-1 px-1.5 py-0.5 text-[9px] font-black z-0 ${
+                                isAH ? 'left-[-2px] ml-[-17px] top-[-5px]' : 'right-[-2px] mr-[-10px] top-[-5px]'
+                              }`}
                               style={{ 
                                 backgroundColor: subtypeColor, 
                                 color: 'white',
+                                opacity: 0.9,
+                                borderRadius: 100,
+                                transform: (isAH && (subtype == 'IV+PO' || subtype == 'VTRK')) ? 'rotate(-45deg)' : 
+                                (!isAH && (subtype == 'IV+PO' || subtype == 'VTRK')) ? 'rotate(45deg)' : 
+                                'rotate(0deg)',
                                 boxShadow: subtypeGlow !== 'none' ? `0 0 10px ${subtypeColor}` : 'none'
                               }}
                             >
