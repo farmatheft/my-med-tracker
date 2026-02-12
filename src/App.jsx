@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Notification from './components/Notification';
 import ThemeSelector from './components/ThemeSelector';
 import IntakeDetailsModal from './components/IntakeDetailsModal';
@@ -25,7 +25,6 @@ export default function App() {
   const [selectedTimeMap, setSelectedlineTimeMap] = useState({});
   const [mobileCardIndex, setMobileCardIndex] = useState(0);
   const [showStatistics, setShowStatistics] = useState(false);
-  const touchStartX = React.useRef(null);
 
   const handleSelectIntake = (intake) => {
     if (!intake) {
@@ -193,22 +192,7 @@ export default function App() {
 
             {/* Cards: mobile carousel */}
             <div className="sm:hidden">
-              <div
-                className="relative overflow-hidden"
-                onTouchStart={(e) => {
-                  touchStartX.current = e.touches?.[0]?.clientX ?? null;
-                }}
-                onTouchEnd={(e) => {
-                  const start = touchStartX.current;
-                  const end = e.changedTouches?.[0]?.clientX ?? null;
-                  touchStartX.current = null;
-                  if (start == null || end == null) return;
-                  const dx = end - start;
-                  const threshold = 50;
-                  if (dx > threshold) setMobileCardIndex(0);
-                  if (dx < -threshold) setMobileCardIndex(1);
-                }}
-              >
+              <div className="relative overflow-hidden">
                 <div
                   className="flex transition-transform duration-300 ease-out"
                   style={{ transform: `translateX(-${mobileCardIndex * 100}%)` }}
@@ -238,21 +222,44 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Dots */}
-              <div className="mt-2 flex justify-center gap-2">
-                {[0, 1].map((idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => setMobileCardIndex(idx)}
-                    className="h-2.5 w-2.5 rounded-full"
-                    style={{
-                      background: idx === mobileCardIndex ? 'var(--text-primary)' : 'rgba(0,0,0,0.18)',
-                      opacity: idx === mobileCardIndex ? 0.8 : 0.45
-                    }}
-                    aria-label={idx === 0 ? 'Show AH card' : 'Show EI card'}
-                  />
-                ))}
+              {/* AH/EI Button Switcher */}
+              <div className="mt-2 flex justify-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => setMobileCardIndex(0)}
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 ${
+                    mobileCardIndex === 0
+                      ? 'bg-[var(--accent-ah)] text-white'
+                      : 'bg-transparent border border-[var(--border)] text-[var(--text-secondary)]'
+                  }`}
+                  style={{
+                    background: mobileCardIndex === 0 ? 'var(--accent-ah)' : 'transparent',
+                    color: mobileCardIndex === 0 ? '#FFFFFF' : 'var(--text-secondary)',
+                    border: '1px solid var(--border)',
+                    boxShadow: mobileCardIndex === 0 ? '0 0 8px var(--glow-light)' : 'none'
+                  }}
+                  aria-label="Show AH card"
+                >
+                  AH
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMobileCardIndex(1)}
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 ${
+                    mobileCardIndex === 1
+                      ? 'bg-[var(--accent-ei)] text-white'
+                      : 'bg-transparent border border-[var(--border)] text-[var(--text-secondary)]'
+                  }`}
+                  style={{
+                    background: mobileCardIndex === 1 ? 'var(--accent-ei)' : 'transparent',
+                    color: mobileCardIndex === 1 ? '#FFFFFF' : 'var(--text-secondary)',
+                    border: '1px solid var(--border)',
+                    boxShadow: mobileCardIndex === 1 ? '0 0 8px var(--glow-light)' : 'none'
+                  }}
+                  aria-label="Show EI card"
+                >
+                  EI
+                </button>
               </div>
             </div>
 
