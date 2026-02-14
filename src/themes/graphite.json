@@ -2,50 +2,50 @@
   "name": "graphite",
   "isDark": true,
   "backgroundGradient": [
-    "#0F141B",
-    "#222831"
+    "#18181b",
+    "#27272a"
   ],
   "cardBackground": [
-    "rgba(20, 25, 32, 0.95)",
-    "rgba(20, 25, 32, 0.75)"
+    "rgba(39, 39, 42, 0.9)",
+    "rgba(63, 63, 70, 0.6)"
   ],
-  "textPrimary": "#ECEFF4",
-  "textSecondary": "#B0BEC5",
-  "accentAH": "#00BFA5",
-  "accentEI": "#FFCA28",
-  "border": "#2E3440",
-  "timelineLine": "#4C566A",
-  "markerColor": "#6B7280",
+  "textPrimary": "#f4f4f5",
+  "textSecondary": "#a1a1aa",
+  "accentAH": "#e4e4e7",
+  "accentEI": "#d4d4d8",
+  "border": "rgba(255, 255, 255, 0.1)",
+  "timelineLine": "rgba(255, 255, 255, 0.05)",
+  "markerColor": "#71717a",
   "timelineBackground": [
-    "rgba(15, 20, 27, 0.6)",
-    "rgba(15, 20, 27, 0.3)"
+    "rgba(24, 24, 27, 0.6)",
+    "rgba(24, 24, 27, 0.3)"
   ],
   "timelineSecondaryBackground": [
-    "rgba(15, 20, 27, 0.78)",
-    "rgba(15, 20, 27, 0.45)"
+    "rgba(39, 39, 42, 0.7)",
+    "rgba(39, 39, 42, 0.4)"
   ],
-  "success": "#10B981",
+  "success": "#10b981",
   "subtypeColors": {
-    "iv": "#4FC3F7",
-    "im": "#BA68C8",
-    "po": "#FFB74D",
-    "ivpo": "#81C784",
-    "vtrk": "#FACC15"
+    "iv": "#d4d4d8",
+    "im": "#a1a1aa",
+    "po": "#71717a",
+    "ivpo": "#e4e4e7",
+    "vtrk": "#52525b"
   },
   "subtypePanel": {
-    "bg": "rgba(255, 255, 255, 0.06)",
-    "border": "rgba(255, 255, 255, 0.12)"
+    "bg": "rgba(255, 255, 255, 0.03)",
+    "border": "rgba(255, 255, 255, 0.08)"
   },
   "addButton": {
-    "bg": "rgba(255, 255, 255, 0.92)",
-    "text": "rgba(2, 6, 23, 0.92)",
-    "border": "rgba(255, 255, 255, 0.18)",
-    "glow": "#10B981"
+    "bg": "rgba(255, 255, 255, 0.1)",
+    "text": "#ffffff",
+    "border": "rgba(255, 255, 255, 0.2)",
+    "glow": "rgba(255, 255, 255, 0.3)"
   },
   "gradientHeader": {
-    "start": "#00BFA5",
-    "end": "#FFCA28",
+    "start": "#52525b",
+    "end": "#27272a",
     "overlay": "rgba(0, 0, 0, 0.5)",
-    "textColor": "#FFFFFF"
+    "textColor": "#ffffff"
   }
 }

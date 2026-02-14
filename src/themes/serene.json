@@ -2,50 +2,50 @@
   "name": "serene",
   "isDark": false,
   "backgroundGradient": [
-    "#FFEFBA",
-    "#FFFFFF"
+    "#f0fdfa",
+    "#ccfbf1"
   ],
   "cardBackground": [
-    "rgba(255, 255, 255, 0.96)",
-    "rgba(255, 255, 255, 0.86)"
+    "rgba(255, 255, 255, 0.85)",
+    "rgba(240, 253, 250, 0.6)"
   ],
-  "textPrimary": "#5D4037",
-  "textSecondary": "#8D6E63",
-  "accentAH": "#FF8A65",
-  "accentEI": "#FFD54F",
-  "border": "#D7CCC8",
-  "timelineLine": "#E0E0E0",
-  "markerColor": "#BDBDBD",
+  "textPrimary": "#134e4a",
+  "textSecondary": "#2dd4bf",
+  "accentAH": "#2dd4bf",
+  "accentEI": "#99f6e4",
+  "border": "rgba(45, 212, 191, 0.2)",
+  "timelineLine": "rgba(20, 184, 166, 0.15)",
+  "markerColor": "#5eead4",
   "timelineBackground": [
-    "rgba(255, 239, 186, 0.85)",
-    "rgba(255, 239, 186, 0.55)"
+    "rgba(240, 253, 250, 0.6)",
+    "rgba(240, 253, 250, 0.3)"
   ],
   "timelineSecondaryBackground": [
-    "rgba(255, 239, 186, 0.95)",
-    "rgba(255, 239, 186, 0.7)"
+    "rgba(255, 255, 255, 0.8)",
+    "rgba(255, 255, 255, 0.5)"
   ],
-  "success": "#81C784",
+  "success": "#4ade80",
   "subtypeColors": {
-    "iv": "#3b82f6",
-    "im": "#a855f7",
-    "po": "#f59e0b",
-    "ivpo": "#22c55e",
-    "vtrk": "#FACC15"
+    "iv": "#2dd4bf",
+    "im": "#818cf8",
+    "po": "#facc15",
+    "ivpo": "#34d399",
+    "vtrk": "#fb923c"
   },
   "subtypePanel": {
-    "bg": "rgba(2, 6, 23, 0.22)",
-    "border": "rgba(255, 255, 255, 0.14)"
+    "bg": "rgba(45, 212, 191, 0.05)",
+    "border": "rgba(45, 212, 191, 0.1)"
   },
   "addButton": {
-    "bg": "rgba(2, 6, 23, 0.86)",
-    "text": "#81C784",
-    "border": "rgba(255, 255, 255, 0.18)",
-    "glow": "#81C784"
+    "bg": "#ffffff",
+    "text": "#134e4a",
+    "border": "rgba(19, 78, 74, 0.1)",
+    "glow": "rgba(20, 184, 166, 0.1)"
   },
   "gradientHeader": {
-    "start": "#FFD54F",
-    "end": "#FF8A65",
-    "overlay": "rgba(255, 255, 255, 0.5)",
-    "textColor": "#1A1A1A"
+    "start": "#2dd4bf",
+    "end": "#5eead4",
+    "overlay": "rgba(255, 255, 255, 0.2)",
+    "textColor": "#115e59"
   }
 }

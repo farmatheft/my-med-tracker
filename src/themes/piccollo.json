@@ -1,51 +1,51 @@
 {
-  "name": "piccolo",
-  "isDark": false,
+  "name": "piccollo",
+  "isDark": true,
   "backgroundGradient": [
-    "#F5FFF5",
-    "#E8F5E9"
+    "#1a2e05",
+    "#365314"
   ],
   "cardBackground": [
-    "rgba(255, 255, 255, 0.96)",
-    "rgba(232, 245, 233, 0.85)"
+    "rgba(54, 83, 20, 0.9)",
+    "rgba(26, 46, 5, 0.7)"
   ],
-  "textPrimary": "#212121",
-  "textSecondary": "#455A64",
-  "accentAH": "#7B1FA2",
-  "accentEI": "#4CAF50",
-  "border": "#C8E6C9",
-  "timelineLine": "#BDBDBD",
-  "markerColor": "#7B1FA2",
+  "textPrimary": "#f0fdf4",
+  "textSecondary": "#86efac",
+  "accentAH": "#a855f7",
+  "accentEI": "#84cc16",
+  "border": "rgba(132, 204, 22, 0.3)",
+  "timelineLine": "rgba(54, 83, 20, 0.4)",
+  "markerColor": "#84cc16",
   "timelineBackground": [
-    "rgba(245, 255, 245, 0.85)",
-    "rgba(245, 255, 245, 0.55)"
+    "rgba(26, 46, 5, 0.6)",
+    "rgba(26, 46, 5, 0.3)"
   ],
   "timelineSecondaryBackground": [
-    "rgba(232, 245, 233, 0.95)",
-    "rgba(232, 245, 233, 0.7)"
+    "rgba(54, 83, 20, 0.7)",
+    "rgba(54, 83, 20, 0.4)"
   ],
-  "success": "#43A047",
+  "success": "#facc15",
   "subtypeColors": {
-    "iv": "#3b82f6",
-    "im": "#a855f7",
-    "po": "#f59e0b",
+    "iv": "#a855f7",
+    "im": "#84cc16",
+    "po": "#f97316",
     "ivpo": "#22c55e",
-    "vtrk": "#FACC15"
+    "vtrk": "#eab308"
   },
   "subtypePanel": {
-    "bg": "rgba(2, 6, 23, 0.22)",
-    "border": "rgba(255, 255, 255, 0.14)"
+    "bg": "rgba(255, 255, 255, 0.05)",
+    "border": "rgba(255, 255, 255, 0.1)"
   },
   "addButton": {
-    "bg": "rgba(2, 6, 23, 0.86)",
-    "text": "#43A047",
-    "border": "rgba(255, 255, 255, 0.18)",
-    "glow": "#43A047"
+    "bg": "rgba(132, 204, 22, 0.2)",
+    "text": "#a855f7",
+    "border": "rgba(168, 85, 247, 0.4)",
+    "glow": "#a855f7"
   },
   "gradientHeader": {
-    "start": "#4CAF50",
-    "end": "#7B1FA2",
-    "overlay": "rgba(255, 255, 255, 0.5)",
-    "textColor": "#1A1A1A"
+    "start": "#84cc16",
+    "end": "#65a30d",
+    "overlay": "rgba(26, 46, 5, 0.6)",
+    "textColor": "#ffffff"
   }
 }

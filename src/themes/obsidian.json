@@ -2,65 +2,50 @@
   "name": "obsidian",
   "isDark": true,
   "backgroundGradient": [
-    "#0A0A0A",
-    "#1C1B1B"
+    "#000000",
+    "#09090b"
   ],
   "cardBackground": [
-    "rgba(18, 18, 18, 0.95)",
-    "rgba(18, 18, 18, 0.75)"
+    "rgba(10, 10, 10, 0.95)",
+    "rgba(24, 24, 27, 0.8)"
   ],
-  "textPrimary": "#F5F5F5",
-  "textSecondary": "#BDBDBD",
-  "accentAH": "#EF5350",
-  "accentEI": "#FF7043",
-  "border": "#2C2C2C",
-  "timelineLine": "#424242",
-  "markerColor": "#616161",
+  "textPrimary": "#fafafa",
+  "textSecondary": "#a1a1aa",
+  "accentAH": "#6366f1",
+  "accentEI": "#8b5cf6",
+  "border": "rgba(99, 102, 241, 0.3)",
+  "timelineLine": "#27272a",
+  "markerColor": "#52525b",
   "timelineBackground": [
-    "rgba(10, 10, 10, 0.65)",
-    "rgba(10, 10, 10, 0.35)"
+    "rgba(0, 0, 0, 0.8)",
+    "rgba(0, 0, 0, 0.5)"
   ],
   "timelineSecondaryBackground": [
-    "rgba(10, 10, 10, 0.8)",
-    "rgba(10, 10, 10, 0.5)"
+    "rgba(10, 10, 10, 0.9)",
+    "rgba(10, 10, 10, 0.6)"
   ],
-  "success": "#66BB6A",
+  "success": "#22c55e",
   "subtypeColors": {
-    "iv": "#4FC3F7",
-    "im": "#BA68C8",
-    "po": "#FFB74D",
-    "ivpo": "#81C784",
-    "vtrk": "#FACC15"
+    "iv": "#818cf8",
+    "im": "#a78bfa",
+    "po": "#f472b6",
+    "ivpo": "#6366f1",
+    "vtrk": "#c084fc"
   },
   "subtypePanel": {
-    "bg": "rgba(255, 255, 255, 0.06)",
-    "border": "rgba(255, 255, 255, 0.12)"
+    "bg": "rgba(255, 255, 255, 0.05)",
+    "border": "rgba(255, 255, 255, 0.1)"
   },
   "addButton": {
-    "bg": "rgba(255, 255, 255, 0.92)",
-    "text": "rgba(2, 6, 23, 0.92)",
-    "border": "rgba(255, 255, 255, 0.18)",
-    "glow": "#66BB6A"
-  },
-  "slider": {
-    "liquid": "#EF5350",
-    "liquidOpacity": 0.85,
-    "bubbles": "#FF7043",
-    "bubblesOpacity": 0.7,
-    "plungerRod": "#757575",
-    "plungerHead": "#616161",
-    "plungerHandle": "#9E9E9E",
-    "barrelEmpty": "#1C1C1C",
-    "barrelStroke": "#424242",
-    "graduations": "#757575",
-    "needle": "#9E9E9E",
-    "trackFilled": "#EF5350",
-    "trackEmpty": "#2C2C2C"
+    "bg": "rgba(255, 255, 255, 0.9)",
+    "text": "#09090b",
+    "border": "rgba(255, 255, 255, 0.2)",
+    "glow": "#fafafa"
   },
   "gradientHeader": {
-    "start": "#EF5350",
-    "end": "#FF7043",
-    "overlay": "rgba(0, 0, 0, 0.5)",
-    "textColor": "#FFFFFF"
+    "start": "#6366f1",
+    "end": "#8b5cf6",
+    "overlay": "rgba(0, 0, 0, 0.7)",
+    "textColor": "#ffffff"
   }
 }

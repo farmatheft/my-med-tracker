@@ -1,51 +1,51 @@
 {
-  "name": "gundam wing",
-  "isDark": false,
+  "name": "wing",
+  "isDark": true,
   "backgroundGradient": [
-    "#F0F0F0",
-    "#E0E0E0"
+    "#0f172a",
+    "#1e293b"
   ],
   "cardBackground": [
-    "rgba(255, 255, 255, 0.96)",
-    "rgba(255, 255, 255, 0.85)"
+    "rgba(30, 41, 59, 0.9)",
+    "rgba(15, 23, 42, 0.7)"
   ],
-  "textPrimary": "#1A1A1B",
-  "textSecondary": "#4A4A4F",
-  "accentAH": "#0D47A1",
-  "accentEI": "#E53935",
-  "border": "#D1D1D6",
-  "timelineLine": "#C7C7CC",
-  "markerColor": "#0D47A1",
+  "textPrimary": "#f8fafc",
+  "textSecondary": "#94a3b8",
+  "accentAH": "#3b82f6",
+  "accentEI": "#ef4444",
+  "border": "rgba(59, 130, 246, 0.3)",
+  "timelineLine": "rgba(30, 41, 59, 0.4)",
+  "markerColor": "#60a5fa",
   "timelineBackground": [
-    "rgba(240, 240, 240, 0.85)",
-    "rgba(240, 240, 240, 0.55)"
+    "rgba(15, 23, 42, 0.6)",
+    "rgba(15, 23, 42, 0.3)"
   ],
   "timelineSecondaryBackground": [
-    "rgba(224, 224, 224, 0.95)",
-    "rgba(224, 224, 224, 0.7)"
+    "rgba(30, 41, 59, 0.7)",
+    "rgba(30, 41, 59, 0.4)"
   ],
-  "success": "#2E7D32",
+  "success": "#eab308",
   "subtypeColors": {
     "iv": "#3b82f6",
-    "im": "#a855f7",
-    "po": "#f59e0b",
+    "im": "#ef4444",
+    "po": "#eab308",
     "ivpo": "#22c55e",
-    "vtrk": "#FACC15"
+    "vtrk": "#64748b"
   },
   "subtypePanel": {
-    "bg": "rgba(2, 6, 23, 0.22)",
-    "border": "rgba(255, 255, 255, 0.14)"
+    "bg": "rgba(255, 255, 255, 0.05)",
+    "border": "rgba(255, 255, 255, 0.1)"
   },
   "addButton": {
-    "bg": "rgba(2, 6, 23, 0.86)",
-    "text": "#2E7D32",
-    "border": "rgba(255, 255, 255, 0.18)",
-    "glow": "#2E7D32"
+    "bg": "rgba(59, 130, 246, 0.15)",
+    "text": "#3b82f6",
+    "border": "rgba(59, 130, 246, 0.4)",
+    "glow": "#3b82f6"
   },
   "gradientHeader": {
-    "start": "#E53935",
-    "end": "#0D47A1",
-    "overlay": "rgba(255, 255, 255, 0.5)",
-    "textColor": "#1A1A1A"
+    "start": "#3b82f6",
+    "end": "#ef4444",
+    "overlay": "rgba(15, 23, 42, 0.6)",
+    "textColor": "#ffffff"
   }
 }

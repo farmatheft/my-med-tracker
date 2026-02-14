@@ -1,51 +1,51 @@
 {
-  "name": "muad'dib",
-  "isDark": false,
+  "name": "muaddib",
+  "isDark": true,
   "backgroundGradient": [
-    "#D2B48C",
-    "#C1A273"
+    "#451a03",
+    "#78350f"
   ],
   "cardBackground": [
-    "rgba(255, 255, 255, 0.96)",
-    "rgba(245, 245, 220, 0.85)"
+    "rgba(120, 53, 15, 0.9)",
+    "rgba(146, 64, 14, 0.6)"
   ],
-  "textPrimary": "#3E2723",
-  "textSecondary": "#5D4037",
-  "accentAH": "#8B4513",
-  "accentEI": "#1E90FF",
-  "border": "#A68966",
-  "timelineLine": "#BDBDBD",
-  "markerColor": "#8B4513",
+  "textPrimary": "#fef3c7",
+  "textSecondary": "#fbbf24",
+  "accentAH": "#3b82f6",
+  "accentEI": "#60a5fa",
+  "border": "rgba(251, 191, 36, 0.3)",
+  "timelineLine": "rgba(180, 83, 9, 0.3)",
+  "markerColor": "#fbbf24",
   "timelineBackground": [
-    "rgba(210, 180, 140, 0.85)",
-    "rgba(210, 180, 140, 0.55)"
+    "rgba(69, 26, 3, 0.6)",
+    "rgba(69, 26, 3, 0.3)"
   ],
   "timelineSecondaryBackground": [
-    "rgba(193, 162, 115, 0.95)",
-    "rgba(193, 162, 115, 0.7)"
+    "rgba(120, 53, 15, 0.7)",
+    "rgba(120, 53, 15, 0.4)"
   ],
-  "success": "#4CAF50",
+  "success": "#10b981",
   "subtypeColors": {
     "iv": "#3b82f6",
-    "im": "#a855f7",
-    "po": "#f59e0b",
-    "ivpo": "#22c55e",
-    "vtrk": "#FACC15"
+    "im": "#f59e0b",
+    "po": "#d97706",
+    "ivpo": "#60a5fa",
+    "vtrk": "#b45309"
   },
   "subtypePanel": {
-    "bg": "rgba(2, 6, 23, 0.22)",
-    "border": "rgba(255, 255, 255, 0.14)"
+    "bg": "rgba(255, 255, 255, 0.03)",
+    "border": "rgba(255, 255, 255, 0.08)"
   },
   "addButton": {
-    "bg": "rgba(2, 6, 23, 0.86)",
-    "text": "#4CAF50",
-    "border": "rgba(255, 255, 255, 0.18)",
-    "glow": "#4CAF50"
+    "bg": "rgba(59, 130, 246, 0.2)",
+    "text": "#60a5fa",
+    "border": "rgba(59, 130, 246, 0.4)",
+    "glow": "#3b82f6"
   },
   "gradientHeader": {
-    "start": "#1E90FF",
-    "end": "#8B4513",
-    "overlay": "rgba(255, 255, 255, 0.5)",
-    "textColor": "#1A1A1A"
+    "start": "#f59e0b",
+    "end": "#d97706",
+    "overlay": "rgba(69, 26, 3, 0.5)",
+    "textColor": "#ffffff"
   }
 }

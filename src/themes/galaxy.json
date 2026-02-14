@@ -2,50 +2,50 @@
   "name": "galaxy",
   "isDark": true,
   "backgroundGradient": [
-    "#0A0F1F",
-    "#1B1035"
+    "#0b0014",
+    "#1e002e"
   ],
   "cardBackground": [
-    "rgba(16, 20, 38, 0.95)",
-    "rgba(16, 20, 38, 0.75)"
+    "rgba(30, 0, 46, 0.9)",
+    "rgba(58, 12, 163, 0.6)"
   ],
-  "textPrimary": "#EDE7F6",
-  "textSecondary": "#B39DDB",
-  "accentAH": "#8E24AA",
-  "accentEI": "#26C6DA",
-  "border": "#312E81",
-  "timelineLine": "#4338CA",
-  "markerColor": "#6D28D9",
+  "textPrimary": "#fae8ff",
+  "textSecondary": "#c084fc",
+  "accentAH": "#d8b4fe",
+  "accentEI": "#818cf8",
+  "border": "rgba(168, 85, 247, 0.3)",
+  "timelineLine": "rgba(88, 28, 135, 0.3)",
+  "markerColor": "#c084fc",
   "timelineBackground": [
-    "rgba(10, 15, 31, 0.6)",
-    "rgba(10, 15, 31, 0.3)"
+    "rgba(11, 0, 20, 0.6)",
+    "rgba(11, 0, 20, 0.3)"
   ],
   "timelineSecondaryBackground": [
-    "rgba(10, 15, 31, 0.78)",
-    "rgba(10, 15, 31, 0.45)"
+    "rgba(30, 0, 46, 0.7)",
+    "rgba(30, 0, 46, 0.4)"
   ],
-  "success": "#66BB6A",
+  "success": "#34d399",
   "subtypeColors": {
-    "iv": "#4FC3F7",
-    "im": "#BA68C8",
-    "po": "#FFB74D",
-    "ivpo": "#81C784",
-    "vtrk": "#FACC15"
+    "iv": "#a855f7",
+    "im": "#d8b4fe",
+    "po": "#f472b6",
+    "ivpo": "#c084fc",
+    "vtrk": "#6366f1"
   },
   "subtypePanel": {
-    "bg": "rgba(255, 255, 255, 0.06)",
-    "border": "rgba(255, 255, 255, 0.12)"
+    "bg": "rgba(255, 255, 255, 0.03)",
+    "border": "rgba(255, 255, 255, 0.08)"
   },
   "addButton": {
-    "bg": "rgba(255, 255, 255, 0.92)",
-    "text": "rgba(2, 6, 23, 0.92)",
-    "border": "rgba(255, 255, 255, 0.18)",
-    "glow": "#66BB6A"
+    "bg": "rgba(192, 132, 252, 0.1)",
+    "text": "#d8b4fe",
+    "border": "rgba(192, 132, 252, 0.4)",
+    "glow": "#a855f7"
   },
   "gradientHeader": {
-    "start": "#8E24AA",
-    "end": "#26C6DA",
-    "overlay": "rgba(0, 0, 0, 0.5)",
-    "textColor": "#FFFFFF"
+    "start": "#7e22ce",
+    "end": "#4338ca",
+    "overlay": "rgba(11, 0, 20, 0.5)",
+    "textColor": "#ffffff"
   }
 }

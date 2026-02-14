@@ -2,50 +2,50 @@
   "name": "onyx",
   "isDark": true,
   "backgroundGradient": [
-    "#0B0B0F",
-    "#1C1F26"
+    "#000000",
+    "#1c1917"
   ],
   "cardBackground": [
-    "rgba(20, 22, 28, 0.95)",
-    "rgba(20, 22, 28, 0.75)"
+    "rgba(0, 0, 0, 0.95)",
+    "rgba(28, 25, 23, 0.8)"
   ],
-  "textPrimary": "#E5E7EB",
-  "textSecondary": "#9CA3AF",
-  "accentAH": "#6366F1",
-  "accentEI": "#22D3EE",
-  "border": "#2B2F36",
-  "timelineLine": "#3B3F46",
-  "markerColor": "#4B5563",
+  "textPrimary": "#fafaf9",
+  "textSecondary": "#a8a29e",
+  "accentAH": "#d6d3d1",
+  "accentEI": "#e7e5e4",
+  "border": "rgba(255, 255, 255, 0.15)",
+  "timelineLine": "rgba(255, 255, 255, 0.08)",
+  "markerColor": "#78716c",
   "timelineBackground": [
-    "rgba(11, 11, 15, 0.6)",
-    "rgba(11, 11, 15, 0.3)"
+    "rgba(0, 0, 0, 0.8)",
+    "rgba(0, 0, 0, 0.5)"
   ],
   "timelineSecondaryBackground": [
-    "rgba(11, 11, 15, 0.75)",
-    "rgba(11, 11, 15, 0.45)"
+    "rgba(28, 25, 23, 0.9)",
+    "rgba(28, 25, 23, 0.6)"
   ],
-  "success": "#34D399",
+  "success": "#10b981",
   "subtypeColors": {
-    "iv": "#4FC3F7",
-    "im": "#BA68C8",
-    "po": "#FFB74D",
-    "ivpo": "#81C784",
-    "vtrk": "#FACC15"
+    "iv": "#e7e5e4",
+    "im": "#d6d3d1",
+    "po": "#a8a29e",
+    "ivpo": "#f5f5f4",
+    "vtrk": "#57534e"
   },
   "subtypePanel": {
-    "bg": "rgba(255, 255, 255, 0.06)",
-    "border": "rgba(255, 255, 255, 0.12)"
+    "bg": "rgba(255, 255, 255, 0.05)",
+    "border": "rgba(255, 255, 255, 0.1)"
   },
   "addButton": {
-    "bg": "rgba(255, 255, 255, 0.92)",
-    "text": "rgba(2, 6, 23, 0.92)",
-    "border": "rgba(255, 255, 255, 0.18)",
-    "glow": "#34D399"
+    "bg": "#ffffff",
+    "text": "#000000",
+    "border": "rgba(255, 255, 255, 0.3)",
+    "glow": "#ffffff"
   },
   "gradientHeader": {
-    "start": "#6366F1",
-    "end": "#22D3EE",
-    "overlay": "rgba(0, 0, 0, 0.5)",
-    "textColor": "#FFFFFF"
+    "start": "#e7e5e4",
+    "end": "#78716c",
+    "overlay": "rgba(0, 0, 0, 0.8)",
+    "textColor": "#ffffff"
   }
 }

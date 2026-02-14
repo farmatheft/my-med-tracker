@@ -2,50 +2,50 @@
   "name": "breeze",
   "isDark": false,
   "backgroundGradient": [
-    "#E0F7FA",
-    "#FFFFFF"
+    "#f0f9ff",
+    "#e0f2fe"
   ],
   "cardBackground": [
-    "rgba(255, 255, 255, 0.96)",
-    "rgba(255, 255, 255, 0.86)"
+    "rgba(255, 255, 255, 0.9)",
+    "rgba(255, 255, 255, 0.6)"
   ],
-  "textPrimary": "#006064",
-  "textSecondary": "#00838F",
-  "accentAH": "#4DD0E1",
-  "accentEI": "#81C784",
-  "border": "#B2EBF2",
-  "timelineLine": "#E0E0E0",
-  "markerColor": "#BDBDBD",
+  "textPrimary": "#0f172a",
+  "textSecondary": "#64748b",
+  "accentAH": "#0ea5e9",
+  "accentEI": "#38bdf8",
+  "border": "rgba(14, 165, 233, 0.15)",
+  "timelineLine": "rgba(148, 163, 184, 0.2)",
+  "markerColor": "#94a3b8",
   "timelineBackground": [
-    "rgba(224, 247, 250, 0.8)",
-    "rgba(224, 247, 250, 0.5)"
+    "rgba(240, 249, 255, 0.5)",
+    "rgba(240, 249, 255, 0.2)"
   ],
   "timelineSecondaryBackground": [
-    "rgba(224, 247, 250, 0.95)",
-    "rgba(224, 247, 250, 0.7)"
+    "rgba(255, 255, 255, 0.8)",
+    "rgba(255, 255, 255, 0.5)"
   ],
-  "success": "#4CAF50",
+  "success": "#10b981",
   "subtypeColors": {
-    "iv": "#3b82f6",
-    "im": "#a855f7",
+    "iv": "#0ea5e9",
+    "im": "#8b5cf6",
     "po": "#f59e0b",
-    "ivpo": "#22c55e",
-    "vtrk": "#FACC15"
+    "ivpo": "#10b981",
+    "vtrk": "#f97316"
   },
   "subtypePanel": {
-    "bg": "rgba(2, 6, 23, 0.22)",
-    "border": "rgba(255, 255, 255, 0.14)"
+    "bg": "rgba(14, 165, 233, 0.05)",
+    "border": "rgba(14, 165, 233, 0.1)"
   },
   "addButton": {
-    "bg": "rgba(2, 6, 23, 0.86)",
-    "text": "#4CAF50",
-    "border": "rgba(255, 255, 255, 0.18)",
-    "glow": "#4CAF50"
+    "bg": "#ffffff",
+    "text": "#0ea5e9",
+    "border": "rgba(14, 165, 233, 0.2)",
+    "glow": "rgba(14, 165, 233, 0.3)"
   },
   "gradientHeader": {
-    "start": "#81C784",
-    "end": "#4DD0E1",
-    "overlay": "rgba(255, 255, 255, 0.5)",
-    "textColor": "#1A1A1A"
+    "start": "#0ea5e9",
+    "end": "#38bdf8",
+    "overlay": "rgba(255, 255, 255, 0.1)",
+    "textColor": "#0f172a"
   }
 }

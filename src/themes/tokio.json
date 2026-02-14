@@ -1,51 +1,51 @@
 {
-  "name": "tokyo drift",
+  "name": "tokio",
   "isDark": true,
   "backgroundGradient": [
-    "#0F0F0F",
-    "#1A1A1A"
+    "#000000",
+    "#0f0f0f"
   ],
   "cardBackground": [
-    "rgba(26, 26, 26, 0.95)",
-    "rgba(26, 26, 26, 0.75)"
+    "rgba(20, 20, 20, 0.95)",
+    "rgba(20, 20, 20, 0.8)"
   ],
-  "textPrimary": "#F5F5F5",
-  "textSecondary": "#9E9E9E",
-  "accentAH": "#42A5F5",
-  "accentEI": "#AB47BC",
-  "border": "#333333",
-  "timelineLine": "#262626",
-  "markerColor": "#42A5F5",
+  "textPrimary": "#ffffff",
+  "textSecondary": "#ef4444",
+  "accentAH": "#ef4444",
+  "accentEI": "#dc2626",
+  "border": "#ef4444",
+  "timelineLine": "#450a0a",
+  "markerColor": "#ef4444",
   "timelineBackground": [
-    "rgba(15, 15, 15, 0.6)",
-    "rgba(15, 15, 15, 0.3)"
+    "rgba(0, 0, 0, 0.8)",
+    "rgba(0, 0, 0, 0.5)"
   ],
   "timelineSecondaryBackground": [
-    "rgba(15, 15, 15, 0.8)",
-    "rgba(15, 15, 15, 0.5)"
+    "rgba(20, 20, 20, 0.9)",
+    "rgba(20, 20, 20, 0.6)"
   ],
-  "success": "#66BB6A",
+  "success": "#ef4444",
   "subtypeColors": {
-    "iv": "#4FC3F7",
-    "im": "#BA68C8",
-    "po": "#FFB74D",
-    "ivpo": "#81C784",
-    "vtrk": "#FACC15"
+    "iv": "#ef4444",
+    "im": "#f87171",
+    "po": "#fbbf24",
+    "ivpo": "#dc2626",
+    "vtrk": "#b91c1c"
   },
   "subtypePanel": {
-    "bg": "rgba(255, 255, 255, 0.06)",
-    "border": "rgba(255, 255, 255, 0.12)"
+    "bg": "rgba(239, 68, 68, 0.1)",
+    "border": "rgba(239, 68, 68, 0.4)"
   },
   "addButton": {
-    "bg": "rgba(255, 255, 255, 0.92)",
-    "text": "rgba(2, 6, 23, 0.92)",
-    "border": "rgba(255, 255, 255, 0.18)",
-    "glow": "#66BB6A"
+    "bg": "rgba(239, 68, 68, 0.15)",
+    "text": "#ef4444",
+    "border": "rgba(239, 68, 68, 0.6)",
+    "glow": "#ef4444"
   },
   "gradientHeader": {
-    "start": "#42A5F5",
-    "end": "#AB47BC",
-    "overlay": "rgba(0, 0, 0, 0.5)",
-    "textColor": "#FFFFFF"
+    "start": "#ef4444",
+    "end": "#b91c1c",
+    "overlay": "rgba(0, 0, 0, 0.7)",
+    "textColor": "#ffffff"
   }
 }
