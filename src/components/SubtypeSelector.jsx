@@ -4,7 +4,8 @@ const SUBTYPE_CSS_COLOR = {
   IV: 'var(--subtype-iv)',
   IM: 'var(--subtype-im)',
   PO: 'var(--subtype-po)',
-  'IV+PO': 'var(--subtype-ivpo)'
+  'IV+PO': 'var(--subtype-ivpo)',
+  VTRK: 'var(--subtype-vtrk)'
 };
 
 const hexToRgba = (hex, alpha) => {
@@ -18,7 +19,6 @@ const hexToRgba = (hex, alpha) => {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
 
-// Reads CSS var color (hex) to build glow/gradient.
 const getComputedCssColor = (cssVar) => {
   if (typeof window === 'undefined') return null;
   try {
@@ -33,22 +33,23 @@ const getComputedCssColor = (cssVar) => {
 const SubtypeSelector = ({ value, onChange, options }) => {
   return (
     <div
-      className="mt-3 flex justify-center items-center gap-3 rounded-xl px-3 py-2"
+      className="flex items-center gap-1.5 overflow-x-auto py-1.5 px-1 rounded-xl scrollbar-hide"
       style={{
         background: 'var(--subtype-panel-bg)',
-        border: '1px solid var(--subtype-panel-border)'
+        border: '1px solid var(--subtype-panel-border)',
+        WebkitOverflowScrolling: 'touch',
+        msOverflowStyle: 'none',
+        scrollbarWidth: 'none',
       }}
     >
       {options.map((option) => {
         const isActive = value === option.value;
         const Icon = option.icon;
-
         const cssColor = SUBTYPE_CSS_COLOR[option.value] || 'var(--text-secondary)';
-        // Try to read actual hex from the var so we can keep the existing glow/gradient look.
         const computedHex = getComputedCssColor(cssColor);
-        const glow = computedHex ? `0 0 12px ${hexToRgba(computedHex, 0.35)}` : 'none';
+        const glow = computedHex ? `0 0 8px ${hexToRgba(computedHex, 0.3)}` : 'none';
         const chipBg = computedHex
-          ? `linear-gradient(135deg, ${hexToRgba(computedHex, 0.22)}, ${hexToRgba(computedHex, 0.08)})`
+          ? `linear-gradient(135deg, ${hexToRgba(computedHex, 0.2)}, ${hexToRgba(computedHex, 0.06)})`
           : 'var(--surface)';
 
         return (
@@ -56,32 +57,21 @@ const SubtypeSelector = ({ value, onChange, options }) => {
             key={option.value}
             type="button"
             onClick={() => onChange(option.value)}
-            className="flex flex-col items-center gap-1 transition-opacity"
-            style={{ opacity: isActive ? 1 : 0.45 }}
+            className="flex items-center gap-1 px-2 py-1 rounded-lg transition-all whitespace-nowrap shrink-0"
+            style={
+              isActive
+                ? { borderColor: cssColor, background: chipBg, boxShadow: glow, color: cssColor, border: `1px solid ${computedHex || 'var(--border)'}` }
+                : {
+                  border: '1px solid transparent',
+                  background: 'transparent',
+                  color: 'var(--text-secondary)',
+                  opacity: 0.5,
+                }
+            }
           >
-            <div
-              className="w-9 h-9 rounded-lg border flex items-center justify-center"
-              style={
-                isActive
-                  ? { borderColor: cssColor, background: chipBg, boxShadow: glow, color: cssColor }
-                  : {
-                      borderColor: 'var(--border)',
-                      background: 'var(--surface)',
-                      color: 'var(--text-secondary)'
-                    }
-              }
-            >
-              <span className="flex items-center gap-0.5">
-                <Icon className="text-base" />
-                {option.value === 'IV+PO' && <FaPills className="text-[8px]" />}
-              </span>
-            </div>
-            <span
-              className="text-[9px] font-bold"
-              style={{ color: isActive ? cssColor : 'var(--text-secondary)' }}
-            >
-              {option.label}
-            </span>
+            <Icon className="text-xs" />
+            {option.value === 'IV+PO' && <FaPills className="text-[7px]" />}
+            <span className="text-[10px] font-bold">{option.label}</span>
           </button>
         );
       })}
@@ -90,4 +80,3 @@ const SubtypeSelector = ({ value, onChange, options }) => {
 };
 
 export default SubtypeSelector;
-
