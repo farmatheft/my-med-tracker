@@ -137,7 +137,7 @@ const MedTrackerCard = ({
           <div className="flex items-start justify-between mb-2">
             <div className="flex flex-col">
               <h2
-                className="text-5xl font-black tracking-tighter leading-none mb-1"
+                className="text-4xl sm:text-5xl font-black tracking-tighter leading-none mb-1"
                 style={{
                   background: title === 'AH'
                     ? 'linear-gradient(to right, var(--accent-ah), var(--subtype-im))'
@@ -157,8 +157,8 @@ const MedTrackerCard = ({
                       key={u}
                       onClick={() => handleUnitChange(u)}
                       className={`px-2 py-0.5 text-[10px] font-bold rounded-md transition-all ${unit === u
-                          ? 'bg-white shadow text-black'
-                          : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                        ? 'bg-white shadow text-black'
+                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                         }`}
                     >
                       {u}
@@ -182,7 +182,7 @@ const MedTrackerCard = ({
           <div className="flex-1 flex flex-col items-center justify-center py-2">
             <div className="relative">
               <span
-                className="text-[5rem] leading-none font-black tracking-tighter"
+                className="text-6xl sm:text-[5rem] leading-none font-black tracking-tighter"
                 style={{ color: 'var(--text-primary)' }}
               >
                 {currentDosage}

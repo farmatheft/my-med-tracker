@@ -2,50 +2,50 @@
   "name": "aurora",
   "isDark": true,
   "backgroundGradient": [
-    "#0B1020",
-    "#1B2A41"
+    "#022c22",
+    "#0f766e"
   ],
   "cardBackground": [
-    "rgba(17, 24, 39, 0.95)",
-    "rgba(17, 24, 39, 0.75)"
+    "rgba(19, 78, 74, 0.9)",
+    "rgba(17, 94, 89, 0.6)"
   ],
-  "textPrimary": "#E3F2FD",
-  "textSecondary": "#BBDEFB",
-  "accentAH": "#7C4DFF",
-  "accentEI": "#00E5FF",
-  "border": "#334155",
-  "timelineLine": "#1F2937",
-  "markerColor": "#475569",
+  "textPrimary": "#f0fdf4",
+  "textSecondary": "#99f6e4",
+  "accentAH": "#2dd4bf",
+  "accentEI": "#34d399",
+  "border": "rgba(45, 212, 191, 0.2)",
+  "timelineLine": "rgba(52, 211, 153, 0.15)",
+  "markerColor": "#2dd4bf",
   "timelineBackground": [
-    "rgba(11, 16, 32, 0.55)",
-    "rgba(11, 16, 32, 0.25)"
+    "rgba(2, 44, 34, 0.6)",
+    "rgba(2, 44, 34, 0.3)"
   ],
   "timelineSecondaryBackground": [
-    "rgba(11, 16, 32, 0.7)",
-    "rgba(11, 16, 32, 0.4)"
+    "rgba(19, 78, 74, 0.7)",
+    "rgba(19, 78, 74, 0.4)"
   ],
-  "success": "#4CAF50",
+  "success": "#4ade80",
   "subtypeColors": {
-    "iv": "#4FC3F7",
-    "im": "#BA68C8",
-    "po": "#FFB74D",
-    "ivpo": "#81C784",
-    "vtrk": "#FACC15"
+    "iv": "#22d3ee",
+    "im": "#c084fc",
+    "po": "#facc15",
+    "ivpo": "#4ade80",
+    "vtrk": "#facc15"
   },
   "subtypePanel": {
-    "bg": "rgba(255, 255, 255, 0.06)",
-    "border": "rgba(255, 255, 255, 0.12)"
+    "bg": "rgba(255, 255, 255, 0.03)",
+    "border": "rgba(255, 255, 255, 0.08)"
   },
   "addButton": {
-    "bg": "rgba(255, 255, 255, 0.92)",
-    "text": "rgba(2, 6, 23, 0.92)",
-    "border": "rgba(255, 255, 255, 0.18)",
-    "glow": "#4CAF50"
+    "bg": "rgba(255, 255, 255, 0.95)",
+    "text": "#022c22",
+    "border": "rgba(255, 255, 255, 0.2)",
+    "glow": "#2dd4bf"
   },
   "gradientHeader": {
-    "start": "#7C4DFF",
-    "end": "#00E5FF",
-    "overlay": "rgba(0, 0, 0, 0.5)",
-    "textColor": "#FFFFFF"
+    "start": "#2dd4bf",
+    "end": "#34d399",
+    "overlay": "rgba(2, 44, 34, 0.6)",
+    "textColor": "#ffffff"
   }
 }

@@ -2,50 +2,50 @@
   "name": "abyss",
   "isDark": true,
   "backgroundGradient": [
-    "#0D1B2A",
-    "#1B263B"
+    "#020617",
+    "#0f172a"
   ],
   "cardBackground": [
-    "rgba(27, 38, 59, 0.95)",
-    "rgba(27, 38, 59, 0.75)"
+    "rgba(15, 23, 42, 0.85)",
+    "rgba(30, 41, 59, 0.5)"
   ],
-  "textPrimary": "#E0E1DD",
-  "textSecondary": "#A5A5A5",
-  "accentAH": "#415A77",
-  "accentEI": "#778DA9",
-  "border": "#415A77",
-  "timelineLine": "#1B263B",
-  "markerColor": "#415A77",
+  "textPrimary": "#f1f5f9",
+  "textSecondary": "#94a3b8",
+  "accentAH": "#0ea5e9",
+  "accentEI": "#6366f1",
+  "border": "rgba(56, 189, 248, 0.2)",
+  "timelineLine": "rgba(148, 163, 184, 0.15)",
+  "markerColor": "#38bdf8",
   "timelineBackground": [
-    "rgba(13, 27, 42, 0.55)",
-    "rgba(13, 27, 42, 0.25)"
+    "rgba(2, 6, 23, 0.6)",
+    "rgba(2, 6, 23, 0.3)"
   ],
   "timelineSecondaryBackground": [
-    "rgba(13, 27, 42, 0.7)",
-    "rgba(13, 27, 42, 0.4)"
+    "rgba(15, 23, 42, 0.7)",
+    "rgba(15, 23, 42, 0.4)"
   ],
-  "success": "#4CAF50",
+  "success": "#22c55e",
   "subtypeColors": {
-    "iv": "#38BDF8",
-    "im": "#A78BFA",
-    "po": "#FBBF24",
-    "ivpo": "#34D399",
-    "vtrk": "#FACC15"
+    "iv": "#0ea5e9",
+    "im": "#a855f7",
+    "po": "#eab308",
+    "ivpo": "#10b981",
+    "vtrk": "#f59e0b"
   },
   "subtypePanel": {
-    "bg": "rgba(255, 255, 255, 0.06)",
-    "border": "rgba(255, 255, 255, 0.12)"
+    "bg": "rgba(255, 255, 255, 0.03)",
+    "border": "rgba(255, 255, 255, 0.08)"
   },
   "addButton": {
-    "bg": "rgba(255, 255, 255, 0.92)",
-    "text": "rgba(2, 6, 23, 0.92)",
-    "border": "rgba(255, 255, 255, 0.18)",
-    "glow": "#4CAF50"
+    "bg": "rgba(255, 255, 255, 0.95)",
+    "text": "#020617",
+    "border": "rgba(255, 255, 255, 0.2)",
+    "glow": "#0ea5e9"
   },
   "gradientHeader": {
-    "start": "#415A77",
-    "end": "#778DA9",
-    "overlay": "rgba(0, 0, 0, 0.5)",
-    "textColor": "#FFFFFF"
+    "start": "#0ea5e9",
+    "end": "#6366f1",
+    "overlay": "rgba(2, 6, 23, 0.6)",
+    "textColor": "#ffffff"
   }
 }
