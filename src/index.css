@@ -3,81 +3,161 @@
 @tailwind utilities;
 
 :root {
-  --bg-gradient-start: #FFEFBA;
-  --bg-gradient-end: #FFFFFF;
-  --card-bg: rgba(255, 255, 255, 0.9);
-  --text-primary: #5D4037;
-  --text-secondary: #8D6E63;
-  --accent-ah: #FF8A65;
-  --accent-ei: #FFD54F;
-  --border: #D7CCC8;
-  --timeline-line: #E0E0E0;
-  --marker-color: #BDBDBD;
-  --success-color: #81C784;
-  --accent-primary: #FF7043;
+    --bg-gradient-start: #ffefba;
+    --bg-gradient-end: #ffffff;
+    --card-bg: rgba(255, 255, 255, 0.9);
+    --text-primary: #5d4037;
+    --text-secondary: #8d6e63;
+    --accent-ah: #ff8a65;
+    --accent-ei: #ffd54f;
+    --border: #d7ccc8;
+    --timeline-line: #e0e0e0;
+    --marker-color: #bdbdbd;
+    --success-color: #81c784;
+    --accent-primary: #ff7043;
 
-  /* Subtype colors for colored frames and glow effects */
-  --subtype-iv: #E53935;
-  --subtype-im: #1E88E5;
-  --subtype-po: #43A047;
-  --subtype-ivpo: #8E24AA;
-  --subtype-vtrk: #FB8C00;
+    /* Subtype colors for colored frames and glow effects */
+    --subtype-iv: #e53935;
+    --subtype-im: #1e88e5;
+    --subtype-po: #43a047;
+    --subtype-ivpo: #8e24aa;
+    --subtype-vtrk: #fb8c00;
 
-  /* Derived surfaces (set/overridden by theme in App.jsx) */
-  --surface: rgba(255, 255, 255, 0.96);
-  --surface-2: rgba(248, 250, 252, 0.98);
-  --surface-3: rgba(203, 213, 225, 0.5);
-  --shadow-color: rgba(15, 23, 42, 0.18);
-  --shadow-color-strong: rgba(15, 23, 42, 0.28);
-  --header-overlay: rgba(0, 0, 0, 0.62);
-  --action-bg: rgba(0, 0, 0, 0.86);
-  --action-border: rgba(255, 255, 255, 0.12);
+    /* Derived surfaces (set/overridden by theme in App.jsx) */
+    --surface: rgba(255, 255, 255, 0.96);
+    --surface-2: rgba(248, 250, 252, 0.98);
+    --surface-3: rgba(203, 213, 225, 0.5);
+    --shadow-color: rgba(15, 23, 42, 0.18);
+    --shadow-color-strong: rgba(15, 23, 42, 0.28);
+    --header-overlay: rgba(0, 0, 0, 0.62);
+    --action-bg: rgba(0, 0, 0, 0.86);
+    --action-border: rgba(255, 255, 255, 0.12);
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  overflow-y: auto; /* Allow page scroll */
-  overflow-x: hidden;
-  min-height: 100vh;
-  width: 100vw;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto; /* Allow page scroll */
+    overflow-x: hidden;
+    min-height: 100vh;
+    width: 100vw;
+    font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+        sans-serif;
 }
 
 #root {
-  height: 100%;
-  width: 100%;
+    height: 100%;
+    width: 100%;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
+    width: 4px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+    background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--marker-color);
-  border-radius: 10px;
+    background: var(--marker-color);
+    border-radius: 10px;
 }
 
 /* Utility-ish helpers (kept minimal; Tailwind still drives most styling) */
 .shadow-soft {
-  box-shadow: 0 12px 30px var(--shadow-color);
+    box-shadow: 0 12px 30px var(--shadow-color);
 }
 
 .shadow-soft-strong {
-  box-shadow: 0 18px 44px var(--shadow-color-strong);
+    box-shadow: 0 18px 44px var(--shadow-color-strong);
 }
 
+/* Animations */
 @keyframes slideIn {
-  from { transform: translateY(100%); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 .notification-enter {
-  animation: slideIn 0.3s ease-out forwards;
+    animation: slideIn 0.3s ease-out forwards;
 }
 
 .notification-exit {
-  animation: slideIn 0.3s ease-in reverse forwards;
+    animation: slideIn 0.3s ease-in reverse forwards;
+}
+
+/* Tailwind-animate style animations polyfill */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+@keyframes slideInBottom {
+    from {
+        transform: translateY(var(--slide-y, 20px));
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+@keyframes zoomIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.animate-in {
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    opacity: 0; /* Start hidden */
+}
+
+.fade-in {
+    animation-name: fadeIn;
+}
+.slide-in-from-bottom-4 {
+    --slide-y: 1rem;
+    animation-name: slideInBottom;
+}
+.slide-in-from-bottom-8 {
+    --slide-y: 2rem;
+    animation-name: slideInBottom;
+}
+.zoom-in {
+    animation-name: zoomIn;
+}
+
+.delay-100 {
+    animation-delay: 100ms;
+}
+.delay-200 {
+    animation-delay: 200ms;
+}
+.delay-300 {
+    animation-delay: 300ms;
+}
+.delay-400 {
+    animation-delay: 400ms;
+}
+.delay-500 {
+    animation-delay: 500ms;
+}
+.delay-700 {
+    animation-delay: 700ms;
 }

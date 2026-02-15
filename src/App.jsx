@@ -23,8 +23,6 @@ export default function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [selectedIntakeId, setSelectedIntakeId] = useState(null);
   const [activeIntake, setActiveIntake] = useState(null);
-  const [activeTimeSelection, setActiveTimeSelection] = useState(null);
-  const [selectedTimeMap, setSelectedTimeMap] = useState({});
   const [mobileCardIndex, setMobileCardIndex] = useState(0);
   const [showStatistics, setShowStatistics] = useState(false);
 
@@ -38,30 +36,11 @@ export default function App() {
     setActiveIntake(intake);
   };
 
-  const handleStartTimeSelection = (patientId) => {
-    setActiveTimeSelection(patientId);
-    setSelectedTimeMap((prev) => ({ ...prev, [patientId]: null }));
-  };
-
-  const handleCancelTimeSelection = (patientId) => {
-    setActiveTimeSelection((prev) => (prev === patientId ? null : prev));
-    setSelectedTimeMap((prev) => ({ ...prev, [patientId]: null }));
-  };
-
-  const handleResetTimeSelection = (patientId) => {
-    setSelectedTimeMap((prev) => ({ ...prev, [patientId]: null }));
-    setActiveTimeSelection((prev) => (prev === patientId ? null : prev));
-  };
-
-  const handleTimeSelected = (date) => {
-    if (!activeTimeSelection) return;
-    setSelectedTimeMap((prev) => ({ ...prev, [activeTimeSelection]: date }));
-  };
-
   useEffect(() => {
     const root = document.documentElement;
     const isDark = Boolean(currentTheme.isDark);
 
+    // Apply CSS Variables
     root.style.setProperty(
       "--bg-gradient-start",
       currentTheme.backgroundGradient[0],
@@ -224,6 +203,21 @@ export default function App() {
     );
 
     localStorage.setItem("theme", currentTheme.name);
+
+    // --- Dynamic Meta Theme Color for Android Status Bar ---
+    // We use the first color of the background gradient as the theme color
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute(
+        "content",
+        currentTheme.backgroundGradient[0],
+      );
+    } else {
+      const meta = document.createElement("meta");
+      meta.name = "theme-color";
+      meta.content = currentTheme.backgroundGradient[0];
+      document.head.appendChild(meta);
+    }
   }, [currentTheme]);
 
   return (
@@ -300,24 +294,8 @@ export default function App() {
           <>
             {/* Cards: desktop/tablet side-by-side */}
             <div className="hidden sm:flex gap-3">
-              <MedTrackerCard
-                title="AH"
-                onAddSuccess={setNotification}
-                isSelectingTime={activeTimeSelection === "AH"}
-                selectedTime={selectedTimeMap.AH}
-                onStartTimeSelection={handleStartTimeSelection}
-                onCancelTimeSelection={handleCancelTimeSelection}
-                onResetTimeSelection={handleResetTimeSelection}
-              />
-              <MedTrackerCard
-                title="EI"
-                onAddSuccess={setNotification}
-                isSelectingTime={activeTimeSelection === "EI"}
-                selectedTime={selectedTimeMap.EI}
-                onStartTimeSelection={handleStartTimeSelection}
-                onCancelTimeSelection={handleCancelTimeSelection}
-                onResetTimeSelection={handleResetTimeSelection}
-              />
+              <MedTrackerCard title="AH" onAddSuccess={setNotification} />
+              <MedTrackerCard title="EI" onAddSuccess={setNotification} />
             </div>
 
             {/* Cards: mobile carousel */}
@@ -347,26 +325,10 @@ export default function App() {
                   }}
                 >
                   <div className="min-w-full">
-                    <MedTrackerCard
-                      title="AH"
-                      onAddSuccess={setNotification}
-                      isSelectingTime={activeTimeSelection === "AH"}
-                      selectedTime={selectedTimeMap.AH}
-                      onStartTimeSelection={handleStartTimeSelection}
-                      onCancelTimeSelection={handleCancelTimeSelection}
-                      onResetTimeSelection={handleResetTimeSelection}
-                    />
+                    <MedTrackerCard title="AH" onAddSuccess={setNotification} />
                   </div>
                   <div className="min-w-full">
-                    <MedTrackerCard
-                      title="EI"
-                      onAddSuccess={setNotification}
-                      isSelectingTime={activeTimeSelection === "EI"}
-                      selectedTime={selectedTimeMap.EI}
-                      onStartTimeSelection={handleStartTimeSelection}
-                      onCancelTimeSelection={handleCancelTimeSelection}
-                      onResetTimeSelection={handleResetTimeSelection}
-                    />
+                    <MedTrackerCard title="EI" onAddSuccess={setNotification} />
                   </div>
                 </div>
               </div>
@@ -442,19 +404,12 @@ export default function App() {
               <h2 className="text-center text-xl font-black text-[var(--text-primary)] uppercase tracking-tight">
                 {timelineHeading}
               </h2>
-              {activeTimeSelection && (
-                <div className="text-center text-xs font-semibold text-[var(--text-secondary)] mb-2">
-                  Оберіть час на таймлайні
-                </div>
-              )}
               <TimelineHistory
                 onDayChange={(label) =>
                   setTimelineHeading(label || TIMELINE_TITLE_DEFAULT)
                 }
                 selectedId={selectedIntakeId}
                 onSelectIntake={handleSelectIntake}
-                isSelectingTime={Boolean(activeTimeSelection)}
-                onTimeSelected={handleTimeSelected}
               />
             </div>
           </>

@@ -2,8 +2,6 @@ import { useState, useEffect, useMemo } from "react";
 import {
   BarChart,
   Bar,
-  LineChart,
-  Line,
   PieChart,
   Pie,
   Cell,
@@ -24,7 +22,8 @@ import {
   FaPills,
   FaChartLine,
   FaClock,
-} from "react-icons/fa";
+  FaHourglassHalf,
+} from "react-icons/fa6";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
 
@@ -47,10 +46,49 @@ const formatTime = (hour) => {
   return `${String(hour).padStart(2, "0")}:00`;
 };
 
+const calculateIntervals = (intakes) => {
+  // intakes should be sorted descending (newest first)
+  // We need ascending for easier interval calc
+  const sorted = [...intakes].sort((a, b) => a.timestamp - b.timestamp);
+  let totalDiff = 0;
+  let count = 0;
+
+  for (let i = 1; i < sorted.length; i++) {
+    const diff = sorted[i].timestamp - sorted[i - 1].timestamp;
+    // Filter out huge gaps (e.g. > 24 hours) which might be missed days, or keep them?
+    // Let's keep simpler logic first: all intervals.
+    totalDiff += diff;
+    count++;
+  }
+
+  if (count === 0) return 0;
+  const avgMs = totalDiff / count;
+  const avgHours = avgMs / (1000 * 60 * 60);
+  return avgHours.toFixed(1);
+};
+
 const calculateStats = (intakes, daysToShow) => {
   if (!intakes.length) return null;
 
   const now = new Date();
+
+  // -- LAST 24H STATS --
+  const last24hStart = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+  const last24hIntakes = intakes.filter((i) => i.timestamp >= last24hStart);
+
+  const last24hStats = {
+    AH: { count: 0, mg: 0 },
+    EI: { count: 0, mg: 0 },
+    total: last24hIntakes.length,
+  };
+  last24hIntakes.forEach((i) => {
+    const pid = i.patientId || "AH";
+    const mg = convertToMg(parseFloat(i.dosage) || 0, i.unit || "mg");
+    last24hStats[pid].count++;
+    last24hStats[pid].mg += mg;
+  });
+
+  // -- MAIN RANGE STATS --
   const startDate = new Date(now);
   startDate.setDate(now.getDate() - daysToShow + 1);
   startDate.setHours(0, 0, 0, 0);
@@ -73,8 +111,22 @@ const calculateStats = (intakes, daysToShow) => {
     }));
 
   const patientStats = {
-    AH: { count: 0, mg: 0, subtypes: {}, maxDailyMg: 0, lastDose: null },
-    EI: { count: 0, mg: 0, subtypes: {}, maxDailyMg: 0, lastDose: null },
+    AH: {
+      count: 0,
+      mg: 0,
+      subtypes: {},
+      maxDailyMg: 0,
+      lastDose: null,
+      intervals: [],
+    },
+    EI: {
+      count: 0,
+      mg: 0,
+      subtypes: {},
+      maxDailyMg: 0,
+      lastDose: null,
+      intervals: [],
+    },
   };
 
   // Helper to init daily data
@@ -97,6 +149,7 @@ const calculateStats = (intakes, daysToShow) => {
     };
   }
 
+  // Process main filtered intakes
   filteredIntakes.forEach((intake) => {
     const date = intake.timestamp;
     const key = getDayKey(date);
@@ -124,7 +177,9 @@ const calculateStats = (intakes, daysToShow) => {
       patientStats[patientId].subtypes[subtype] =
         (patientStats[patientId].subtypes[subtype] || 0) + 1;
 
-      // Update last dose
+      patientStats[patientId].intervals.push(intake);
+
+      // Update last dose (global check from all filtered, but effectively latest is usually in range)
       if (
         !patientStats[patientId].lastDose ||
         date > patientStats[patientId].lastDose
@@ -147,8 +202,8 @@ const calculateStats = (intakes, daysToShow) => {
     });
   });
 
-  // Calculate Averages
-  const daysCount = Math.max(1, daysToShow); // Avoid division by zero, though daysToShow is usually >= 1
+  // Calculate Averages & Intervals
+  const daysCount = Math.max(1, daysToShow);
   ["AH", "EI"].forEach((pid) => {
     patientStats[pid].avgDailyMg = (patientStats[pid].mg / daysCount).toFixed(
       0,
@@ -156,6 +211,9 @@ const calculateStats = (intakes, daysToShow) => {
     patientStats[pid].avgDailyCount = (
       patientStats[pid].count / daysCount
     ).toFixed(1);
+    patientStats[pid].avgIntervalHours = calculateIntervals(
+      patientStats[pid].intervals,
+    );
   });
 
   // Format Subtype Data for Pie Charts
@@ -169,6 +227,7 @@ const calculateStats = (intakes, daysToShow) => {
     chartData,
     hourlyData,
     patientStats,
+    last24hStats,
     pieData: {
       AH: getPieData(patientStats.AH.subtypes),
       EI: getPieData(patientStats.EI.subtypes),
@@ -179,7 +238,7 @@ const calculateStats = (intakes, daysToShow) => {
 
 const StatCard = ({ title, value, subtext, icon: Icon, color, trend }) => (
   <div
-    className="rounded-2xl p-4 border border-[var(--border)] relative overflow-hidden group hover:scale-[1.02] transition-transform"
+    className="rounded-2xl p-4 border border-[var(--border)] relative overflow-hidden group hover:scale-[1.02] transition-transform animate-in fade-in zoom-in duration-300"
     style={{ background: "var(--surface)" }}
   >
     <div className="flex justify-between items-start mb-2">
@@ -274,7 +333,7 @@ export default function Statistics({ onBack }) {
   }
 
   return (
-    <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-10">
       {/* Header */}
       <div className="flex items-center justify-between sticky top-0 z-10 py-2 backdrop-blur-md bg-[var(--bg-gradient-start)]/80">
         <button
@@ -291,6 +350,7 @@ export default function Statistics({ onBack }) {
           onChange={(e) => setDateRange(e.target.value)}
           className="px-4 py-2 rounded-full border border-[var(--border)] text-[var(--text-primary)] text-sm font-bold bg-[var(--surface)] outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
         >
+          <option value="3">3 дні</option>
           <option value="7">7 днів</option>
           <option value="14">14 днів</option>
           <option value="30">30 днів</option>
@@ -298,8 +358,63 @@ export default function Statistics({ onBack }) {
         </select>
       </div>
 
+      {/* Last 24 Hours Section */}
+      <div className="rounded-3xl p-5 border border-[var(--border)] bg-gradient-to-br from-[var(--surface)] to-[var(--surface-2)] shadow-lg animate-in fade-in slide-in-from-bottom-8 duration-700">
+        <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-wide mb-4 flex items-center gap-2">
+          <FaClock className="text-[var(--accent-primary)]" /> Останні 24 години
+        </h3>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="p-4 rounded-2xl bg-[var(--surface)] border border-[var(--border)]">
+            <div className="text-xs font-bold text-[var(--text-secondary)] uppercase mb-2 text-center">
+              AH
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-2xl font-black text-[var(--accent-ah)]">
+                {stats.last24hStats.AH.mg.toFixed(0)}{" "}
+                <span className="text-xs font-medium text-[var(--text-secondary)]">
+                  мг
+                </span>
+              </span>
+              <span className="text-xs font-semibold text-[var(--text-secondary)] opacity-70">
+                {stats.last24hStats.AH.count} прийомів
+              </span>
+            </div>
+          </div>
+          <div className="p-4 rounded-2xl bg-[var(--surface)] border border-[var(--border)]">
+            <div className="text-xs font-bold text-[var(--text-secondary)] uppercase mb-2 text-center">
+              EI
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-2xl font-black text-[var(--accent-ei)]">
+                {stats.last24hStats.EI.mg.toFixed(0)}{" "}
+                <span className="text-xs font-medium text-[var(--text-secondary)]">
+                  мг
+                </span>
+              </span>
+              <span className="text-xs font-semibold text-[var(--text-secondary)] opacity-70">
+                {stats.last24hStats.EI.count} прийомів
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <StatCard
+          title="Середній інтервал AH"
+          value={`${stats.patientStats.AH.avgIntervalHours} год`}
+          subtext="Між прийомами"
+          icon={FaHourglassHalf}
+          color="var(--accent-ah)"
+        />
+        <StatCard
+          title="Середній інтервал EI"
+          value={`${stats.patientStats.EI.avgIntervalHours} год`}
+          subtext="Між прийомами"
+          icon={FaHourglassHalf}
+          color="var(--accent-ei)"
+        />
         <StatCard
           title="Загалом мг AH"
           value={Math.round(stats.patientStats.AH.mg)}
@@ -314,25 +429,11 @@ export default function Statistics({ onBack }) {
           icon={FaSyringe}
           color="var(--accent-ei)"
         />
-        <StatCard
-          title="Всього записів"
-          value={stats.patientStats.AH.count + stats.patientStats.EI.count}
-          subtext={`AH: ${stats.patientStats.AH.count} | EI: ${stats.patientStats.EI.count}`}
-          icon={FaPills}
-          color="var(--text-primary)"
-        />
-        <StatCard
-          title="Макс. доза/день"
-          value={`${stats.patientStats.AH.maxDailyMg} / ${stats.patientStats.EI.maxDailyMg}`}
-          subtext="AH / EI (мг)"
-          icon={FaChartLine}
-          color="#FF8042"
-        />
       </div>
 
       {/* Main Chart: Daily Mg */}
       <div
-        className="rounded-3xl p-5 border border-[var(--border)]"
+        className="rounded-3xl p-5 border border-[var(--border)] animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100"
         style={{ background: "var(--surface)" }}
       >
         <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-wide mb-6 flex items-center gap-2">
@@ -416,6 +517,7 @@ export default function Statistics({ onBack }) {
                 fillOpacity={1}
                 fill="url(#colorAH)"
                 strokeWidth={3}
+                animationDuration={1500}
               />
               <Area
                 type="monotone"
@@ -425,6 +527,7 @@ export default function Statistics({ onBack }) {
                 fillOpacity={1}
                 fill="url(#colorEI)"
                 strokeWidth={3}
+                animationDuration={1500}
               />
             </AreaChart>
           </ResponsiveContainer>
@@ -433,7 +536,7 @@ export default function Statistics({ onBack }) {
 
       {/* Hourly Distribution */}
       <div
-        className="rounded-3xl p-5 border border-[var(--border)]"
+        className="rounded-3xl p-5 border border-[var(--border)] animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200"
         style={{ background: "var(--surface)" }}
       >
         <h3 className="text-sm font-black text-[var(--text-primary)] uppercase tracking-wide mb-6 flex items-center gap-2">
@@ -483,6 +586,7 @@ export default function Statistics({ onBack }) {
                 stackId="a"
                 fill="var(--accent-ah)"
                 radius={[0, 0, 4, 4]}
+                animationDuration={1500}
               />
               <Bar
                 dataKey="EI"
@@ -490,6 +594,7 @@ export default function Statistics({ onBack }) {
                 stackId="a"
                 fill="var(--accent-ei)"
                 radius={[4, 4, 0, 0]}
+                animationDuration={1500}
               />
             </BarChart>
           </ResponsiveContainer>
@@ -498,10 +603,10 @@ export default function Statistics({ onBack }) {
 
       {/* Subtype Distribution */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {["AH", "EI"].map((pid) => (
+        {["AH", "EI"].map((pid, idx) => (
           <div
             key={pid}
-            className="rounded-3xl p-5 border border-[var(--border)]"
+            className={`rounded-3xl p-5 border border-[var(--border)] animate-in fade-in slide-in-from-bottom-8 duration-700 delay-${300 + idx * 100}`}
             style={{ background: "var(--surface)" }}
           >
             <h3
@@ -522,6 +627,7 @@ export default function Statistics({ onBack }) {
                     paddingAngle={2}
                     dataKey="value"
                     stroke="none"
+                    animationDuration={1500}
                   >
                     {stats.pieData[pid].map((entry, index) => (
                       <Cell
@@ -572,30 +678,6 @@ export default function Statistics({ onBack }) {
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Last Dose Info */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="rounded-2xl p-4 border border-[var(--border)] bg-[var(--surface)]">
-          <h4 className="text-xs font-bold text-[var(--text-secondary)] uppercase mb-1">
-            Останній прийом AH
-          </h4>
-          <div className="text-sm font-medium text-[var(--text-primary)]">
-            {stats.patientStats.AH.lastDose
-              ? stats.patientStats.AH.lastDose.toLocaleString("uk-UA")
-              : "Немає даних"}
-          </div>
-        </div>
-        <div className="rounded-2xl p-4 border border-[var(--border)] bg-[var(--surface)]">
-          <h4 className="text-xs font-bold text-[var(--text-secondary)] uppercase mb-1">
-            Останній прийом EI
-          </h4>
-          <div className="text-sm font-medium text-[var(--text-primary)]">
-            {stats.patientStats.EI.lastDose
-              ? stats.patientStats.EI.lastDose.toLocaleString("uk-UA")
-              : "Немає даних"}
-          </div>
-        </div>
       </div>
     </div>
   );
