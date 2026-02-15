@@ -257,7 +257,7 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
             value={zoomLevel}
             onChange={(e) => setZoomLevel(parseFloat(e.target.value))}
             className="px-3 py-1.5 rounded-lg text-xs font-bold bg-surface-2/50 border border-surface-3/50 outline-none cursor-pointer transition-all duration-200 hover:border-surface-3"
-            style={{ color: 'var(--add-btn-text)', background: var(--add-btn-bg), border-color: var(--add-btn-border),  minWidth: '70px' }}
+            style={{ color: 'var(--add-btn-text)', background: 'var(--add-btn-bg)', border-color: 'var(--add-btn-border)',  minWidth: '70px' }}
           >
             {ZOOM_LEVELS.map((level) => (
               <option key={level.value} value={level.value}>
