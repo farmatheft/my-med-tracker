@@ -23,7 +23,9 @@ const getComputedCssColor = (cssVar) => {
   if (typeof window === 'undefined') return null;
   try {
     const root = document.documentElement;
-    const computed = getComputedStyle(root).getPropertyValue(cssVar.replace('var(', '').replace(')', '')).trim();
+    const computed = getComputedStyle(root)
+      .getPropertyValue(cssVar.replace('var(', '').replace(')', ''))
+      .trim();
     return computed || null;
   } catch {
     return null;
@@ -33,13 +35,10 @@ const getComputedCssColor = (cssVar) => {
 const SubtypeSelector = ({ value, onChange, options }) => {
   return (
     <div
-      className="flex items-center gap-1.5 overflow-x-auto py-1.5 px-1 rounded-xl scrollbar-hide"
+      className="flex flex-wrap items-center gap-1 py-1.5 px-1 rounded-xl"
       style={{
         background: 'var(--subtype-panel-bg)',
         border: '1px solid var(--subtype-panel-border)',
-        WebkitOverflowScrolling: 'touch',
-        msOverflowStyle: 'none',
-        scrollbarWidth: 'none',
       }}
     >
       {options.map((option) => {
@@ -47,9 +46,9 @@ const SubtypeSelector = ({ value, onChange, options }) => {
         const Icon = option.icon;
         const cssColor = SUBTYPE_CSS_COLOR[option.value] || 'var(--text-secondary)';
         const computedHex = getComputedCssColor(cssColor);
-        const glow = computedHex ? `0 0 8px ${hexToRgba(computedHex, 0.3)}` : 'none';
+        const glow = computedHex ? `0 0 6px ${hexToRgba(computedHex, 0.25)}` : 'none';
         const chipBg = computedHex
-          ? `linear-gradient(135deg, ${hexToRgba(computedHex, 0.2)}, ${hexToRgba(computedHex, 0.06)})`
+          ? `linear-gradient(135deg, ${hexToRgba(computedHex, 0.18)}, ${hexToRgba(computedHex, 0.05)})`
           : 'var(--surface)';
 
         return (
@@ -57,21 +56,26 @@ const SubtypeSelector = ({ value, onChange, options }) => {
             key={option.value}
             type="button"
             onClick={() => onChange(option.value)}
-            className="flex items-center gap-1 px-2 py-1 rounded-lg transition-all whitespace-nowrap shrink-0"
+            className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-md transition-all whitespace-nowrap"
             style={
               isActive
-                ? { borderColor: cssColor, background: chipBg, boxShadow: glow, color: cssColor, border: `1px solid ${computedHex || 'var(--border)'}` }
+                ? {
+                  background: chipBg,
+                  boxShadow: glow,
+                  color: cssColor,
+                  border: `1px solid ${computedHex || 'var(--border)'}`,
+                }
                 : {
                   border: '1px solid transparent',
                   background: 'transparent',
                   color: 'var(--text-secondary)',
-                  opacity: 0.5,
+                  opacity: 0.45,
                 }
             }
           >
-            <Icon className="text-xs" />
+            <Icon className="text-[10px]" />
             {option.value === 'IV+PO' && <FaPills className="text-[7px]" />}
-            <span className="text-[10px] font-bold">{option.label}</span>
+            <span className="text-[9px] font-bold leading-none">{option.label}</span>
           </button>
         );
       })}

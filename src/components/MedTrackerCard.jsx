@@ -96,31 +96,23 @@ const MedTrackerCard = ({
       className="flex-1 relative rounded-3xl overflow-hidden transition-all duration-500"
       style={{
         background: 'linear-gradient(145deg, var(--card-bg-start), var(--card-bg-end))',
-        border: '1px solid rgba(255,255,255,0.08)',
-        boxShadow: '0 8px 32px var(--shadow-color), inset 0 1px 0 rgba(255,255,255,0.06)',
+        border: '1px solid var(--border)',
+        boxShadow: '0 8px 32px var(--shadow-color)',
       }}
     >
-      {/* Top shine line */}
-      <div
-        className="absolute top-0 left-0 right-0 h-px pointer-events-none"
-        style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)' }}
-      />
+      <div className={`flex min-h-[380px] sm:min-h-[420px] ${isAH ? 'flex-row' : 'flex-row-reverse'}`}>
 
-      {/* Card content — flex row with syringe + main content */}
-      <div className={`flex ${isAH ? 'flex-row' : 'flex-row-reverse'}`}>
-
-        {/* Syringe column — smaller 70px */}
-        <div className="relative overflow-hidden" style={{ width: '70px', minWidth: '70px' }}>
-          {/* Inner shadow for recessed 3D well effect */}
-          <div
-            className="absolute inset-0 z-10 pointer-events-none"
-            style={{
-              boxShadow: isAH
-                ? 'inset -15px 0 25px -8px rgba(0,0,0,0.35), inset 0 8px 15px -4px rgba(0,0,0,0.2), inset 0 -8px 15px -4px rgba(0,0,0,0.2)'
-                : 'inset 15px 0 25px -8px rgba(0,0,0,0.35), inset 0 8px 15px -4px rgba(0,0,0,0.2), inset 0 -8px 15px -4px rgba(0,0,0,0.2)',
-            }}
-          />
-          <div className="absolute inset-0" style={{ top: '-20px', bottom: '-40px' }}>
+        {/* Syringe column — compact 60px, no shadow */}
+        <div
+          className="relative overflow-hidden"
+          style={{
+            width: '60px',
+            minWidth: '60px',
+            borderRight: isAH ? '1px solid var(--border)' : 'none',
+            borderLeft: isAH ? 'none' : '1px solid var(--border)',
+          }}
+        >
+          <div className="absolute inset-0" style={{ top: '-10px', bottom: '-30px' }}>
             <SyringeSlider
               value={currentDosage}
               onChange={setCurrentDosage}
@@ -134,12 +126,12 @@ const MedTrackerCard = ({
         </div>
 
         {/* Main content */}
-        <div className="flex flex-col flex-1 min-w-0 p-4">
+        <div className="flex flex-col flex-1 min-w-0 p-3 sm:p-4">
 
-          {/* Title + unit toggle row */}
-          <div className="flex items-center justify-between mb-1">
+          {/* Row 1: Title + unit toggle */}
+          <div className="flex items-center justify-between mb-2">
             <h2
-              className="text-3xl font-black tracking-tighter leading-none"
+              className="text-2xl sm:text-3xl font-black tracking-tighter leading-none"
               style={{
                 background: isAH
                   ? 'linear-gradient(135deg, var(--accent-ah), var(--subtype-im))'
@@ -152,13 +144,13 @@ const MedTrackerCard = ({
             </h2>
             <div
               className="flex rounded-lg overflow-hidden"
-              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}
+              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid var(--border)' }}
             >
               {['mg', 'ml'].map((u) => (
                 <button
                   key={u}
                   onClick={() => handleUnitChange(u)}
-                  className="px-3 py-1 text-[10px] font-bold transition-all"
+                  className="px-2.5 py-0.5 text-[10px] font-bold transition-all"
                   style={{
                     background: unit === u ? 'rgba(255,255,255,0.15)' : 'transparent',
                     color: unit === u ? 'var(--text-primary)' : 'var(--text-secondary)',
@@ -170,69 +162,61 @@ const MedTrackerCard = ({
             </div>
           </div>
 
-          {/* Subtype selector — own row, compact horizontal, always visible */}
+          {/* Row 2: Subtype selector — always fully visible */}
           <SubtypeSelector
             value={subtype}
             onChange={setSubtype}
             options={SUBTYPE_OPTIONS}
           />
 
-          {/* Dosage display */}
-          <div className="flex-1 flex flex-col items-center justify-center py-3">
+          {/* Row 3: Dosage display + controls */}
+          <div className="flex-1 flex flex-col items-center justify-center py-2">
             <div className="relative">
               <span
-                className="text-5xl leading-none font-black tracking-tighter tabular-nums"
+                className="text-4xl sm:text-5xl leading-none font-black tracking-tighter tabular-nums"
                 style={{ color: 'var(--text-primary)' }}
               >
                 {currentDosage}
               </span>
               <span
-                className="absolute -top-2 -right-6 text-xs font-bold"
+                className="absolute -top-1.5 -right-5 text-[10px] font-bold"
                 style={{ color: 'var(--text-secondary)', opacity: 0.6 }}
               >
                 {UNIT_CONFIG[unit].label}
               </span>
             </div>
 
-            <div className="flex gap-3 mt-3">
-              <button
-                onClick={() => adjustDosage(-1)}
-                className="w-9 h-9 rounded-xl flex items-center justify-center text-lg font-black transition-all hover:scale-110 active:scale-90"
-                style={{
-                  background: 'rgba(255,255,255,0.06)',
-                  color: 'var(--text-primary)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                }}
-              >
-                −
-              </button>
-              <button
-                onClick={() => adjustDosage(1)}
-                className="w-9 h-9 rounded-xl flex items-center justify-center text-lg font-black transition-all hover:scale-110 active:scale-90"
-                style={{
-                  background: 'rgba(255,255,255,0.06)',
-                  color: 'var(--text-primary)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                }}
-              >
-                +
-              </button>
+            <div className="flex gap-2.5 mt-2.5">
+              {[{ d: -1, sym: '−' }, { d: 1, sym: '+' }].map(({ d, sym }) => (
+                <button
+                  key={d}
+                  onClick={() => adjustDosage(d)}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-base font-black transition-all hover:scale-110 active:scale-90"
+                  style={{
+                    background: 'rgba(255,255,255,0.06)',
+                    color: 'var(--text-primary)',
+                    border: '1px solid var(--border)',
+                  }}
+                >
+                  {sym}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Footer actions */}
-          <div className="mt-auto pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          {/* Row 4: Time + Add */}
+          <div className="mt-auto pt-2" style={{ borderTop: '1px solid var(--border)' }}>
             <button
               type="button"
               onClick={() => (isSelectingTime ? onCancelTimeSelection(title) : onStartTimeSelection(title))}
-              className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider mb-2 transition-all"
+              className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider mb-2 transition-all"
               style={{
                 background: isSelectingTime ? 'var(--accent-primary)' : 'rgba(255,255,255,0.04)',
                 color: isSelectingTime ? '#fff' : 'var(--text-secondary)',
-                border: isSelectingTime ? '1px solid var(--accent-primary)' : '1px solid rgba(255,255,255,0.08)',
+                border: isSelectingTime ? '1px solid var(--accent-primary)' : '1px solid var(--border)',
               }}
             >
-              <FaRegClock className="text-xs" />
+              <FaRegClock className="text-[10px]" />
               {isSelectingTime ? (selectedTime ? formatTime(selectedTime) : 'Now') : 'Time'}
             </button>
             <AddIntakeButton onClick={handleAddIntake} disabled={isAddDisabled} />
