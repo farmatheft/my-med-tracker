@@ -240,7 +240,9 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, isSelectingT
   return (
     <div className="flex flex-col h-full">
       {/* Zoom Controls */}
-      <div className="flex items-center justify-center gap-2 py-2 px-4 bg-surface-1/80 backdrop-blur-sm border-b border-surface-2/50">
+      <div className="flex items-center justify-center gap-2 py-2 px-4 bg-surface-1/80 backdrop-blur-sm border-b border-surface-2/50"
+        styte={{ 'border-color': 'var(--add-btn-border)' }}
+      >
         <button
           onClick={zoomOut}
           disabled={zoomLevel <= 0.5}
