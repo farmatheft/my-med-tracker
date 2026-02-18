@@ -697,6 +697,17 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake }) => {
                           >
                             {intake.unit}
                           </span>
+                          {intake.unit === "ml" && (
+                            <span
+                              className="text-[9px] font-bold ml-0.5"
+                              style={{
+                                color: "var(--text-secondary)",
+                                opacity: 0.5,
+                              }}
+                            >
+                              ~{(parseFloat(intake.dosage) * 20).toFixed(0)} mg
+                            </span>
+                          )}
                           <span
                             className="text-[10px] font-semibold"
                             style={{

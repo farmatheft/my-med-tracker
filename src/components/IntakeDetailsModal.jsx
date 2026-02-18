@@ -144,7 +144,19 @@ const IntakeDetailsModal = ({ intake, onClose }) => {
                 <button
                   key={type}
                   type="button"
-                  onClick={() => setUnit(type)}
+                  onClick={() => {
+                    if (unit === type) return;
+                    let newDosage = parseFloat(dosage) || 0;
+                    if (type === "mg") {
+                      // ml -> mg: * 20
+                      newDosage = Math.round(newDosage * 20);
+                    } else {
+                      // mg -> ml: / 20
+                      newDosage = Math.round((newDosage / 20) * 10) / 10;
+                    }
+                    setDosage(newDosage);
+                    setUnit(type);
+                  }}
                   className={`px-3 py-2 rounded-xl text-xs font-bold transition-all ${unit === type ? "text-white" : "bg-black/5 text-[var(--text-secondary)]"}`}
                   style={
                     unit === type ? { background: accentColor } : undefined

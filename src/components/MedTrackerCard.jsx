@@ -50,8 +50,23 @@ const MedTrackerCard = ({ title, onAddSuccess }) => {
                 : "var(--accent-ei)";
 
   const handleUnitChange = (newUnit) => {
+    if (newUnit === unit) return;
+
+    let newDosage = currentDosage;
+    if (newUnit === "mg") {
+      // ml -> mg: * 20
+      newDosage = Math.round(currentDosage * 20);
+    } else {
+      // mg -> ml: / 20
+      newDosage = Math.round((currentDosage / 20) * 10) / 10;
+    }
+
+    // Clamp to valid range for the new unit
+    const config = UNIT_CONFIG[newUnit];
+    newDosage = Math.min(Math.max(newDosage, config.min), config.max);
+
     setUnit(newUnit);
-    setCurrentDosage(UNIT_CONFIG[newUnit].default);
+    setCurrentDosage(newDosage);
   };
 
   const adjustDosage = (delta) => {
