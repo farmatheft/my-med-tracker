@@ -1,0 +1,38 @@
+{
+  "name": "cyberpunk-city",
+  "isDark": true,
+  "backgroundGradient": ["#0f172a", "#1e1b4b"],
+  "cardBackground": ["rgba(30, 41, 59, 0.9)", "rgba(15, 23, 42, 0.6)"],
+  "textPrimary": "#f1f5f9",
+  "textSecondary": "#94a3b8",
+  "accentAH": "#22d3ee",
+  "accentEI": "#d946ef",
+  "border": "rgba(34, 211, 238, 0.2)",
+  "timelineLine": "rgba(34, 211, 238, 0.15)",
+  "markerColor": "#22d3ee",
+  "timelineBackground": ["rgba(15, 23, 42, 0.6)", "rgba(15, 23, 42, 0.3)"],
+  "timelineSecondaryBackground": ["rgba(30, 41, 59, 0.7)", "rgba(30, 41, 59, 0.4)"],
+  "success": "#10b981",
+  "accentPrimary": "#22d3ee",
+  "gradientHeader": {
+    "overlay": "rgba(0, 0, 0, 0.5)",
+    "textColor": "#ffffff"
+  },
+  "subtypeColors": {
+    "iv": "#38bdf8",
+    "im": "#f472b6",
+    "po": "#fbbf24",
+    "ivpo": "#10b981",
+    "vtrk": "#fbbf24"
+  },
+  "subtypePanel": {
+    "bg": "rgba(255, 255, 255, 0.03)",
+    "border": "rgba(255, 255, 255, 0.08)"
+  },
+  "addButton": {
+    "bg": "#ffffff",
+    "text": "#0f172a",
+    "border": "rgba(255, 255, 255, 0.2)",
+    "glow": "#22d3ee"
+  }
+}

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Всі теми MedTracker</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #e2e8f0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        .theme-container {
+            background: white;
+            padding: 8px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .theme-title {
+            margin-bottom: 6px;
+            font-weight: 800;
+            font-size: 0.75rem;
+            text-align: center;
+            color: #1e293b;
+            text-transform: uppercase;
+        }
+        .preview-canvas {
+            aspect-ratio: 1 / 1.1;
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+        }
+        .cards-row {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 8px;
+            align-items: center;
+            width: 100%;
+            justify-content: center;
+        }
+        .card {
+            width: 55px;
+            height: 65px;
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid;
+            display: flex;
+            flex-direction: column;
+            padding: 4px;
+            box-sizing: border-box;
+        }
+        .card-header {
+            height: 10px;
+            width: 100%;
+            border-radius: 2px;
+            margin-bottom: 5px;
+        }
+        .card-text {
+            height: 2px;
+            width: 70%;
+            border-radius: 1px;
+            margin-bottom: 3px;
+        }
+        .card-button {
+            height: 12px;
+            width: 100%;
+            border-radius: 3px;
+            margin-top: auto;
+        }
+        .syringe {
+            width: 5px;
+            height: 40px;
+            border-radius: 2px;
+            border: 1px solid;
+        }
+        .timeline {
+            width: 120px;
+            height: 50px;
+            border-radius: 8px;
+            border: 1px solid;
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+        .timeline-axis {
+            width: 1px;
+            height: 100%;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .timeline-entry {
+            width: 20px;
+            height: 10px;
+            border-radius: 2px;
+            position: absolute;
+        }
+        .timeline-entry.left { right: 55%; top: 12px; }
+        .timeline-entry.right { left: 55%; top: 28px; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="module">
+        // Використовуємо Vite glob import для отримання всіх тем
+        const modules = import.meta.glob('./src/themes/*.json', { eager: true });
+        const themes = Object.values(modules).map(m => m.default);
+        const root = document.getElementById('root');
+
+        themes.forEach(t => {
+            const isDark = t.isDark;
+            const container = document.createElement('div');
+            container.className = 'theme-container';
+            container.innerHTML = `<div class="theme-title">${t.name}</div>`;
+            
+            const canvas = document.createElement('div');
+            canvas.className = 'preview-canvas';
+            canvas.style.background = `linear-gradient(135deg, ${t.backgroundGradient[0]}, ${t.backgroundGradient[1]})`;
+            
+            const cardsRow = document.createElement('div');
+            cardsRow.className = 'cards-row';
+            
+            const imColor = t.subtypeColors?.im || (isDark ? "#BA68C8" : "#a855f7");
+            const ivColor = t.subtypeColors?.iv || (isDark ? "#4FC3F7" : "#3b82f6");
+            const btnBg = t.addButton?.bg || (isDark ? "#FFFFFF" : (t.accentPrimary || t.accentAH));
+
+            cardsRow.innerHTML = `
+                <div class="syringe" style="background: ${imColor}; border-color: ${t.border}"></div>
+                <div class="card" style="background: linear-gradient(145deg, ${t.cardBackground[0]}, ${t.cardBackground[1]}); border-color: ${t.border}">
+                    <div class="card-header" style="background: ${t.accentAH}"></div>
+                    <div class="card-text" style="background: ${t.textPrimary}"></div>
+                    <div class="card-button" style="background: ${btnBg}"></div>
+                </div>
+                <div class="card" style="background: linear-gradient(145deg, ${t.cardBackground[0]}, ${t.cardBackground[1]}); border-color: ${t.border}">
+                    <div class="card-header" style="background: ${t.accentEI}"></div>
+                    <div class="card-text" style="background: ${t.textPrimary}"></div>
+                    <div class="card-button" style="background: ${btnBg}"></div>
+                </div>
+                <div class="syringe" style="background: ${ivColor}; border-color: ${t.border}"></div>
+            `;
+            
+            const timeline = document.createElement('div');
+            timeline.className = 'timeline';
+            timeline.style.background = `linear-gradient(135deg, ${t.timelineBackground[0]}, ${t.timelineBackground[1]})`;
+            timeline.style.borderColor = t.border;
+            timeline.innerHTML = `
+                <div class="timeline-axis" style="background: ${t.timelineLine}"></div>
+                <div class="timeline-entry left" style="background: ${t.accentAH}"></div>
+                <div class="timeline-entry right" style="background: ${t.accentEI}"></div>
+            `;
+            
+            canvas.appendChild(cardsRow);
+            canvas.appendChild(timeline);
+            container.appendChild(canvas);
+            document.body.appendChild(container);
+        });
+    </script>
+</body>
+</html>
