@@ -1,0 +1,26 @@
+{
+  "name": "rainbow-rush",
+  "isDark": false,
+  "backgroundGradient": ["#ff9a9e", "#fecfef"],
+  "cardBackground": ["rgba(255, 255, 255, 0.9)", "rgba(255, 235, 238, 0.8)"],
+  "textPrimary": "#db2777",
+  "textSecondary": "#be185d",
+  "accentAH": "#f472b6",
+  "accentEI": "#a78bfa",
+  "border": "rgba(244, 114, 182, 0.4)",
+  "timelineLine": "rgba(219, 39, 119, 0.3)",
+  "timelineBackground": ["rgba(255, 255, 255, 0.8)", "rgba(255, 240, 245, 0.6)"],
+  "subtypeColors": {
+    "iv": "#22d3ee",
+    "im": "#f472b6",
+    "po": "#facc15",
+    "ivpo": "#4ade80",
+    "vtrk": "#fb923c"
+  },
+  "addButton": {
+    "bg": "#f472b6",
+    "text": "#ffffff",
+    "border": "rgba(255, 255, 255, 0.4)",
+    "glow": "rgba(244, 114, 182, 0.6)"
+  }
+}

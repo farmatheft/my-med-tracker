@@ -1,0 +1,26 @@
+{
+  "name": "electric-day",
+  "isDark": false,
+  "backgroundGradient": ["#a7f3d0", "#67e8f9"],
+  "cardBackground": ["rgba(255, 255, 255, 0.9)", "rgba(204, 251, 241, 0.8)"],
+  "textPrimary": "#0f766e",
+  "textSecondary": "#0e7490",
+  "accentAH": "#2dd4bf",
+  "accentEI": "#22d3ee",
+  "border": "rgba(45, 212, 191, 0.4)",
+  "timelineLine": "rgba(13, 148, 136, 0.3)",
+  "timelineBackground": ["rgba(255, 255, 255, 0.8)", "rgba(204, 251, 241, 0.6)"],
+  "subtypeColors": {
+    "iv": "#06b6d4",
+    "im": "#14b8a6",
+    "po": "#facc15",
+    "ivpo": "#84cc16",
+    "vtrk": "#fbbf24"
+  },
+  "addButton": {
+    "bg": "#2dd4bf",
+    "text": "#ffffff",
+    "border": "rgba(255, 255, 255, 0.4)",
+    "glow": "rgba(45, 212, 191, 0.6)"
+  }
+}
