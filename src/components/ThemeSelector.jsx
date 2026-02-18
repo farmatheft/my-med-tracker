@@ -1,7 +1,15 @@
+import { useMemo } from "react";
+
 const ThemeSelector = ({ themes, currentTheme, onSelect }) => {
+  const sortedThemes = useMemo(() => {
+    const light = themes.filter((t) => !t.isDark).sort((a, b) => a.name.localeCompare(b.name));
+    const dark = themes.filter((t) => t.isDark).sort((a, b) => a.name.localeCompare(b.name));
+    return [...light, ...dark];
+  }, [themes]);
+
   return (
     <div className="grid grid-cols-2 gap-4">
-      {themes.map((theme) => {
+      {sortedThemes.map((theme) => {
         const isSelected = currentTheme.name === theme.name;
         const isDark = theme.isDark;
         
