@@ -9,13 +9,25 @@
   "accentEI": "#bef264",
   "border": "rgba(217, 70, 239, 0.5)",
   "timelineLine": "rgba(192, 38, 211, 0.4)",
+  "markerColor": "#d946ef",
   "timelineBackground": ["rgba(46, 2, 45, 0.8)", "rgba(74, 4, 78, 0.5)"],
+  "timelineSecondaryBackground": ["rgba(74, 4, 78, 0.9)", "rgba(46, 2, 45, 0.7)"],
+  "success": "#bef264",
+  "accentPrimary": "#d946ef",
+  "gradientHeader": {
+    "overlay": "rgba(0, 0, 0, 0.4)",
+    "textColor": "#f0abfc"
+  },
   "subtypeColors": {
     "iv": "#bef264",
     "im": "#d946ef",
     "po": "#fde047",
     "ivpo": "#67e8f9",
     "vtrk": "#f9a8d4"
+  },
+  "subtypePanel": {
+    "bg": "rgba(255, 255, 255, 0.05)",
+    "border": "rgba(255, 255, 255, 0.1)"
   },
   "addButton": {
     "bg": "#d946ef",
