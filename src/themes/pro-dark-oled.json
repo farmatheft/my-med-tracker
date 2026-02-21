@@ -1,0 +1,51 @@
+{
+  "name": "pro-dark-oled",
+  "isDark": true,
+  "backgroundGradient": [
+    "#000000",
+    "#000000"
+  ],
+  "cardBackground": [
+    "rgba(20, 20, 20, 0.9)",
+    "rgba(10, 10, 10, 0.9)"
+  ],
+  "textPrimary": "#ffffff",
+  "textSecondary": "#888888",
+  "accentAH": "#00f0ff",
+  "accentEI": "#ff003c",
+  "border": "rgba(50, 50, 50, 0.5)",
+  "timelineLine": "rgba(50, 50, 50, 0.5)",
+  "markerColor": "#333333",
+  "timelineBackground": [
+    "rgba(15, 15, 15, 0.8)",
+    "rgba(5, 5, 5, 0.8)"
+  ],
+  "timelineSecondaryBackground": [
+    "rgba(25, 25, 25, 0.8)",
+    "rgba(10, 10, 10, 0.8)"
+  ],
+  "success": "#00ff66",
+  "subtypeColors": {
+    "iv": "#00f0ff",
+    "im": "#bf00ff",
+    "po": "#ffb700",
+    "ivpo": "#00ff66",
+    "vtrk": "#ff003c"
+  },
+  "subtypePanel": {
+    "bg": "rgba(20, 20, 20, 0.8)",
+    "border": "rgba(60, 60, 60, 0.6)"
+  },
+  "addButton": {
+    "bg": "#ffffff",
+    "text": "#000000",
+    "border": "rgba(255, 255, 255, 0.2)",
+    "glow": "rgba(255, 255, 255, 0.3)"
+  },
+  "gradientHeader": {
+    "start": "#000000",
+    "end": "#000000",
+    "overlay": "rgba(0, 0, 0, 0.8)",
+    "textColor": "#ffffff"
+  }
+}

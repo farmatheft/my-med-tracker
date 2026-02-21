@@ -613,12 +613,15 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake }) => {
               {/* Intakes */}
               <div className="absolute inset-0 z-20">
                 {day.intakes.map((intake) => {
+                  const isNO = intake.patientId === "NO" || intake.subtype === "LOST";
                   const isAH = intake.patientId === "AH";
                   const isSelected = selectedId === intake.id;
                   const top = getTimeTop(intake.timestamp);
                   const subtype = intake.subtype;
 
-                  const bubbleBg = isAH
+                  const bubbleBg = isNO
+                    ? "transparent"
+                    : isAH
                     ? "color-mix(in srgb, var(--accent-ah) 9%, transparent)"
                     : "color-mix(in srgb, var(--accent-ei) 9%, transparent)";
 
@@ -626,8 +629,9 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake }) => {
                   const subtypeColor =
                     SUBTYPE_COLORS[subtype] || "var(--text-secondary)";
                   const subtypeGlow = SUBTYPE_GLOWS[subtype] || "none";
-                  const subtypeBorderColor =
-                    SUBTYPE_BORDER_COLORS[subtype] || "rgba(255,255,255,0.55)";
+                  const subtypeBorderColor = isNO 
+                    ? "rgba(255,255,255,0.15)"
+                    : SUBTYPE_BORDER_COLORS[subtype] || "rgba(255,255,255,0.55)";
 
                   return (
                     <div
@@ -637,46 +641,50 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake }) => {
                         onSelectIntake(isSelected ? null : intake);
                       }}
                       className={`absolute flex items-center transition-all duration-200 cursor-pointer ${
-                        // AH on left of left line, EI on right of right line
-                        !isAH
-                          ? "left-1/2 -ml-[9px] pr-5 justify-end"
-                          : "right-1/2 -mr-[9px] pl-5 justify-start"
-                      } ${selectedId && !isSelected ? "opacity-30" : "opacity-100"}`}
+                        // NO/LOST in center, AH on left of left line, EI on right of right line
+                        isNO
+                          ? "left-1/2 justify-center"
+                          : !isAH
+                            ? "left-1/2 -ml-[9px] pr-5 justify-end"
+                            : "right-1/2 -mr-[9px] pl-5 justify-start"
+                      } ${selectedId && !isSelected ? "opacity-30" : isNO ? "opacity-40 hover:opacity-70" : "opacity-100"}`}
                       style={{
                         top: `${top}px`,
-                        transform: "translateY(-50%)",
+                        transform: isNO ? "translate(-50%, -50%)" : "translateY(-50%)",
                         width: "10em",
+                        zIndex: isNO ? 5 : 10,
                       }}
                     >
                       {/* Connector dot with glow - positioned on the line */}
-                      <div
-                        className={`absolute w-3 h-3 rounded-full border-2 z-10 ${
-                          // AH dots on left line (right side of AH card, touching left vertical line)
-                          // EI dots on right line (left side of EI card, touching right vertical line)
-                          !isAH ? "left-[13px]" : "right-[11px]"
-                        }`}
-                        style={{
-                          background: subtype
-                            ? subtypeColor
-                            : "var(--text-secondary)",
-                          borderColor: subtype
-                            ? subtypeColor
-                            : "var(--text-secondary)",
-                          opacity: 1,
-                        }}
-                      />
+                      {!isNO && (
+                        <div
+                          className={`absolute w-3 h-3 rounded-full border-2 z-10 ${
+                            // AH dots on left line (right side of AH card, touching left vertical line)
+                            // EI dots on right line (left side of EI card, touching right vertical line)
+                            !isAH ? "left-[13px]" : "right-[11px]"
+                          }`}
+                          style={{
+                            background: subtype
+                              ? subtypeColor
+                              : "var(--text-secondary)",
+                            borderColor: subtype
+                              ? subtypeColor
+                              : "var(--text-secondary)",
+                            opacity: 1,
+                          }}
+                        />
+                      )}
                       {/* Colored Frame/Border for Subtype */}
 
                       <div
-                        className="px-3 py-2 rounded-2xl border relative"
+                        className="px-3 py-2 rounded-2xl border relative flex flex-col items-center min-w-[70px]"
                         style={{
                           background: bubbleBg,
-                          borderColor: subtype
-                            ? subtypeBorderColor
-                            : "rgba(255,255,255,0.55)",
+                          borderColor: subtypeBorderColor,
+                          borderStyle: isNO ? "dashed" : "solid",
                           boxShadow: isSelected
                             ? `0 18px 44px var(--shadow-color-strong), 0 0 20px var(--glow-light)`
-                            : "0 5px 22px var(--shadow-color), 0 0 10px var(--glow-dark)",
+                            : isNO ? "none" : "0 5px 22px var(--shadow-color), 0 0 10px var(--glow-dark)",
                           transform: isSelected ? "scale(1.09)" : "scale(1)",
                           backdropFilter: "blur(8px)",
                         }}
@@ -721,26 +729,26 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake }) => {
                           {subtype && (
                             <span
                               className={`absolute inline-flex items-center gap-1 px-1.5 py-0.5 text-[9px] font-black z-0 ${
-                                isAH
-                                  ? "left-[-2px] ml-[-17px] top-[-5px]"
-                                  : "right-[-2px] mr-[-10px] top-[-5px]"
+                                isNO
+                                  ? "top-[-8px] left-1/2 -translate-x-1/2"
+                                  : isAH
+                                    ? "left-[-2px] ml-[-17px] top-[-5px]"
+                                    : "right-[-2px] mr-[-10px] top-[-5px]"
                               }`}
                               style={{
-                                backgroundColor: subtypeColor,
-                                color: "white",
+                                backgroundColor: isNO ? "var(--text-secondary)" : subtypeColor,
+                                color: isNO ? "var(--surface)" : "white",
                                 opacity: 0.9,
                                 borderRadius: 100,
-                                transform:
-                                  isAH &&
-                                  (subtype == "IV+PO" || subtype == "VTRK")
+                                transform: isNO 
+                                  ? "none" 
+                                  : isAH && (subtype == "IV+PO" || subtype == "VTRK")
                                     ? "rotate(-45deg)"
-                                    : !isAH &&
-                                        (subtype == "IV+PO" ||
-                                          subtype == "VTRK")
+                                    : !isAH && (subtype == "IV+PO" || subtype == "VTRK")
                                       ? "rotate(45deg)"
                                       : "rotate(0deg)",
                                 boxShadow:
-                                  subtypeGlow !== "none"
+                                  subtypeGlow !== "none" && !isNO
                                     ? `0 0 10px ${subtypeColor}`
                                     : "none",
                               }}

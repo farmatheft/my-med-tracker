@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { GiWaterDrop } from "react-icons/gi";
-import { FaSyringe, FaPills, FaRegClock, FaCalendarAlt } from "react-icons/fa";
+import { FaSyringe, FaPills, FaRegClock, FaCalendarAlt, FaGhost } from "react-icons/fa";
 import { addDoc, collection, Timestamp } from "firebase/firestore";
 import { db } from "../firebase";
 import SyringeSlider from "./SyringeSlider";
@@ -19,6 +19,7 @@ const SUBTYPE_OPTIONS = [
   { value: "PO", label: "PO", icon: FaPills },
   { value: "IV+PO", label: "IV+PO", icon: GiWaterDrop },
   { value: "VTRK", label: "VTRK", icon: GiWaterDrop },
+  { value: "LOST", label: "LOST", icon: FaGhost },
 ];
 
 const getDefaultSubtype = (title) => {
@@ -79,16 +80,17 @@ const MedTrackerCard = ({ title, onAddSuccess }) => {
 
   const handleAddIntake = async () => {
     const intakeTimestamp = customTime || new Date();
+    const finalPatientId = subtype === "LOST" ? "NO" : title;
     try {
       await addDoc(collection(db, "intakes"), {
-        patientId: title,
+        patientId: finalPatientId,
         dosage: currentDosage,
         unit: unit,
         subtype: subtype || null,
         timestamp: Timestamp.fromDate(intakeTimestamp),
         createdAt: Timestamp.now(),
       });
-      onAddSuccess(`${title}: Додано ${currentDosage} ${unit}`);
+      onAddSuccess(`${finalPatientId}: Додано ${currentDosage} ${unit}${subtype === "LOST" ? " (LOST)" : ""}`);
       setCurrentDosage(0);
       setCustomTime(null); // Reset time
     } catch (e) {
@@ -100,7 +102,7 @@ const MedTrackerCard = ({ title, onAddSuccess }) => {
 
   return (
     <div
-      className="flex-1 relative rounded-3xl overflow-hidden transition-all duration-500"
+      className="flex-1 relative rounded-3xl overflow-hidden transition-all duration-500 backdrop-blur-xl hover:shadow-[0_12px_40px_rgba(0,0,0,0.3)] hover:-translate-y-1"
       style={{
         background:
           "linear-gradient(145deg, var(--card-bg-start), var(--card-bg-end))",

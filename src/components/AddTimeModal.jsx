@@ -14,11 +14,11 @@ const AddTimeModal = ({ initialDateTime, onSave, onClose, accentColor }) => {
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-start justify-center bg-black/50 backdrop-blur-sm px-4"
+      className="fixed inset-0 z-[60] flex items-start justify-center bg-black/50 backdrop-blur-md px-4 transition-all"
       onClick={onClose}
     >
       <div
-        className="relative mt-24 w-full max-w-[360px] rounded-3xl border border-[var(--border)] p-6 shadow-2xl"
+        className="relative mt-24 w-full max-w-[360px] rounded-[2rem] border border-[var(--border)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.4)] transition-transform animate-in zoom-in-95 duration-200"
         style={{
           background:
             "linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end))",

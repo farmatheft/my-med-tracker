@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { GiWaterDrop } from "react-icons/gi";
-import { FaSyringe, FaPills, FaTrash } from "react-icons/fa6";
+import { FaSyringe, FaPills, FaTrash, FaGhost } from "react-icons/fa6";
 import { deleteDoc, doc, Timestamp, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { formatDateInput, formatTimeInput } from "../utils/time";
@@ -21,6 +21,12 @@ const SUBTYPE_OPTIONS = [
     icon: GiWaterDrop,
     color: "var(--subtype-vtrk)",
   },
+  {
+    value: "LOST",
+    label: "LOST",
+    icon: FaGhost,
+    color: "var(--text-secondary)",
+  },
 ];
 
 const IntakeDetailsModal = ({ intake, onClose }) => {
@@ -35,13 +41,19 @@ const IntakeDetailsModal = ({ intake, onClose }) => {
 
   const handleSave = async () => {
     const nextDate = new Date(`${dateValue}T${timeValue}`);
-    await updateDoc(doc(db, "intakes", intake.id), {
+    const updates = {
       dosage: Number(dosage),
       unit,
       subtype: subtype || null,
       timestamp: Timestamp.fromDate(nextDate),
       updatedAt: Timestamp.now(),
-    });
+    };
+    
+    if (subtype === "LOST") {
+      updates.patientId = "NO";
+    }
+
+    await updateDoc(doc(db, "intakes", intake.id), updates);
     onClose();
   };
 
@@ -52,11 +64,11 @@ const IntakeDetailsModal = ({ intake, onClose }) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 backdrop-blur-md transition-all"
       onClick={onClose}
     >
       <div
-        className="relative mt-12 w-[min(92vw,520px)] max-h-[85vh] overflow-y-auto rounded-3xl border border-[var(--border)] p-5 shadow-2xl"
+        className="relative mt-12 w-[min(92vw,520px)] max-h-[85vh] overflow-y-auto rounded-[2rem] border border-[var(--border)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.4)] transition-transform animate-in zoom-in-95 duration-200"
         style={{
           background:
             "linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end))",
@@ -69,7 +81,7 @@ const IntakeDetailsModal = ({ intake, onClose }) => {
               Деталі запису
             </h3>
             <p className="text-xs font-semibold text-[var(--text-secondary)] mt-1">
-              {intake.patientId}
+              {intake.patientId === "NO" ? "Без пацієнта (LOST)" : intake.patientId}
             </p>
           </div>
           <button
@@ -87,7 +99,7 @@ const IntakeDetailsModal = ({ intake, onClose }) => {
             <label className="block text-xs font-bold text-[var(--text-secondary)] mb-2">
               Підтип
             </label>
-            <div className="grid grid-cols-5 gap-1.5">
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
               {SUBTYPE_OPTIONS.map((option) => {
                 const isActive = subtype === option.value;
                 const Icon = option.icon;

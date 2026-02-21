@@ -233,12 +233,38 @@ export default function App() {
 
   return (
     <div
-      className="h-screen w-screen overflow-y-auto overflow-x-hidden flex flex-col"
+      className="h-screen w-screen overflow-y-auto overflow-x-hidden flex flex-col relative"
       style={{
         background: `linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end))`,
         transition: "background 0.5s ease",
       }}
     >
+      {/* Background ambient light */}
+      <div 
+        className="absolute inset-0 pointer-events-none z-[-2]"
+        style={{
+          background: `
+            radial-gradient(circle at top right, var(--accent-ei) 0%, transparent 40%),
+            radial-gradient(circle at bottom left, var(--accent-ah) 0%, transparent 40%)
+          `,
+          opacity: currentTheme?.isDark ? 0.15 : 0.08,
+          mixBlendMode: currentTheme?.isDark ? 'screen' : 'normal'
+        }}
+      />
+      {/* Background noise grid */}
+      <div 
+        className="absolute inset-0 pointer-events-none z-[-1]"
+        style={{
+          background: `
+            linear-gradient(var(--text-primary) 1px, transparent 1px),
+            linear-gradient(90deg, var(--text-primary) 1px, transparent 1px)
+          `,
+          backgroundSize: '30px 30px',
+          opacity: currentTheme?.isDark ? 0.03 : 0.04,
+          mixBlendMode: currentTheme?.isDark ? 'screen' : 'multiply'
+        }}
+      />
+
       {notification && (
         <Notification
           message={notification}

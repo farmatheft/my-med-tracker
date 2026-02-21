@@ -5,7 +5,8 @@ const SUBTYPE_CSS_COLOR = {
   IM: 'var(--subtype-im)',
   PO: 'var(--subtype-po)',
   'IV+PO': 'var(--subtype-ivpo)',
-  VTRK: 'var(--subtype-vtrk)'
+  VTRK: 'var(--subtype-vtrk)',
+  LOST: 'var(--text-secondary)'
 };
 
 const hexToRgba = (hex, alpha) => {

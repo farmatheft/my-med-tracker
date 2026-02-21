@@ -90,7 +90,11 @@ const formatLastDose = (date) => {
   return `${diffDays} дн тому`;
 };
 
-const calculateStats = (intakes, daysToShow) => {
+const calculateStats = (rawIntakes, daysToShow) => {
+  if (!rawIntakes.length) return null;
+
+  // Filter out LOST records from all statistics
+  const intakes = rawIntakes.filter(i => i.patientId !== "NO" && i.subtype !== "LOST");
   if (!intakes.length) return null;
 
   const now = new Date();
