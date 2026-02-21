@@ -64,11 +64,11 @@ const IntakeDetailsModal = ({ intake, onClose }) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 backdrop-blur-md transition-all"
+      className="fixed inset-0 z-50 flex items-start justify-center bg-black/70 transition-all"
       onClick={onClose}
     >
       <div
-        className="relative mt-12 w-[min(92vw,520px)] max-h-[85vh] overflow-y-auto rounded-[2rem] border border-[var(--border)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.4)] transition-transform animate-in zoom-in-95 duration-200"
+        className="relative mt-12 w-[min(92vw,520px)] max-h-[85vh] overflow-y-auto rounded-[2rem] border border-[var(--border)] p-6 shadow-2xl transition-transform"
         style={{
           background:
             "linear-gradient(135deg, var(--card-bg-start), var(--card-bg-end))",
@@ -232,7 +232,7 @@ const IntakeDetailsModal = ({ intake, onClose }) => {
         </div>
 
         {showConfirm && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm rounded-3xl z-10">
+          <div className="absolute inset-0 flex items-center justify-center bg-black/80 rounded-[2rem] z-10">
             <div
               className="w-[min(80vw,320px)] rounded-2xl border border-[var(--border)] p-4 text-center shadow-2xl"
               style={{

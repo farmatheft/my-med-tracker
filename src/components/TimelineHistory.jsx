@@ -179,8 +179,8 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake }) => {
     <div className="flex flex-col h-full">
       {/* Zoom Controls */}
       <div
-        className="flex items-center justify-center gap-2 py-2 px-4 bg-surface-1/80 backdrop-blur-sm border-b border-surface-2/50"
-        style={{ borderColor: "var(--add-btn-border)" }}
+        className="flex items-center justify-center gap-2 py-2 px-4 border-b border-surface-2/50 relative z-30"
+        style={{ borderColor: "var(--add-btn-border)", background: "var(--surface)" }}
       >
         <button
           onClick={zoomOut}
@@ -686,7 +686,6 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake }) => {
                             ? `0 18px 44px var(--shadow-color-strong), 0 0 20px var(--glow-light)`
                             : isNO ? "none" : "0 5px 22px var(--shadow-color), 0 0 10px var(--glow-dark)",
                           transform: isSelected ? "scale(1.09)" : "scale(1)",
-                          backdropFilter: "blur(8px)",
                         }}
                       >
                         <div className="flex items-center gap-1">

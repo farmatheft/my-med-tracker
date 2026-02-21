@@ -102,7 +102,7 @@ const MedTrackerCard = ({ title, onAddSuccess }) => {
 
   return (
     <div
-      className="flex-1 relative rounded-3xl overflow-hidden transition-all duration-500 backdrop-blur-xl hover:shadow-[0_12px_40px_rgba(0,0,0,0.3)] hover:-translate-y-1"
+      className="flex-1 relative rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-[0_12px_40px_rgba(0,0,0,0.3)] hover:-translate-y-1"
       style={{
         background:
           "linear-gradient(145deg, var(--card-bg-start), var(--card-bg-end))",

@@ -8,12 +8,11 @@ const Notification = ({ message, onClose }) => {
 
   return (
     <div
-      className="fixed bottom-10 left-1/2 -translate-x-1/2 px-5 py-3.5 rounded-2xl z-[100] notification-enter border"
+      className="fixed bottom-10 left-1/2 -translate-x-1/2 px-5 py-3.5 rounded-2xl z-[100] notification-enter border shadow-xl"
       style={{
         background: 'var(--action-bg)',
         color: 'var(--text-primary)',
         borderColor: 'var(--action-border)',
-        backdropFilter: 'blur(20px)',
         boxShadow: '0 8px 32px var(--shadow-color-strong), 0 0 0 1px var(--action-border)',
         minWidth: '180px',
         maxWidth: '90vw',
