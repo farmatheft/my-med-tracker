@@ -146,7 +146,7 @@ export default function IntakePanel({ onAddSuccess }) {
           accentVar="var(--accent-ah)"
           side="right"
           onActivate={() => setActivePatient("AH")}
-          onChange={(v) => isAHActive && patchState("AH", { dosage: v })}
+          onChange={(v) => { if (!isAHActive) setActivePatient("AH"); patchState("AH", { dosage: v }); }}
         />
 
         {/* ── CENTER CONTROLS ── */}
@@ -264,7 +264,7 @@ export default function IntakePanel({ onAddSuccess }) {
           accentVar="var(--accent-ei)"
           side="left"
           onActivate={() => setActivePatient("EI")}
-          onChange={(v) => !isAHActive && patchState("EI", { dosage: v })}
+          onChange={(v) => { if (isAHActive) setActivePatient("EI"); patchState("EI", { dosage: v }); }}
         />
       </div>
 
@@ -323,7 +323,7 @@ function PatientEdgeLabel({ label, side, isActive, accentVar, onClick }) {
 
 /* ─── Syringe column ──────────────────────────────────────────────────────── */
 function SyringeColumn({ patient, state, isActive, accentVar, side, onActivate, onChange }) {
-  const color = isActive ? getActiveColor(state.subtype, patient) : "var(--text-secondary)";
+  const color = getActiveColor(state.subtype, patient);
 
   return (
     <div
@@ -335,11 +335,9 @@ function SyringeColumn({ patient, state, isActive, accentVar, side, onActivate, 
         paddingRight: side === "left"  ? 18 : 0,
         borderRight: side === "right" ? "1px solid var(--border)" : "none",
         borderLeft:  side === "left"  ? "1px solid var(--border)" : "none",
-        opacity:    isActive ? 1 : 0.38,
+        opacity:    isActive ? 1 : 0.5,
         transition: "opacity 0.35s ease",
-        cursor:     isActive ? "default" : "pointer",
       }}
-      onClick={!isActive ? onActivate : undefined}
     >
       <div className="flex-1 relative" style={{ minHeight: 280 }}>
         <div className="absolute inset-0" style={{ top: -10, bottom: -20 }}>
