@@ -1,0 +1,39 @@
+{
+  "name": "[$] nordic-frost",
+  "isDark": false,
+  "isPremium": true,
+  "backgroundGradient": ["#f0f8ff", "#e8f4fd"],
+  "cardBackground": ["rgba(248,252,255,0.95)", "rgba(240,248,255,0.88)"],
+  "textPrimary": "#0a1628",
+  "textSecondary": "#2563eb",
+  "accentAH": "#3b82f6",
+  "accentEI": "#0ea5e9",
+  "border": "rgba(59,130,246,0.18)",
+  "timelineLine": "rgba(14,165,233,0.12)",
+  "markerColor": "#3b82f6",
+  "timelineBackground": ["rgba(240,248,255,0.82)", "rgba(232,244,253,0.66)"],
+  "timelineSecondaryBackground": ["rgba(248,252,255,0.94)", "rgba(244,250,255,0.78)"],
+  "success": "#10b981",
+  "subtypeColors": {
+    "iv": "#3b82f6",
+    "im": "#0ea5e9",
+    "po": "#6366f1",
+    "ivpo": "#38bdf8",
+    "vtrk": "#a5b4fc"
+  },
+  "subtypePanel": {
+    "bg": "rgba(59,130,246,0.05)",
+    "border": "rgba(59,130,246,0.15)"
+  },
+  "addButton": {
+    "bg": "linear-gradient(135deg,#1d4ed8,#3b82f6,#93c5fd)",
+    "text": "#ffffff",
+    "border": "rgba(59,130,246,0.35)",
+    "glow": "rgba(59,130,246,0.28)"
+  },
+  "gradientHeader": {
+    "overlay": "rgba(255,255,255,0.28)",
+    "textColor": "#ffffff"
+  },
+  "premiumTexture": "snowflake-grid"
+}

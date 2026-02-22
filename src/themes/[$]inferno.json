@@ -1,0 +1,39 @@
+{
+  "name": "[$] inferno",
+  "isDark": true,
+  "isPremium": true,
+  "backgroundGradient": ["#0f0200", "#1f0800"],
+  "cardBackground": ["rgba(25,6,0,0.97)", "rgba(16,3,0,0.91)"],
+  "textPrimary": "#fff0e0",
+  "textSecondary": "#c8601a",
+  "accentAH": "#ff6b00",
+  "accentEI": "#ff3c00",
+  "border": "rgba(255,107,0,0.22)",
+  "timelineLine": "rgba(255,60,0,0.14)",
+  "markerColor": "#ff6b00",
+  "timelineBackground": ["rgba(15,2,0,0.90)", "rgba(8,1,0,0.74)"],
+  "timelineSecondaryBackground": ["rgba(25,6,0,0.76)", "rgba(18,4,0,0.58)"],
+  "success": "#4ade80",
+  "subtypeColors": {
+    "iv": "#ff6b00",
+    "im": "#ff3c00",
+    "po": "#ffb700",
+    "ivpo": "#ff8c00",
+    "vtrk": "#ffd700"
+  },
+  "subtypePanel": {
+    "bg": "rgba(255,107,0,0.07)",
+    "border": "rgba(255,107,0,0.20)"
+  },
+  "addButton": {
+    "bg": "linear-gradient(135deg,#ff3c00,#ff6b00,#ffb700)",
+    "text": "#0f0200",
+    "border": "rgba(255,107,0,0.45)",
+    "glow": "#ff6b00"
+  },
+  "gradientHeader": {
+    "overlay": "rgba(0,0,0,0.60)",
+    "textColor": "#fff0e0"
+  },
+  "premiumTexture": "ember-sparks"
+}

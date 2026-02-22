@@ -1,0 +1,39 @@
+{
+  "name": "[$] lavender-cloud",
+  "isDark": false,
+  "isPremium": true,
+  "backgroundGradient": ["#faf5ff", "#f3e8ff"],
+  "cardBackground": ["rgba(250,245,255,0.95)", "rgba(243,232,255,0.88)"],
+  "textPrimary": "#1e0a3c",
+  "textSecondary": "#7c3aed",
+  "accentAH": "#8b5cf6",
+  "accentEI": "#6d28d9",
+  "border": "rgba(139,92,246,0.18)",
+  "timelineLine": "rgba(109,40,217,0.12)",
+  "markerColor": "#8b5cf6",
+  "timelineBackground": ["rgba(250,245,255,0.82)", "rgba(243,232,255,0.66)"],
+  "timelineSecondaryBackground": ["rgba(253,250,255,0.94)", "rgba(248,242,255,0.78)"],
+  "success": "#10b981",
+  "subtypeColors": {
+    "iv": "#8b5cf6",
+    "im": "#6d28d9",
+    "po": "#ec4899",
+    "ivpo": "#a78bfa",
+    "vtrk": "#c084fc"
+  },
+  "subtypePanel": {
+    "bg": "rgba(139,92,246,0.05)",
+    "border": "rgba(139,92,246,0.15)"
+  },
+  "addButton": {
+    "bg": "linear-gradient(135deg,#6d28d9,#8b5cf6,#c4b5fd)",
+    "text": "#ffffff",
+    "border": "rgba(139,92,246,0.35)",
+    "glow": "rgba(139,92,246,0.28)"
+  },
+  "gradientHeader": {
+    "overlay": "rgba(255,255,255,0.28)",
+    "textColor": "#ffffff"
+  },
+  "premiumTexture": "crystal-grid"
+}

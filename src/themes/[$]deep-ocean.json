@@ -1,0 +1,39 @@
+{
+  "name": "[$] deep-ocean",
+  "isDark": true,
+  "isPremium": true,
+  "backgroundGradient": ["#010d1f", "#002244"],
+  "cardBackground": ["rgba(0,18,48,0.96)", "rgba(0,10,30,0.91)"],
+  "textPrimary": "#d4eeff",
+  "textSecondary": "#4a90c4",
+  "accentAH": "#00b4d8",
+  "accentEI": "#0077b6",
+  "border": "rgba(0,180,216,0.20)",
+  "timelineLine": "rgba(0,119,182,0.15)",
+  "markerColor": "#00b4d8",
+  "timelineBackground": ["rgba(1,13,31,0.90)", "rgba(0,8,20,0.75)"],
+  "timelineSecondaryBackground": ["rgba(0,18,48,0.75)", "rgba(0,12,32,0.58)"],
+  "success": "#22d3ee",
+  "subtypeColors": {
+    "iv": "#00b4d8",
+    "im": "#0077b6",
+    "po": "#38bdf8",
+    "ivpo": "#06b6d4",
+    "vtrk": "#67e8f9"
+  },
+  "subtypePanel": {
+    "bg": "rgba(0,180,216,0.07)",
+    "border": "rgba(0,180,216,0.18)"
+  },
+  "addButton": {
+    "bg": "linear-gradient(135deg,#0077b6,#00b4d8,#90e0ef)",
+    "text": "#010d1f",
+    "border": "rgba(0,180,216,0.45)",
+    "glow": "#00b4d8"
+  },
+  "gradientHeader": {
+    "overlay": "rgba(0,0,0,0.58)",
+    "textColor": "#d4eeff"
+  },
+  "premiumTexture": "ocean-waves"
+}

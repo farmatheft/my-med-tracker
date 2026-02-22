@@ -502,6 +502,34 @@ const PREMIUM_TEXTURE_CSS = {
     `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpolygon points='30%2C4 56%2C18 56%2C42 30%2C56 4%2C42 4%2C18' fill='none' stroke='rgba(0%2C102%2C255%2C0.08)' stroke-width='0.8'/%3E%3Cpolygon points='30%2C14 46%2C23 46%2C37 30%2C46 14%2C37 14%2C23' fill='none' stroke='rgba(0%2C170%2C255%2C0.05)' stroke-width='0.6'/%3E%3Cline x1='30' y1='4' x2='30' y2='56' stroke='rgba(0%2C102%2C255%2C0.04)' stroke-width='0.5'/%3E%3Cline x1='4' y1='30' x2='56' y2='30' stroke='rgba(0%2C102%2C255%2C0.04)' stroke-width='0.5'/%3E%3C/svg%3E")`,
   "linen-weave":
     `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cline x1='0' y1='0' x2='12' y2='0' stroke='rgba(200%2C134%2C10%2C0.12)' stroke-width='0.8'/%3E%3Cline x1='0' y1='4' x2='12' y2='4' stroke='rgba(200%2C134%2C10%2C0.07)' stroke-width='0.5'/%3E%3Cline x1='0' y1='8' x2='12' y2='8' stroke='rgba(200%2C134%2C10%2C0.09)' stroke-width='0.6'/%3E%3Cline x1='0' y1='0' x2='0' y2='12' stroke='rgba(200%2C134%2C10%2C0.1)' stroke-width='0.7'/%3E%3Cline x1='4' y1='0' x2='4' y2='12' stroke='rgba(200%2C134%2C10%2C0.05)' stroke-width='0.4'/%3E%3Cline x1='8' y1='0' x2='8' y2='12' stroke='rgba(200%2C134%2C10%2C0.07)' stroke-width='0.5'/%3E%3C/svg%3E")`,
+
+  // ── new premium textures ──────────────────────────────────────────────────
+  "velvet-dots":
+    `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Ccircle cx='10' cy='10' r='1.2' fill='rgba(192%2C132%2C252%2C0.12)'/%3E%3Ccircle cx='0' cy='0' r='0.8' fill='rgba(232%2C121%2C249%2C0.08)'/%3E%3Ccircle cx='20' cy='0' r='0.8' fill='rgba(232%2C121%2C249%2C0.08)'/%3E%3Ccircle cx='0' cy='20' r='0.8' fill='rgba(192%2C132%2C252%2C0.08)'/%3E%3Ccircle cx='20' cy='20' r='0.8' fill='rgba(192%2C132%2C252%2C0.08)'/%3E%3C/svg%3E")`,
+
+  "ocean-waves":
+    `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='40'%3E%3Cpath d='M0 20 Q12.5 10 25 20 Q37.5 30 50 20 Q62.5 10 75 20 Q87.5 30 100 20' fill='none' stroke='rgba(0%2C180%2C216%2C0.10)' stroke-width='1.2'/%3E%3Cpath d='M0 30 Q12.5 20 25 30 Q37.5 40 50 30 Q62.5 20 75 30 Q87.5 40 100 30' fill='none' stroke='rgba(0%2C119%2C182%2C0.07)' stroke-width='0.9'/%3E%3Cpath d='M0 10 Q12.5 0 25 10 Q37.5 20 50 10 Q62.5 0 75 10 Q87.5 20 100 10' fill='none' stroke='rgba(0%2C180%2C216%2C0.06)' stroke-width='0.7'/%3E%3C/svg%3E")`,
+
+  "matrix-rain":
+    `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='40'%3E%3Ctext x='2' y='14' font-size='9' fill='rgba(0%2C255%2C65%2C0.13)' font-family='monospace'%3E1%3C/text%3E%3Ctext x='2' y='28' font-size='9' fill='rgba(0%2C255%2C65%2C0.08)' font-family='monospace'%3E0%3C/text%3E%3Ctext x='11' y='20' font-size='9' fill='rgba(57%2C255%2C20%2C0.09)' font-family='monospace'%3E1%3C/text%3E%3Ctext x='11' y='36' font-size='9' fill='rgba(0%2C255%2C65%2C0.06)' font-family='monospace'%3E0%3C/text%3E%3C/svg%3E")`,
+
+  "ember-sparks":
+    `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ccircle cx='8' cy='8' r='0.9' fill='rgba(255%2C107%2C0%2C0.18)'/%3E%3Ccircle cx='28' cy='14' r='1.2' fill='rgba(255%2C60%2C0%2C0.12)'/%3E%3Ccircle cx='16' cy='28' r='0.7' fill='rgba(255%2C183%2C0%2C0.15)'/%3E%3Ccircle cx='36' cy='32' r='1.0' fill='rgba(255%2C107%2C0%2C0.10)'/%3E%3Ccircle cx='4' cy='36' r='0.6' fill='rgba(255%2C60%2C0%2C0.13)'/%3E%3Ccircle cx='22' cy='4' r='0.8' fill='rgba(255%2C183%2C0%2C0.10)'/%3E%3C/svg%3E")`,
+
+  "stardust":
+    `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='6' cy='6' r='0.7' fill='rgba(129%2C140%2C248%2C0.22)'/%3E%3Ccircle cx='30' cy='12' r='1.1' fill='rgba(167%2C139%2C250%2C0.16)'/%3E%3Ccircle cx='52' cy='8' r='0.6' fill='rgba(192%2C132%2C252%2C0.18)'/%3E%3Ccircle cx='18' cy='30' r='0.9' fill='rgba(129%2C140%2C248%2C0.14)'/%3E%3Ccircle cx='46' cy='26' r='0.7' fill='rgba(244%2C114%2C182%2C0.16)'/%3E%3Ccircle cx='10' cy='50' r='1.0' fill='rgba(167%2C139%2C250%2C0.12)'/%3E%3Ccircle cx='40' cy='48' r='0.6' fill='rgba(232%2C121%2C249%2C0.14)'/%3E%3Ccircle cx='56' cy='44' r='0.8' fill='rgba(129%2C140%2C248%2C0.18)'/%3E%3C/svg%3E")`,
+
+  "hammered-metal":
+    `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cellipse cx='8' cy='8' rx='4' ry='3' fill='none' stroke='rgba(217%2C119%2C6%2C0.12)' stroke-width='0.6'/%3E%3Cellipse cx='24' cy='8' rx='3' ry='4' fill='none' stroke='rgba(180%2C83%2C9%2C0.09)' stroke-width='0.5'/%3E%3Cellipse cx='8' cy='24' rx='5' ry='3' fill='none' stroke='rgba(217%2C119%2C6%2C0.10)' stroke-width='0.6'/%3E%3Cellipse cx='24' cy='24' rx='3' ry='5' fill='none' stroke='rgba(180%2C83%2C9%2C0.10)' stroke-width='0.5'/%3E%3Cellipse cx='16' cy='16' rx='4' ry='4' fill='none' stroke='rgba(251%2C191%2C36%2C0.08)' stroke-width='0.5'/%3E%3C/svg%3E")`,
+
+  "candy-bubbles":
+    `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50'%3E%3Ccircle cx='12' cy='12' r='5' fill='none' stroke='rgba(217%2C70%2C239%2C0.10)' stroke-width='0.8'/%3E%3Ccircle cx='38' cy='18' r='7' fill='none' stroke='rgba(236%2C72%2C153%2C0.08)' stroke-width='0.7'/%3E%3Ccircle cx='20' cy='38' r='4' fill='none' stroke='rgba(217%2C70%2C239%2C0.12)' stroke-width='0.6'/%3E%3Ccircle cx='42' cy='40' r='6' fill='none' stroke='rgba(192%2C132%2C252%2C0.08)' stroke-width='0.7'/%3E%3Ccircle cx='6' cy='36' r='3' fill='none' stroke='rgba(236%2C72%2C153%2C0.10)' stroke-width='0.5'/%3E%3C/svg%3E")`,
+
+  "coral-dots":
+    `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Ccircle cx='6' cy='6' r='1.8' fill='rgba(249%2C115%2C22%2C0.12)'/%3E%3Ccircle cx='18' cy='6' r='1.2' fill='rgba(239%2C68%2C68%2C0.09)'/%3E%3Ccircle cx='6' cy='18' r='1.2' fill='rgba(251%2C191%2C36%2C0.10)'/%3E%3Ccircle cx='18' cy='18' r='1.8' fill='rgba(249%2C115%2C22%2C0.10)'/%3E%3Ccircle cx='12' cy='12' r='0.8' fill='rgba(239%2C68%2C68%2C0.08)'/%3E%3C/svg%3E")`,
+
+  "snowflake-grid":
+    `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cline x1='24' y1='4' x2='24' y2='44' stroke='rgba(59%2C130%2C246%2C0.09)' stroke-width='0.7'/%3E%3Cline x1='4' y1='24' x2='44' y2='24' stroke='rgba(59%2C130%2C246%2C0.09)' stroke-width='0.7'/%3E%3Cline x1='9' y1='9' x2='39' y2='39' stroke='rgba(14%2C165%2C233%2C0.06)' stroke-width='0.5'/%3E%3Cline x1='39' y1='9' x2='9' y2='39' stroke='rgba(14%2C165%2C233%2C0.06)' stroke-width='0.5'/%3E%3Ccircle cx='24' cy='24' r='2' fill='none' stroke='rgba(59%2C130%2C246%2C0.10)' stroke-width='0.6'/%3E%3Ccircle cx='24' cy='24' r='6' fill='none' stroke='rgba(59%2C130%2C246%2C0.06)' stroke-width='0.5'/%3E%3C/svg%3E")`,
 };
 
 function PremiumTextureOverlay({ textureKey, isDark }) {
