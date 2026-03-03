@@ -3,7 +3,7 @@ import { GiWaterDrop } from "react-icons/gi";
 import { FaSyringe, FaPills, FaRegClock, FaCalendarAlt, FaGhost } from "react-icons/fa";
 import { addDoc, collection, Timestamp } from "firebase/firestore";
 import { db } from "../firebase";
-import SyringeSlider from "./SyringeSlider";
+import SyringeSlider from "syringe-slider";
 import AddIntakeButton from "./AddIntakeButton";
 import SubtypeSelector from "./SubtypeSelector";
 import AddTimeModal from "./AddTimeModal";
@@ -102,7 +102,7 @@ const MedTrackerCard = ({ title, onAddSuccess }) => {
 
   return (
     <div
-      className="flex-1 relative rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-[0_12px_40px_rgba(0,0,0,0.3)] hover:-translate-y-1"
+      className="flex-1 relative rounded-3xl transition-all duration-500 hover:shadow-[0_12px_40px_rgba(0,0,0,0.3)] hover:-translate-y-1"
       style={{
         background:
           "linear-gradient(145deg, var(--card-bg-start), var(--card-bg-end))",
@@ -111,30 +111,38 @@ const MedTrackerCard = ({ title, onAddSuccess }) => {
       }}
     >
       <div
-        className={`flex min-h-[380px] sm:min-h-[420px] ${isAH ? "flex-row" : "flex-row-reverse"}`}
+        className={`flex min-h-[380px] sm:min-h-[420px] rounded-3xl overflow-hidden ${isAH ? "flex-row" : "flex-row-reverse"}`}
       >
-        {/* Syringe column — compact 60px, no shadow */}
+        {/* Syringe column — wider for 2x size, plunger rod overflows upward */}
         <div
-          className="relative overflow-hidden"
+          className="relative flex-shrink-0 self-stretch"
           style={{
-            width: "60px",
-            minWidth: "60px",
+            width: "120px",
             borderRight: isAH ? "1px solid var(--border)" : "none",
             borderLeft: isAH ? "none" : "1px solid var(--border)",
+            overflow: "visible",
+            zIndex: 10,
           }}
         >
           <div
-            className="absolute inset-0"
-            style={{ top: "-10px", bottom: "-30px" }}
+            style={{
+              position: "absolute",
+              inset: 0,
+              top: "-60px",
+              bottom: 0,
+              overflow: "visible",
+            }}
           >
             <SyringeSlider
               value={currentDosage}
-              onChange={setCurrentDosage}
-              min={UNIT_CONFIG[unit].min}
+              onChange={(v) => {
+                const step = UNIT_CONFIG[unit].step;
+                const precision = step < 1 ? Math.round(1 / step) : 1;
+                setCurrentDosage(Math.round(v * precision) / precision);
+              }}
               max={UNIT_CONFIG[unit].max}
-              step={UNIT_CONFIG[unit].step}
-              color={activeColor}
-              side={isAH ? "right" : "left"}
+              stepSize={UNIT_CONFIG[unit].step}
+              liquidColor={activeColor}
             />
           </div>
         </div>

@@ -3,7 +3,7 @@ import { GiWaterDrop } from "react-icons/gi";
 import { FaSyringe, FaPills, FaGhost } from "react-icons/fa";
 import { addDoc, collection, Timestamp, query, orderBy, limit, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
-import SyringeSlider from "./SyringeSlider";
+import SyringeSlider from "syringe-slider";
 import SubtypeSelector from "./SubtypeSelector";
 import { formatDateInput, formatTimeInput } from "../utils/time";
 
@@ -144,7 +144,7 @@ export default function IntakePanel({ onAddSuccess }) {
 
   return (
     <div
-      className="relative rounded-3xl overflow-hidden"
+      className="relative rounded-3xl"
       style={{
         background: "var(--surface-2)",
         backdropFilter: "blur(32px)",
@@ -241,7 +241,7 @@ export default function IntakePanel({ onAddSuccess }) {
       </div>
 
       {/* ── BODY ── */}
-      <div className="relative flex items-stretch" style={{ minHeight: 310 }}>
+      <div className="relative flex items-stretch" style={{ minHeight: 340, overflow: "visible" }}>
 
         {/* LEFT SYRINGE: AH */}
         <SyringeColumn
@@ -563,31 +563,39 @@ function SyringeColumn({ patient, state, isActive, accentVar, side, onActivate, 
     <div
       className="relative flex-shrink-0 flex flex-col"
       style={{
-        width: 64,
-        paddingLeft:  side === "right" ? 20 : 0,
-        paddingRight: side === "left"  ? 20 : 0,
+        width: 120,
         borderRight: side === "right" ? "1px solid var(--glass-border)" : "none",
         borderLeft:  side === "left"  ? "1px solid var(--glass-border)" : "none",
         opacity:    isActive ? 1 : 0.35,
         transition: "opacity 0.4s ease",
-        // Subtle column tint when active
+        overflow: "visible",
+        zIndex: 10,
         background: isActive
           ? `linear-gradient(${side === "right" ? "to right" : "to left"}, color-mix(in srgb, ${accentVar} 8%, transparent), transparent)`
           : "transparent",
       }}
     >
-      <div className="flex-1 relative" style={{ minHeight: 280 }}>
-        <div className="absolute inset-0" style={{ top: -10, bottom: -20 }}>
-          <SyringeSlider
-            value={state.dosage}
-            onChange={onChange}
-            min={UNIT_CONFIG[state.unit].min}
-            max={UNIT_CONFIG[state.unit].max}
-            step={UNIT_CONFIG[state.unit].step}
-            color={color}
-            side={side}
-          />
-        </div>
+      {/* Wrapper allows plunger rod to overflow upward above the panel */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          top: "-60px",
+          bottom: 0,
+          overflow: "visible",
+        }}
+      >
+        <SyringeSlider
+          value={state.dosage}
+          onChange={(v) => {
+            const step = UNIT_CONFIG[state.unit].step;
+            const precision = step < 1 ? Math.round(1 / step) : 1;
+            onChange(Math.round(v * precision) / precision);
+          }}
+          max={UNIT_CONFIG[state.unit].max}
+          stepSize={UNIT_CONFIG[state.unit].step}
+          liquidColor={color}
+        />
       </div>
     </div>
   );
