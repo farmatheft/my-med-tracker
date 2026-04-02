@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="pillGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60A5FA" />
+      <stop offset="100%" stop-color="#3B82F6" />
+    </linearGradient>
+    <linearGradient id="pillGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C084FC" />
+      <stop offset="100%" stop-color="#9333EA" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#9333EA" flood-opacity="0.25" />
+    </filter>
+  </defs>
+  
+  <g transform="translate(128, 128) rotate(45) translate(-128, -128)" filter="url(#shadow)">
+    <!-- Bottom/Right Half -->
+    <path d="M128 64 h32 a64 64 0 0 1 0 128 h-32 v-128 z" fill="url(#pillGrad2)" />
+    <!-- Top/Left Half -->
+    <path d="M128 64 h-32 a64 64 0 0 0 0 128 h32 v-128 z" fill="url(#pillGrad1)" />
+    <!-- Center Line -->
+    <line x1="128" y1="64" x2="128" y2="192" stroke="rgba(255, 255, 255, 0.4)" stroke-width="4" />
+    
+    <!-- Cross on the left half -->
+    <path d="M76 128 h24 M88 116 v24" stroke="white" stroke-width="8" stroke-linecap="round" />
+    
+    <!-- Light Reflection -->
+    <path d="M112 76 c -10 0 -20 5 -26 14" stroke="rgba(255,255,255,0.6)" stroke-width="6" stroke-linecap="round" fill="none" />
+  </g>
+</svg>

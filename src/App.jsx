@@ -359,16 +359,19 @@ export default function App() {
 
           {/* Center: page title */}
           <div className="flex flex-col items-center select-none">
-            <span
-              className="text-[10px] font-black uppercase tracking-[0.22em] leading-none"
-              style={{ color: "var(--text-primary)", opacity: 0.9 }}
-            >
-              {activeView === VIEW.MAIN
-                ? "Med Tracker"
-                : activeView === VIEW.STATISTICS
-                  ? "Statistics"
-                  : "Theme"}
-            </span>
+            <div className="flex items-center gap-1.5 mb-1 pointer-events-none">
+              <img src="/logo.svg" alt="Logo" className="w-4 h-4" style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.15))" }} />
+              <span
+                className="text-[10px] font-black uppercase tracking-[0.22em] leading-none mt-[2px]"
+                style={{ color: "var(--text-primary)", opacity: 0.9 }}
+              >
+                {activeView === VIEW.MAIN
+                  ? "Med Tracker"
+                  : activeView === VIEW.STATISTICS
+                    ? "Statistics"
+                    : "Theme"}
+              </span>
+            </div>
             {/* Accent dot row */}
             <div className="flex gap-1 mt-1">
               <div
