@@ -84,7 +84,7 @@ const IntakeDetailsModal = ({ intake, onClose }) => {
             <div className="flex items-center gap-1.5 mt-1">
               <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full"
                 style={{ color: accentColor, background: `color-mix(in srgb, ${accentColor} 12%, transparent)` }}>
-                {intake.patientId}
+                {intake.patientId === "AH" ? "P1" : "P2"}
               </span>
               <span className="text-[10px] font-bold" style={{ color: "var(--text-secondary)" }}>PO</span>
             </div>
@@ -119,7 +119,7 @@ const IntakeDetailsModal = ({ intake, onClose }) => {
             mg={pills10}
             step="×1"
             onMinus={() => setPills10((v) => Math.max(0, v - PILL10_STEP))}
-            onPlus={() => setPills10((v) => v + PILL10_STEP)}
+            onPlus={() => setPills10((v) => Math.max(0, Math.min(200 - pills25, v + PILL10_STEP)))}
             accent={accentColor}
             pillType="10"
           />
@@ -131,7 +131,7 @@ const IntakeDetailsModal = ({ intake, onClose }) => {
             mg={pills25}
             step="×½"
             onMinus={() => setPills25((v) => Math.max(0, v - PILL25_STEP))}
-            onPlus={() => setPills25((v) => v + PILL25_STEP)}
+            onPlus={() => setPills25((v) => Math.max(0, Math.min(200 - pills10, v + PILL25_STEP)))}
             accent={accentColor}
             pillType="25"
           />

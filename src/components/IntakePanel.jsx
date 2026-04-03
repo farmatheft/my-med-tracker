@@ -49,12 +49,12 @@ export default function IntakePanel({ onAddSuccess, disabled = false }) {
 
   /* ── Adjust helpers ─────────────────────────────────────────────────── */
   const adjust25 = (delta) => {
-    const next = Math.max(0, st.pills25 + delta * PILL25_STEP);
+    const next = Math.max(0, Math.min(200 - st.pills10, st.pills25 + delta * PILL25_STEP));
     patchState(activePatient, { pills25: next });
   };
 
   const adjust10 = (delta) => {
-    const next = Math.max(0, st.pills10 + delta * PILL10_STEP);
+    const next = Math.max(0, Math.min(200 - st.pills25, st.pills10 + delta * PILL10_STEP));
     patchState(activePatient, { pills10: next });
   };
 
@@ -173,7 +173,7 @@ export default function IntakePanel({ onAddSuccess, disabled = false }) {
                 style={{ background: accent, opacity: isActive ? 1 : 0, boxShadow: isActive ? `0 0 8px ${accent}` : "none" }} />
               <span className="text-[11px] font-black tracking-[0.18em] uppercase leading-none"
                 style={{ opacity: isActive ? 1 : 0.35, textShadow: isActive ? `0 0 12px ${accent}88` : "none" }}>
-                {id}
+                {id === "AH" ? "P1" : id === "EI" ? "P2" : id}
               </span>
               <span className="text-[9px] font-bold mt-0.5 tabular-nums"
                 style={{ color: isActive ? accent : "var(--text-secondary)", opacity: isActive ? 0.85 : 0.25 }}>
@@ -230,7 +230,7 @@ export default function IntakePanel({ onAddSuccess, disabled = false }) {
                     color: "var(--accent-ah)",
                     background: isAH ? "color-mix(in srgb, var(--accent-ah) 12%, transparent)" : "transparent",
                     border: isAH ? "1px solid color-mix(in srgb, var(--accent-ah) 25%, transparent)" : "1px solid transparent",
-                  }}>AH</span>
+                  }}>P1</span>
               </div>
             </div>
 
@@ -301,7 +301,7 @@ export default function IntakePanel({ onAddSuccess, disabled = false }) {
                     color: "var(--accent-ei)",
                     background: !isAH ? "color-mix(in srgb, var(--accent-ei) 12%, transparent)" : "transparent",
                     border: !isAH ? "1px solid color-mix(in srgb, var(--accent-ei) 25%, transparent)" : "1px solid transparent",
-                  }}>EI</span>
+                  }}>P2</span>
               </div>
             </div>
           </div>
@@ -352,7 +352,7 @@ export default function IntakePanel({ onAddSuccess, disabled = false }) {
                   border: `1.5px solid color-mix(in srgb, ${accentColor} 40%, transparent)`,
                   color: accentColor,
                 }}>
-                {activePatient}
+                {activePatient === "AH" ? "P1" : "P2"}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="text-lg font-black tracking-tighter leading-none" style={{ color: "var(--text-primary)" }}>

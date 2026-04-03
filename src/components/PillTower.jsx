@@ -64,14 +64,35 @@ export default function PillTower({
   const uid = useMemo(() => `pt-${Math.random().toString(36).slice(2, 8)}`, []);
 
   return (
-    <div className={`w-full h-full flex items-end justify-center overflow-visible ${className}`}>
+    <div className={`relative w-full h-full flex items-end justify-center rounded-3xl ${className}`}
+      style={{
+        background: `linear-gradient(180deg, var(--surface-2) 0%, color-mix(in srgb, ${accentColor} 10%, var(--surface-2)) 100%)`,
+        border: `1px solid color-mix(in srgb, ${accentColor} 25%, transparent)`,
+        boxShadow: `0 4px 12px var(--shadow-color), inset 0 1px 2px color-mix(in srgb, ${accentColor} 20%, transparent)`,
+        overflow: "hidden"
+      }}
+    >
+      {/* Texture overlay */}
+      <div className="absolute inset-0 rounded-3xl pointer-events-none"
+        style={{
+          backgroundImage: "var(--premium-texture-key)",
+          backgroundRepeat: "repeat",
+          opacity: 0.4,
+          mixBlendMode: "overlay"
+        }} />
+        
+      {/* Glow from bottom */}
+      <div className="absolute bottom-0 inset-x-0 h-10 pointer-events-none"
+           style={{ background: `linear-gradient(0deg, color-mix(in srgb, ${accentColor} 15%, transparent), transparent)` }} />
+
       <svg
         viewBox={`0 0 ${vWidth} ${vHeight}`}
-        className="w-full"
+        className="w-full relative z-10"
         style={{
-          maxHeight: "100%",
+          maxHeight: "90%",
+          paddingBottom: "8px",
           overflow: "visible",
-          filter: `drop-shadow(0 4px 10px color-mix(in srgb, ${accentColor} 20%, transparent))`,
+          filter: floors.length > 0 ? `drop-shadow(0 8px 12px color-mix(in srgb, ${accentColor} 40%, transparent))` : "none",
         }}
       >
         <defs>
@@ -171,8 +192,13 @@ export default function PillTower({
         </g>
 
         {floors.length === 0 && (
-          <text x={vWidth / 2} y={vHeight / 2} textAnchor="middle" dominantBaseline="middle"
-            fill="var(--text-secondary)" fontSize="10" opacity="0.35" fontWeight="700">0</text>
+          <ellipse
+            cx={vWidth / 2} cy={vHeight - 20}
+            rx={PILL_RX * 0.9} ry={PILL_RY * 0.9}
+            fill="var(--shadow-color-strong)"
+            opacity="0.4"
+            style={{ filter: "blur(2px)" }}
+          />
         )}
       </svg>
     </div>

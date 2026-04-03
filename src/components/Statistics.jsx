@@ -278,6 +278,8 @@ const calculateStats = (rawIntakes, daysToShow) => {
       lastDose: null,
       intervals: [],
       maxSingleDoseMg: 0,
+      pills10: 0,
+      pills25: 0,
     },
     EI: {
       count: 0,
@@ -287,6 +289,8 @@ const calculateStats = (rawIntakes, daysToShow) => {
       lastDose: null,
       intervals: [],
       maxSingleDoseMg: 0,
+      pills10: 0,
+      pills25: 0,
     },
   };
 
@@ -344,6 +348,9 @@ const calculateStats = (rawIntakes, daysToShow) => {
     if (patientStats[patientId]) {
       patientStats[patientId].count += 1;
       patientStats[patientId].mg += mg;
+      if (intake.pills10mg) patientStats[patientId].pills10 += intake.pills10mg / 10;
+      if (intake.pills25mg) patientStats[patientId].pills25 += intake.pills25mg / 25;
+      
       patientStats[patientId].subtypes[subtype] =
         (patientStats[patientId].subtypes[subtype] || 0) + 1;
       patientStats[patientId].intervals.push(intake);
@@ -676,7 +683,7 @@ export default function Statistics({ onBack }) {
       {/* Summary Stats Grid — row 1: intervals */}
       <div className="grid grid-cols-2 gap-3">
         <StatCard
-          title="Середній інтервал AH"
+          title="Середній інтервал P1"
           value={
             patientStats.AH.avgIntervalHours != null
               ? `${patientStats.AH.avgIntervalHours} год`
@@ -691,7 +698,7 @@ export default function Statistics({ onBack }) {
           color="var(--accent-ah)"
         />
         <StatCard
-          title="Середній інтервал EI"
+          title="Середній інтервал P2"
           value={
             patientStats.EI.avgIntervalHours != null
               ? `${patientStats.EI.avgIntervalHours} год`
@@ -706,16 +713,16 @@ export default function Statistics({ onBack }) {
           color="var(--accent-ei)"
         />
         <StatCard
-          title="Загалом мг AH"
+          title="Загалом мг P1"
           value={Math.round(patientStats.AH.mg)}
-          subtext={`~${patientStats.AH.avgDailyMg} мг/день · макс разова ${Math.round(patientStats.AH.maxSingleDoseMg)} мг`}
+          subtext={patientStats.AH.pills10 > 0 || patientStats.AH.pills25 > 0 ? `Таблетки: ${patientStats.AH.pills10}x 10мг, ${patientStats.AH.pills25}x 25мг` : `~${patientStats.AH.avgDailyMg} мг/день`}
           icon={FaSyringe}
           color="var(--accent-ah)"
         />
         <StatCard
-          title="Загалом мг EI"
+          title="Загалом мг P2"
           value={Math.round(patientStats.EI.mg)}
-          subtext={`~${patientStats.EI.avgDailyMg} мг/день · макс разова ${Math.round(patientStats.EI.maxSingleDoseMg)} мг`}
+          subtext={patientStats.EI.pills10 > 0 || patientStats.EI.pills25 > 0 ? `Таблетки: ${patientStats.EI.pills10}x 10мг, ${patientStats.EI.pills25}x 25мг` : `~${patientStats.EI.avgDailyMg} мг/день`}
           icon={FaDroplet}
           color="var(--accent-ei)"
         />
@@ -738,14 +745,14 @@ export default function Statistics({ onBack }) {
           color="var(--accent-primary)"
         />
         <StatCard
-          title="Прийомів/день AH"
+          title="Прийомів/день P1"
           value={patientStats.AH.avgDailyCount}
           subtext={`Макс добова ${Math.round(patientStats.AH.maxDailyMg)} мг`}
           icon={FaBullseye}
           color="var(--accent-ah)"
         />
         <StatCard
-          title="Прийомів/день EI"
+          title="Прийомів/день P2"
           value={patientStats.EI.avgDailyCount}
           subtext={`Макс добова ${Math.round(patientStats.EI.maxDailyMg)} мг`}
           icon={FaBullseye}

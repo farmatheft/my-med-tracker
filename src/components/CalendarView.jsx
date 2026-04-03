@@ -351,13 +351,13 @@ const CalendarView = ({ onMonthChange, scrollToNextMonth, scrollToPrevMonth }) =
                   ) : (
                     <div style={{ animation: "calFadeIn 0.18s ease both" }} className="flex flex-col items-center">
                       <span className="text-[9px] font-black text-center leading-tight" style={{ color: "var(--accent-ah)" }}>
-                        AH&thinsp;{stats.ahMg}&thinsp;mg
+                        P1&thinsp;{stats.ahMg}&thinsp;mg
                       </span>
                       <span className="text-[8px] font-semibold text-center" style={{ color: "var(--accent-ah)", opacity: 0.65 }}>
                         {stats.ahCount}&thinsp;пр.
                       </span>
                       <span className="text-[9px] font-black text-center leading-tight mt-0.5" style={{ color: "var(--accent-ei)" }}>
-                        EI&thinsp;{stats.eiMg}&thinsp;mg
+                        P2&thinsp;{stats.eiMg}&thinsp;mg
                       </span>
                       <span className="text-[8px] font-semibold text-center" style={{ color: "var(--accent-ei)", opacity: 0.65 }}>
                         {stats.eiCount}&thinsp;пр.

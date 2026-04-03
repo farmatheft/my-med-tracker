@@ -533,7 +533,8 @@ export default function App() {
         {/* MAIN VIEW */}
         {activeView === VIEW.MAIN && (
           <div className="flex flex-col gap-4 flex-grow page-enter-left pt-1">
-            {!isPanic && <BankProgress />}
+            {/* BankProgress is temporarily hidden per user request */}
+            {/* {!isPanic && <BankProgress />} */}
             {/* Unified intake panel — works on all screen sizes */}
             <IntakePanel onAddSuccess={setNotification} disabled={isPanic} />
 
