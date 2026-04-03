@@ -7,7 +7,10 @@ import TimelineHistory from "./components/TimelineHistory";
 import CalendarView from "./components/CalendarView";
 import Statistics from "./components/Statistics";
 import BankProgress from "./components/BankProgress";
+import PinLock from "./components/PinLock";
 import { TIMELINE_TITLE_DEFAULT } from "./utils/time";
+
+const AUTO_LOCK_MS = 60_000; // 1 minute
 
 // --- THEME LOADING ---
 const themeModules = import.meta.glob("./themes/*.json", { eager: true });
@@ -200,6 +203,42 @@ export default function App() {
   const [selectedIntakeId, setSelectedIntakeId] = useState(null);
   const [activeIntake, setActiveIntake] = useState(null);
 
+  // ── PIN lock state ──────────────────────────────────────────────────────
+  const [isLocked, setIsLocked] = useState(true); // always locked on mount
+  const [isPanic, setIsPanic] = useState(false);   // panic mode (5050)
+  const autoLockTimer = useRef(null);
+
+  const resetAutoLock = useCallback(() => {
+    if (autoLockTimer.current) clearTimeout(autoLockTimer.current);
+    autoLockTimer.current = setTimeout(() => {
+      setIsLocked(true);
+      setIsPanic(false);
+    }, AUTO_LOCK_MS);
+  }, []);
+
+  // Reset timer on any user interaction when unlocked
+  useEffect(() => {
+    if (isLocked) return;
+    const handler = () => resetAutoLock();
+    const events = ["pointerdown", "keydown", "scroll", "touchstart"];
+    events.forEach((e) => window.addEventListener(e, handler, { passive: true }));
+    resetAutoLock(); // start timer
+    return () => {
+      events.forEach((e) => window.removeEventListener(e, handler));
+      if (autoLockTimer.current) clearTimeout(autoLockTimer.current);
+    };
+  }, [isLocked, resetAutoLock]);
+
+  const handleUnlock = useCallback(({ mode }) => {
+    setIsLocked(false);
+    setIsPanic(mode === "panic");
+  }, []);
+
+  const handleLock = useCallback(() => {
+    setIsLocked(true);
+    setIsPanic(false);
+  }, []);
+
   // Timeline mode: "timeline" | "calendar"
   const [timelineMode, setTimelineMode] = useState("timeline");
   // Calendar month heading
@@ -357,6 +396,25 @@ export default function App() {
             )}
           </button>
 
+          {/* Lock button */}
+          <button
+            type="button"
+            onClick={handleLock}
+            className="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-90"
+            style={{
+              background: "var(--glass-bg)",
+              border: "1px solid var(--glass-border)",
+              color: "var(--text-secondary)",
+            }}
+            aria-label="Lock"
+            title="Заблокувати"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+              <rect x="3" y="11" width="18" height="11" rx="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+          </button>
+
           {/* Center: page title */}
           <div className="flex flex-col items-center select-none">
             <div className="flex items-center gap-1.5 mb-1 pointer-events-none">
@@ -475,9 +533,9 @@ export default function App() {
         {/* MAIN VIEW */}
         {activeView === VIEW.MAIN && (
           <div className="flex flex-col gap-4 flex-grow page-enter-left pt-1">
-            <BankProgress />
+            {!isPanic && <BankProgress />}
             {/* Unified intake panel — works on all screen sizes */}
-            <IntakePanel onAddSuccess={setNotification} />
+            <IntakePanel onAddSuccess={setNotification} disabled={isPanic} />
 
             <div
               className="rounded-[2rem] pt-4 flex flex-col overflow-hidden relative"
@@ -489,7 +547,8 @@ export default function App() {
                 WebkitBackdropFilter: "blur(32px)",
                 border: "1px solid var(--glass-border)",
                 boxShadow: "0 20px 60px var(--shadow-color-strong), inset 0 1px 0 var(--glass-shine)",
-                height: "600px",
+                height: "min(600px, calc(100dvh - 350px))",
+                minHeight: "300px",
               }}
             >
               {/* Top glass shine edge */}
@@ -574,6 +633,7 @@ export default function App() {
                   onSelectIntake={handleSelectIntake}
                   scrollToNextDay={scrollToNextDayRef}
                   scrollToPrevDay={scrollToPrevDayRef}
+                  hideData={isPanic}
                 />
               ) : (
                 <CalendarView
@@ -606,12 +666,15 @@ export default function App() {
         )}
       </main>
 
-      {activeIntake && (
+      {activeIntake && !isPanic && (
         <IntakeDetailsModal
           intake={activeIntake}
           onClose={() => handleSelectIntake(null)}
         />
       )}
+
+      {/* PIN Lock overlay — always shown on mount (refresh) */}
+      {isLocked && <PinLock onUnlock={handleUnlock} />}
     </div>
   );
 }

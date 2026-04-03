@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "../firebase";
 import { formatTime, formatViewedDate, getStartOfDay } from "../utils/time";
+import { PillIcon } from "./PillTower";
 
 // Minimum pixel gap between two intake bubbles before clustering kicks in
 const CLUSTER_THRESHOLD_PX = 38;
@@ -121,7 +122,7 @@ const ZOOM_LEVELS = [
 // Base height for 24 hours in pixels (1 minute = 1 pixel at 1x zoom)
 const BASE_DAY_HEIGHT_PX = 1440;
 
-const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, scrollToNextDay, scrollToPrevDay }) => {
+const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, scrollToNextDay, scrollToPrevDay, hideData = false }) => {
   const [intakes, setIntakes] = useState([]);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [zoomLevel, setZoomLevel] = useState(1);
@@ -135,6 +136,7 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, scrollToNext
   }, [zoomLevel]);
 
   useEffect(() => {
+    if (hideData) { setIntakes([]); return; }
     const q = query(collection(db, "intakes"), orderBy("timestamp", "desc"));
     return onSnapshot(q, (snapshot) => {
       setIntakes(
@@ -145,7 +147,7 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, scrollToNext
         })),
       );
     });
-  }, []);
+  }, [hideData]);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 60000);
@@ -958,16 +960,34 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, scrollToNext
                             }}
                           >
                             <div className="flex items-center gap-1">
-                              <span className="text-sm font-black" style={{ color: "var(--text-primary)" }}>
-                                {intake.dosage}
-                              </span>
-                              <span className="text-[10px] font-black" style={{ color: "var(--text-secondary)", opacity: 0.7 }}>
-                                {intake.unit}
-                              </span>
-                              {intake.unit === "ml" && (
-                                <span className="text-[9px] font-bold ml-0.5" style={{ color: "var(--text-secondary)", opacity: 0.5 }}>
-                                  ~{(parseFloat(intake.dosage) * 20).toFixed(0)} mg
-                                </span>
+                              {/* Pill-specific rendering */}
+                              {(intake.instrument === "pills" || (intake.subtype === "PO" && intake.unit === "mg" && intake.dosage % 12.5 === 0 && intake.dosage > 0)) ? (
+                                <>
+                                  <PillIcon size={14} className="flex-shrink-0" />
+                                  <span className="text-sm font-black" style={{ color: "var(--subtype-po)" }}>
+                                    {(parseFloat(intake.dosage) / 25).toFixed(1).replace(".0", "")}
+                                  </span>
+                                  <span className="text-[9px] font-bold" style={{ color: "var(--subtype-po)", opacity: 0.6 }}>
+                                    таб
+                                  </span>
+                                  <span className="text-[9px] font-bold" style={{ color: "var(--text-secondary)", opacity: 0.4 }}>
+                                    {intake.dosage}мг
+                                  </span>
+                                </>
+                              ) : (
+                                <>
+                                  <span className="text-sm font-black" style={{ color: "var(--text-primary)" }}>
+                                    {intake.dosage}
+                                  </span>
+                                  <span className="text-[10px] font-black" style={{ color: "var(--text-secondary)", opacity: 0.7 }}>
+                                    {intake.unit}
+                                  </span>
+                                  {intake.unit === "ml" && (
+                                    <span className="text-[9px] font-bold ml-0.5" style={{ color: "var(--text-secondary)", opacity: 0.5 }}>
+                                      ~{(parseFloat(intake.dosage) * 20).toFixed(0)} mg
+                                    </span>
+                                  )}
+                                </>
                               )}
                               <span className="text-[10px] font-semibold" style={{ color: "var(--text-secondary)", opacity: 0.6 }}>
                                 {formatTime(intake.timestamp)}
@@ -996,7 +1016,10 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, scrollToNext
                                     boxShadow: subtypeGlow !== "none" && !isNO ? `0 0 10px ${subtypeColor}` : "none",
                                   }}
                                 >
-                                  {subtype}
+                                  {(intake.instrument === "pills" || (subtype === "PO" && intake.unit === "mg" && intake.dosage % 12.5 === 0 && intake.dosage > 0))
+                                    ? <><PillIcon size={10} className="mr-0.5" />{subtype}</>
+                                    : subtype
+                                  }
                                 </span>
                               )}
                             </div>
