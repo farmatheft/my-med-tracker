@@ -10,9 +10,9 @@ import { formatDateInput, formatTimeInput } from "../utils/time";
    Constants
    ═══════════════════════════════════════════════════════════════════════════ */
 
-const PILL25_MG  = 25;   // mg per full 25mg pill
+const PILL25_MG = 25;   // mg per full 25mg pill
 const PILL25_STEP = 12.5; // half-pill step
-const PILL10_MG  = 10;    // mg per 10mg pill
+const PILL10_MG = 10;    // mg per 10mg pill
 const PILL10_STEP = 10;   // step = 1 pill
 
 const getActiveColor = (patient) =>
@@ -250,103 +250,103 @@ export default function IntakePanel({ onAddSuccess, disabled = false }) {
                     }}>P1</span>
                 </div>
               </div>
-  
+
               {/* CENTER — controls column */}
               <div className="flex flex-col items-center justify-center gap-3 px-1 py-3 flex-shrink-0" style={{ width: 100 }}>
-              {/* Total dosage */}
-              <div className="text-center mb-1">
-                <div className="text-3xl font-black tabular-nums leading-none" style={{ color: accentColor }}>
-                  {totalMg}
+                {/* Total dosage */}
+                <div className="text-center mb-1">
+                  <div className="text-3xl font-black tabular-nums leading-none" style={{ color: accentColor }}>
+                    {totalMg}
+                  </div>
+                  <div className="text-[10px] font-bold mt-0.5" style={{ color: accentColor, opacity: 0.6 }}>мг</div>
                 </div>
-                <div className="text-[10px] font-bold mt-0.5" style={{ color: accentColor, opacity: 0.6 }}>мг</div>
-              </div>
 
-              {/* 10mg control */}
-              <PillControl
-                label="10 мг"
-                count={st.pills10 / PILL10_MG}
-                countLabel={`${st.pills10 / PILL10_MG} таб`}
-                mgLabel={`${st.pills10} мг`}
-                onMinus={() => adjust10(-1)}
-                onPlus={() => adjust10(1)}
-                accentColor={accentColor}
-                pillType="10"
-              />
+                {/* 10mg control */}
+                <PillControl
+                  label="10 мг"
+                  count={st.pills10 / PILL10_MG}
+                  countLabel={`${st.pills10 / PILL10_MG} таб`}
+                  mgLabel={`${st.pills10} мг`}
+                  onMinus={() => adjust10(-1)}
+                  onPlus={() => adjust10(1)}
+                  accentColor={accentColor}
+                  pillType="10"
+                />
 
-              {/* 25mg control */}
-              <PillControl
-                label="25 мг"
-                count={st.pills25 / PILL25_MG}
-                countLabel={`${(st.pills25 / PILL25_MG).toFixed(1).replace(".0", "")} таб`}
-                mgLabel={`${st.pills25} мг`}
-                onMinus={() => adjust25(-1)}
-                onPlus={() => adjust25(1)}
-                accentColor={accentColor}
-                pillType="25"
-              />
-            </div>
-
-            {/* RIGHT SIDE — EI towers (25mg + 10mg) */}
-            <div
-              className="flex-[1.2] flex items-end justify-center gap-0 px-0 pb-3 pt-10 cursor-pointer relative transition-all duration-300"
-              onClick={() => setActivePatient("EI")}
-              style={{
-                opacity: !isAH ? 1 : 0.3,
-                WebkitTapHighlightColor: "transparent",
-              }}
-            >
-              {/* 25mg tower */}
-              <div className="w-14 flex-shrink-0" style={{ height: 140 }}>
-                <PillTower
-                  pills={stateEI.pills25 / PILL25_MG}
-                  accentColor="var(--accent-ei)"
+                {/* 25mg control */}
+                <PillControl
+                  label="25 мг"
+                  count={st.pills25 / PILL25_MG}
+                  countLabel={`${(st.pills25 / PILL25_MG).toFixed(1).replace(".0", "")} таб`}
+                  mgLabel={`${st.pills25} мг`}
+                  onMinus={() => adjust25(-1)}
+                  onPlus={() => adjust25(1)}
+                  accentColor={accentColor}
                   pillType="25"
                 />
               </div>
-              {/* 10mg tower */}
-              <div className="w-10 flex-shrink-0 -ml-1" style={{ height: 140 }}>
-                <PillTower
-                  pills={stateEI.pills10 / PILL10_MG}
-                  accentColor="var(--accent-ei)"
-                  pillType="10"
-                />
-              </div>
-              {/* Label */}
-              <div className="absolute top-2 left-0 right-0 flex justify-center">
-                <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full"
-                  style={{
-                    color: "var(--accent-ei)",
-                    background: !isAH ? "color-mix(in srgb, var(--accent-ei) 12%, transparent)" : "transparent",
-                    border: !isAH ? "1px solid color-mix(in srgb, var(--accent-ei) 25%, transparent)" : "1px solid transparent",
-                  }}>P2</span>
+
+              {/* RIGHT SIDE — EI towers (25mg + 10mg) */}
+              <div
+                className="flex-[1.2] flex items-end justify-center gap-0 px-0 pb-3 pt-10 cursor-pointer relative transition-all duration-300"
+                onClick={() => setActivePatient("EI")}
+                style={{
+                  opacity: !isAH ? 1 : 0.3,
+                  WebkitTapHighlightColor: "transparent",
+                }}
+              >
+                {/* 25mg tower */}
+                <div className="w-14 flex-shrink-0" style={{ height: 140 }}>
+                  <PillTower
+                    pills={stateEI.pills25 / PILL25_MG}
+                    accentColor="var(--accent-ei)"
+                    pillType="25"
+                  />
+                </div>
+                {/* 10mg tower */}
+                <div className="w-10 flex-shrink-0 -ml-1" style={{ height: 140 }}>
+                  <PillTower
+                    pills={stateEI.pills10 / PILL10_MG}
+                    accentColor="var(--accent-ei)"
+                    pillType="10"
+                  />
+                </div>
+                {/* Label */}
+                <div className="absolute top-2 left-0 right-0 flex justify-center">
+                  <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full"
+                    style={{
+                      color: "var(--accent-ei)",
+                      background: !isAH ? "color-mix(in srgb, var(--accent-ei) 12%, transparent)" : "transparent",
+                      border: !isAH ? "1px solid color-mix(in srgb, var(--accent-ei) 25%, transparent)" : "1px solid transparent",
+                    }}>P2</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Add button */}
-          <div className="px-4 pb-3 pt-1">
-            <button
-              type="button"
-              onClick={openConfirm}
-              disabled={totalMg === 0}
-              className="w-full py-3 rounded-2xl font-black text-sm transition-all duration-300 hover:scale-[1.02] active:scale-[0.97] relative overflow-hidden group"
-              style={{
-                background: totalMg > 0 ? "var(--add-btn-bg)" : "rgba(255,255,255,0.04)",
-                color: totalMg > 0 ? "var(--add-btn-text)" : "var(--text-secondary)",
-                border: totalMg > 0 ? "1px solid var(--add-btn-border)" : "1px solid var(--glass-border)",
-                boxShadow: totalMg > 0 ? "0 8px 24px var(--shadow-color-strong), 0 0 16px var(--add-btn-glow)44" : "none",
-                opacity: totalMg > 0 ? 1 : 0.4,
-              }}
-            >
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 55%)" }} />
-              <span className="inline-flex items-center justify-center gap-2 relative z-10">
-                <span className="text-xl leading-none">+</span>
-                Додати {totalMg} мг
-              </span>
-            </button>
+            {/* Add button */}
+            <div className="px-4 pb-3 pt-1">
+              <button
+                type="button"
+                onClick={openConfirm}
+                disabled={totalMg === 0}
+                className="w-full py-3 rounded-2xl font-black text-sm transition-all duration-300 hover:scale-[1.02] active:scale-[0.97] relative overflow-hidden group"
+                style={{
+                  background: totalMg > 0 ? "var(--add-btn-bg)" : "rgba(255,255,255,0.04)",
+                  color: totalMg > 0 ? "var(--add-btn-text)" : "var(--text-secondary)",
+                  border: totalMg > 0 ? "1px solid var(--add-btn-border)" : "1px solid var(--glass-border)",
+                  boxShadow: totalMg > 0 ? "0 8px 24px var(--shadow-color-strong), 0 0 16px var(--add-btn-glow)44" : "none",
+                  opacity: totalMg > 0 ? 1 : 0.4,
+                }}
+              >
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 55%)" }} />
+                <span className="inline-flex items-center justify-center gap-2 relative z-10">
+                  <span className="text-xl leading-none">+</span>
+                  Додати {totalMg} мг
+                </span>
+              </button>
+            </div>
           </div>
-        </div>
         )}
 
         {/* ── CONFIRM OVERLAY ── */}
@@ -387,7 +387,7 @@ export default function IntakePanel({ onAddSuccess, disabled = false }) {
                 className="w-7 h-7 rounded-full flex items-center justify-center transition-all hover:opacity-70 active:scale-90 flex-shrink-0"
                 style={{ background: "rgba(255,255,255,0.07)", color: "var(--text-secondary)", border: "1px solid var(--glass-border)" }}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-3.5 h-3.5">
-                  <path d="M18 6L6 18M6 6l12 12"/>
+                  <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
               </button>
             </div>
@@ -397,7 +397,7 @@ export default function IntakePanel({ onAddSuccess, disabled = false }) {
               <div className="grid grid-cols-2 gap-2">
                 {[
                   { label: "Дата", type: "date", val: dateValue, set: setDateValue },
-                  { label: "Час",  type: "time", val: timeValue, set: setTimeValue },
+                  { label: "Час", type: "time", val: timeValue, set: setTimeValue },
                 ].map(({ label, type, val, set }) => (
                   <div key={type}>
                     <label className="block text-[9px] font-black uppercase tracking-wider mb-1"
@@ -440,7 +440,7 @@ export default function IntakePanel({ onAddSuccess, disabled = false }) {
                     style={{ background: "rgba(255,255,255,0.04)", color: "var(--text-secondary)", border: "1px solid var(--glass-border)" }}>
                     <span className="inline-flex items-center gap-1.5">
                       <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                        <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
                       </svg>
                       Вказати час
                     </span>
@@ -487,7 +487,7 @@ function PillControl({ count, countLabel, mgLabel, onMinus, onPlus, accentColor,
     >
       <div className="w-full flex items-center justify-between text-[11px] font-black tabular-nums" style={{ color: accentColor }}>
         <span>{countLabel}</span>
-        <span style={{ opacity: 0.65 }}>{mgLabel}</span>
+        {/* <span style={{ opacity: 0.65 }}>{mgLabel}</span> */}
       </div>
 
       <div className="flex items-center justify-between w-full px-2">
