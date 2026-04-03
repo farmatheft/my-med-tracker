@@ -476,43 +476,38 @@ export default function IntakePanel({ onAddSuccess, disabled = false }) {
    PillControl — inline +/- row for a single pill type
    ═══════════════════════════════════════════════════════════════════════════ */
 
-function PillControl({ label, count, countLabel, mgLabel, onMinus, onPlus, accentColor, pillType }) {
-  const is10 = pillType === "10";
+function PillControl({ count, countLabel, mgLabel, onMinus, onPlus, accentColor, pillType }) {
   return (
     <div
-      className="w-full flex items-center gap-1.5 rounded-xl px-2 py-1.5"
+      className="w-full flex flex-col items-center gap-2 rounded-xl px-2 py-2"
       style={{
         background: "rgba(255,255,255,0.03)",
         border: "1px solid var(--glass-border)",
       }}
     >
-      <button type="button" onClick={onMinus}
-        className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-black transition-all active:scale-90"
-        style={{
-          background: `color-mix(in srgb, ${accentColor} 10%, transparent)`,
-          color: accentColor,
-          border: `1px solid color-mix(in srgb, ${accentColor} 20%, transparent)`,
-          WebkitTapHighlightColor: "transparent",
-        }}>−</button>
-
-      <div className="flex-1 text-center min-w-0">
-        <div className="flex items-center justify-center gap-1">
-          <PillTower pills={0} pillType={pillType} mini className="flex-shrink-0" />
-          <span className="text-[11px] font-black tabular-nums" style={{ color: accentColor }}>{countLabel}</span>
-        </div>
-        <div className="text-[8px] font-bold" style={{ color: "var(--text-secondary)", opacity: 0.5 }}>
-          {mgLabel} · {is10 ? "крок 1" : "крок ½"}
-        </div>
+      <div className="w-full flex items-center justify-between text-[11px] font-black tabular-nums" style={{ color: accentColor }}>
+        <span>{countLabel}</span>
+        <span style={{ opacity: 0.65 }}>{mgLabel}</span>
       </div>
 
-      <button type="button" onClick={onPlus}
-        className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-black transition-all active:scale-90"
-        style={{
-          background: `color-mix(in srgb, ${accentColor} 10%, transparent)`,
-          color: accentColor,
-          border: `1px solid color-mix(in srgb, ${accentColor} 20%, transparent)`,
-          WebkitTapHighlightColor: "transparent",
-        }}>+</button>
+      <div className="flex items-center justify-between w-full px-2">
+        <button type="button" onClick={onMinus}
+          className="text-2xl leading-none font-black transition-all active:scale-90 pb-1"
+          style={{
+            color: accentColor,
+            WebkitTapHighlightColor: "transparent",
+            opacity: count > 0 ? 1 : 0.3
+          }}>−</button>
+
+        <PillTower pills={0} pillType={pillType} mini className="flex-shrink-0 opacity-80" />
+
+        <button type="button" onClick={onPlus}
+          className="text-2xl leading-none font-black transition-all active:scale-90 pb-1"
+          style={{
+            color: accentColor,
+            WebkitTapHighlightColor: "transparent",
+          }}>+</button>
+      </div>
     </div>
   );
 }
