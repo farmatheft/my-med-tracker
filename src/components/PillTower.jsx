@@ -64,27 +64,7 @@ export default function PillTower({
   const uid = useMemo(() => `pt-${Math.random().toString(36).slice(2, 8)}`, []);
 
   return (
-    <div className={`relative w-full h-full flex items-end justify-center rounded-3xl ${className}`}
-      style={{
-        background: `linear-gradient(180deg, var(--surface-2) 0%, color-mix(in srgb, ${accentColor} 10%, var(--surface-2)) 100%)`,
-        border: `1px solid color-mix(in srgb, ${accentColor} 25%, transparent)`,
-        boxShadow: `0 4px 12px var(--shadow-color), inset 0 1px 2px color-mix(in srgb, ${accentColor} 20%, transparent)`,
-        overflow: "hidden"
-      }}
-    >
-      {/* Texture overlay */}
-      <div className="absolute inset-0 rounded-3xl pointer-events-none"
-        style={{
-          backgroundImage: "var(--premium-texture-key)",
-          backgroundRepeat: "repeat",
-          opacity: 0.4,
-          mixBlendMode: "overlay"
-        }} />
-        
-      {/* Glow from bottom */}
-      <div className="absolute bottom-0 inset-x-0 h-10 pointer-events-none"
-           style={{ background: `linear-gradient(0deg, color-mix(in srgb, ${accentColor} 15%, transparent), transparent)` }} />
-
+    <div className={`w-full h-full flex items-end justify-center overflow-visible ${className}`}>
       <svg
         viewBox={`0 0 ${vWidth} ${vHeight}`}
         className="w-full relative z-10"

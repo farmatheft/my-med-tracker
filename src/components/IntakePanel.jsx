@@ -130,8 +130,8 @@ export default function IntakePanel({ onAddSuccess, disabled = false }) {
         WebkitBackdropFilter: "blur(32px)",
         border: "1px solid var(--glass-border)",
         boxShadow: "0 8px 40px var(--shadow-color-strong), inset 0 1px 0 var(--glass-shine)",
-        opacity: disabled ? 0.4 : 1,
-        pointerEvents: disabled ? "none" : "auto",
+        opacity: 1,
+        pointerEvents: "auto",
         transition: "opacity 0.3s",
       }}
     >
@@ -175,10 +175,12 @@ export default function IntakePanel({ onAddSuccess, disabled = false }) {
                 style={{ opacity: isActive ? 1 : 0.35, textShadow: isActive ? `0 0 12px ${accent}88` : "none" }}>
                 {id === "AH" ? "P1" : id === "EI" ? "P2" : id}
               </span>
-              <span className="text-[9px] font-bold mt-0.5 tabular-nums"
-                style={{ color: isActive ? accent : "var(--text-secondary)", opacity: isActive ? 0.85 : 0.25 }}>
-                {mg} мг
-              </span>
+              {!disabled && (
+                <span className="text-[9px] font-bold mt-0.5 tabular-nums"
+                  style={{ color: isActive ? accent : "var(--text-secondary)", opacity: isActive ? 0.85 : 0.25 }}>
+                  {mg} мг
+                </span>
+              )}
             </button>
           );
         })}
@@ -186,56 +188,71 @@ export default function IntakePanel({ onAddSuccess, disabled = false }) {
 
       {/* ── BODY — pill towers + controls ── */}
       <div className="relative z-10">
-        {/* IDLE state: pills + controls */}
-        <div
-          className="flex flex-col transition-all duration-300"
-          style={{
-            opacity: confirmStep !== "idle" ? 0 : 1,
-            pointerEvents: confirmStep !== "idle" ? "none" : "auto",
-            maxHeight: confirmStep !== "idle" ? 0 : 600,
-            overflow: confirmStep !== "idle" ? "hidden" : "visible",
-          }}
-        >
-          {/* Tap zones — left = AH, right = EI */}
-          <div className="flex" style={{ minHeight: 200 }}>
-            {/* LEFT SIDE — AH towers (10mg + 25mg) */}
-            <div
-              className="flex-1 flex items-end justify-center gap-1 px-2 pb-3 pt-10 cursor-pointer relative transition-all duration-300"
-              onClick={() => setActivePatient("AH")}
-              style={{
-                opacity: isAH ? 1 : 0.3,
-                WebkitTapHighlightColor: "transparent",
-              }}
-            >
-              {/* 10mg tower */}
-              <div className="w-10 flex-shrink-0" style={{ height: 140 }}>
-                <PillTower
-                  pills={stateAH.pills10 / PILL10_MG}
-                  accentColor="var(--accent-ah)"
-                  pillType="10"
-                />
-              </div>
-              {/* 25mg tower */}
-              <div className="w-16 flex-shrink-0" style={{ height: 140 }}>
-                <PillTower
-                  pills={stateAH.pills25 / PILL25_MG}
-                  accentColor="var(--accent-ah)"
-                  pillType="25"
-                />
-              </div>
-              {/* Label */}
-              <div className="absolute top-2 left-0 right-0 flex justify-center">
-                <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full"
-                  style={{
-                    color: "var(--accent-ah)",
-                    background: isAH ? "color-mix(in srgb, var(--accent-ah) 12%, transparent)" : "transparent",
-                    border: isAH ? "1px solid color-mix(in srgb, var(--accent-ah) 25%, transparent)" : "1px solid transparent",
-                  }}>P1</span>
-              </div>
+        {disabled ? (
+          /* PANIC MODE VIEW */
+          <div className="flex py-10 px-4">
+            <div className="flex-1 flex flex-col items-center border-r" style={{ borderColor: "var(--glass-border)" }}>
+              <span className="text-3xl font-black mb-1" style={{ color: "var(--accent-ah)" }}>P1</span>
+              <span className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>01.04.2026</span>
+              <span className="text-[9px] font-black tracking-widest uppercase mt-1 opacity-50" style={{ color: "var(--text-secondary)" }}>Початок</span>
             </div>
-
-            {/* CENTER — controls column */}
-            <div className="flex flex-col items-center justify-center gap-3 px-2 py-3 flex-shrink-0" style={{ width: 140 }}>
+            <div className="flex-1 flex flex-col items-center">
+              <span className="text-3xl font-black mb-1" style={{ color: "var(--accent-ei)" }}>P2</span>
+              <span className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>31.03.2026</span>
+              <span className="text-[9px] font-black tracking-widest uppercase mt-1 opacity-50" style={{ color: "var(--text-secondary)" }}>Початок</span>
+            </div>
+          </div>
+        ) : (
+          /* IDLE state: pills + controls */
+          <div
+            className="flex flex-col transition-all duration-300"
+            style={{
+              opacity: confirmStep !== "idle" ? 0 : 1,
+              pointerEvents: confirmStep !== "idle" ? "none" : "auto",
+              maxHeight: confirmStep !== "idle" ? 0 : 600,
+              overflow: confirmStep !== "idle" ? "hidden" : "visible",
+            }}
+          >
+            {/* Tap zones — left = AH, right = EI */}
+            <div className="flex" style={{ minHeight: 200 }}>
+              {/* LEFT SIDE — AH towers (10mg + 25mg) */}
+              <div
+                className="flex-[1.2] flex items-end justify-center gap-0 px-0 pb-3 pt-10 cursor-pointer relative transition-all duration-300"
+                onClick={() => setActivePatient("AH")}
+                style={{
+                  opacity: isAH ? 1 : 0.3,
+                  WebkitTapHighlightColor: "transparent",
+                }}
+              >
+                {/* 10mg tower */}
+                <div className="w-10 flex-shrink-0" style={{ height: 140 }}>
+                  <PillTower
+                    pills={stateAH.pills10 / PILL10_MG}
+                    accentColor="var(--accent-ah)"
+                    pillType="10"
+                  />
+                </div>
+                {/* 25mg tower */}
+                <div className="w-14 flex-shrink-0 -ml-1" style={{ height: 140 }}>
+                  <PillTower
+                    pills={stateAH.pills25 / PILL25_MG}
+                    accentColor="var(--accent-ah)"
+                    pillType="25"
+                  />
+                </div>
+                {/* Label */}
+                <div className="absolute top-2 left-0 right-0 flex justify-center">
+                  <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full"
+                    style={{
+                      color: "var(--accent-ah)",
+                      background: isAH ? "color-mix(in srgb, var(--accent-ah) 12%, transparent)" : "transparent",
+                      border: isAH ? "1px solid color-mix(in srgb, var(--accent-ah) 25%, transparent)" : "1px solid transparent",
+                    }}>P1</span>
+                </div>
+              </div>
+  
+              {/* CENTER — controls column */}
+              <div className="flex flex-col items-center justify-center gap-3 px-1 py-3 flex-shrink-0" style={{ width: 100 }}>
               {/* Total dosage */}
               <div className="text-center mb-1">
                 <div className="text-3xl font-black tabular-nums leading-none" style={{ color: accentColor }}>
@@ -271,7 +288,7 @@ export default function IntakePanel({ onAddSuccess, disabled = false }) {
 
             {/* RIGHT SIDE — EI towers (25mg + 10mg) */}
             <div
-              className="flex-1 flex items-end justify-center gap-1 px-2 pb-3 pt-10 cursor-pointer relative transition-all duration-300"
+              className="flex-[1.2] flex items-end justify-center gap-0 px-0 pb-3 pt-10 cursor-pointer relative transition-all duration-300"
               onClick={() => setActivePatient("EI")}
               style={{
                 opacity: !isAH ? 1 : 0.3,
@@ -279,7 +296,7 @@ export default function IntakePanel({ onAddSuccess, disabled = false }) {
               }}
             >
               {/* 25mg tower */}
-              <div className="w-16 flex-shrink-0" style={{ height: 140 }}>
+              <div className="w-14 flex-shrink-0" style={{ height: 140 }}>
                 <PillTower
                   pills={stateEI.pills25 / PILL25_MG}
                   accentColor="var(--accent-ei)"
@@ -287,7 +304,7 @@ export default function IntakePanel({ onAddSuccess, disabled = false }) {
                 />
               </div>
               {/* 10mg tower */}
-              <div className="w-10 flex-shrink-0" style={{ height: 140 }}>
+              <div className="w-10 flex-shrink-0 -ml-1" style={{ height: 140 }}>
                 <PillTower
                   pills={stateEI.pills10 / PILL10_MG}
                   accentColor="var(--accent-ei)"
