@@ -347,6 +347,7 @@ export default function IntakePanel({ onAddSuccess, disabled = false }) {
             </button>
           </div>
         </div>
+        )}
 
         {/* ── CONFIRM OVERLAY ── */}
         {confirmStep !== "idle" && (
