@@ -192,14 +192,14 @@ export default function IntakePanel({ onAddSuccess, disabled = false }) {
           /* PANIC MODE VIEW */
           <div className="flex py-10 px-4">
             <div className="flex-1 flex flex-col items-center border-r" style={{ borderColor: "var(--glass-border)" }}>
-              <span className="text-3xl font-black mb-1" style={{ color: "var(--accent-ah)" }}>P1</span>
+              <span className="text-3xl font-black mb-1" style={{ color: "var(--accent-ah)" }}>Пацієнт 1</span>
               <span className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>01.04.2026</span>
-              <span className="text-[9px] font-black tracking-widest uppercase mt-1 opacity-50" style={{ color: "var(--text-secondary)" }}>Початок</span>
+              <span className="text-[9px] font-black tracking-widest uppercase mt-1 opacity-50" style={{ color: "var(--text-secondary)" }}>Початок лікування</span>
             </div>
             <div className="flex-1 flex flex-col items-center">
-              <span className="text-3xl font-black mb-1" style={{ color: "var(--accent-ei)" }}>P2</span>
+              <span className="text-3xl font-black mb-1" style={{ color: "var(--accent-ei)" }}>Пацієнт 2</span>
               <span className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>31.03.2026</span>
-              <span className="text-[9px] font-black tracking-widest uppercase mt-1 opacity-50" style={{ color: "var(--text-secondary)" }}>Початок</span>
+              <span className="text-[9px] font-black tracking-widest uppercase mt-1 opacity-50" style={{ color: "var(--text-secondary)" }}>Початок лікування</span>
             </div>
           </div>
         ) : (

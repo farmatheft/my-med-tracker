@@ -653,7 +653,7 @@ export default function Statistics({ onBack }) {
                 className="text-[10px] font-black uppercase tracking-widest mb-2"
                 style={{ color: `var(--accent-${pid.toLowerCase()})` }}
               >
-                {pid}
+                {pid === "AH" ? "P1" : "P2"}
               </div>
               <div
                 className="text-3xl font-black tabular-nums"
@@ -841,7 +841,7 @@ export default function Statistics({ onBack }) {
               <Area
                 type="monotone"
                 dataKey="AH_mg"
-                name="AH (мг)"
+                name="P1 (мг)"
                 stroke="var(--accent-ah)"
                 fillOpacity={1}
                 fill="url(#colorAH)"
@@ -853,7 +853,7 @@ export default function Statistics({ onBack }) {
               <Area
                 type="monotone"
                 dataKey="EI_mg"
-                name="EI (мг)"
+                name="P2 (мг)"
                 stroke="var(--accent-ei)"
                 fillOpacity={1}
                 fill="url(#colorEI)"
@@ -918,7 +918,7 @@ export default function Statistics({ onBack }) {
               />
               <Bar
                 dataKey="AH"
-                name="AH"
+                name="P1"
                 fill="var(--accent-ah)"
                 radius={[4, 4, 0, 0]}
                 animationDuration={1000}
@@ -926,7 +926,7 @@ export default function Statistics({ onBack }) {
               />
               <Bar
                 dataKey="EI"
-                name="EI"
+                name="P2"
                 fill="var(--accent-ei)"
                 radius={[4, 4, 0, 0]}
                 animationDuration={1000}
@@ -951,7 +951,7 @@ export default function Statistics({ onBack }) {
                   className="text-[10px] font-black uppercase tracking-widest mb-2 text-center"
                   style={{ color: "var(--accent-ah)" }}
                 >
-                  AH — {ahIntervals.length} інтервалів · сер.{" "}
+                  P1 — {ahIntervals.length} інтервалів · сер.{" "}
                   {patientStats.AH.avgIntervalHours} год
                 </div>
                 <div className="h-[140px]">
@@ -1026,7 +1026,7 @@ export default function Statistics({ onBack }) {
                   className="text-[10px] font-black uppercase tracking-widest mb-2 text-center"
                   style={{ color: "var(--accent-ei)" }}
                 >
-                  EI — {eiIntervals.length} інтервалів · сер.{" "}
+                  P2 — {eiIntervals.length} інтервалів · сер.{" "}
                   {patientStats.EI.avgIntervalHours} год
                 </div>
                 <div className="h-[140px]">
@@ -1183,7 +1183,7 @@ export default function Statistics({ onBack }) {
               <Area
                 type="monotone"
                 dataKey="AH_cum"
-                name="AH накоп."
+                name="P1 накоп."
                 stroke="var(--accent-ah)"
                 fill="url(#cumAH)"
                 strokeWidth={2.5}
@@ -1194,7 +1194,7 @@ export default function Statistics({ onBack }) {
               <Area
                 type="monotone"
                 dataKey="EI_cum"
-                name="EI накоп."
+                name="P2 накоп."
                 stroke="var(--accent-ei)"
                 fill="url(#cumEI)"
                 strokeWidth={2.5}
@@ -1255,7 +1255,7 @@ export default function Statistics({ onBack }) {
               />
               <Bar
                 dataKey="AH"
-                name="AH"
+                name="P1"
                 stackId="a"
                 fill="var(--accent-ah)"
                 radius={[0, 0, 3, 3]}
@@ -1264,7 +1264,7 @@ export default function Statistics({ onBack }) {
               />
               <Bar
                 dataKey="EI"
-                name="EI"
+                name="P2"
                 stackId="a"
                 fill="var(--accent-ei)"
                 radius={[3, 3, 0, 0]}
@@ -1328,7 +1328,7 @@ export default function Statistics({ onBack }) {
               />
               <Bar
                 dataKey="AH"
-                name="AH"
+                name="P1"
                 stackId="b"
                 fill="var(--accent-ah)"
                 radius={[0, 0, 3, 3]}
@@ -1337,7 +1337,7 @@ export default function Statistics({ onBack }) {
               />
               <Bar
                 dataKey="EI"
-                name="EI"
+                name="P2"
                 stackId="b"
                 fill="var(--accent-ei)"
                 radius={[3, 3, 0, 0]}
@@ -1364,7 +1364,7 @@ export default function Statistics({ onBack }) {
               className="text-[10px] font-black uppercase tracking-[0.3em] mb-4 text-center"
               style={{ color: `var(--accent-${pid.toLowerCase()})` }}
             >
-              Типи прийому {pid}
+              Типи прийому {pid === "AH" ? "P1" : "P2"}
             </h3>
             {pieData[pid].length === 0 ? (
               <div className="h-[140px] flex items-center justify-center text-[var(--text-secondary)] text-xs opacity-50">
