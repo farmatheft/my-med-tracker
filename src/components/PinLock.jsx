@@ -26,38 +26,17 @@ export default function PinLock({ onUnlock }) {
   const [checking, setChecking] = useState(false);
   const dotRefs = useRef([]);
 
-  const handleDigit = useCallback(
-    (digit) => {
-      if (checking) return;
-      setError(false);
-      const next = pin + digit;
-      if (next.length > 4) return;
-      setPin(next);
-
-      if (next.length === 4) {
-        setChecking(true);
-        (async () => {
-          const inputHash = await sha256(next);
-
-          if (inputHash === UNLOCK_HASH) {
-            onUnlock({ mode: "normal" });
-          } else if (inputHash === PANIC_HASH) {
-            onUnlock({ mode: "panic" });
-          } else {
-            setError(true);
-            setPin("");
-            if (navigator.vibrate) navigator.vibrate(200);
-          }
-          setChecking(false);
-        })();
-      }
-    },
-    [pin, checking, onUnlock],
-  );
+  const handleDigit = useCallback((digit) => {
+    setPin((prev) => {
+      if (prev.length >= 4) return prev;
+      return prev + digit;
+    });
+    setError(false);
+  }, []);
 
   const handleBackspace = useCallback(() => {
+    setPin((prev) => prev.slice(0, -1));
     setError(false);
-    setPin((p) => p.slice(0, -1));
   }, []);
 
   // Physical keyboard support
@@ -70,12 +49,66 @@ export default function PinLock({ onUnlock }) {
     return () => window.removeEventListener("keydown", handler);
   }, [handleDigit, handleBackspace]);
 
+  // Check the PIN exactly when the 4th digit is entered
+  useEffect(() => {
+    if (pin.length === 4 && !checking) {
+      setChecking(true);
+      (async () => {
+        const inputHash = await sha256(pin);
+        if (inputHash === UNLOCK_HASH) {
+          onUnlock({ mode: "normal" });
+        } else if (inputHash === PANIC_HASH) {
+          onUnlock({ mode: "panic" });
+        } else {
+          setError(true);
+          setPin("");
+          if (navigator.vibrate) navigator.vibrate(200);
+        }
+        setChecking(false);
+      })();
+    }
+  }, [pin, checking, onUnlock]);
+
   const numpad = [
     "1", "2", "3",
     "4", "5", "6",
     "7", "8", "9",
     "",  "0", "⌫",
   ];
+
+  // Memoize the numpad to completely prevent re-renders of the keys on every digit press
+  const numpadGrid = useMemo(() => {
+    return (
+      <div className="grid grid-cols-3 gap-3" style={{ width: "min(280px, 80vw)" }}>
+        {numpad.map((d, i) => {
+          if (d === "") return <div key={i} />;
+          const isBack = d === "⌫";
+          return (
+            <button
+              key={i}
+              type="button"
+              onPointerDown={(e) => {
+                // Prevent ghost clicks and trigger instantly
+                e.preventDefault();
+                isBack ? handleBackspace() : handleDigit(d);
+              }}
+              className="aspect-square rounded-full flex items-center justify-center transition-all duration-75 active:bg-white/15"
+              style={{
+                background: "transparent",
+                border: "none",
+                color: "var(--text-primary)",
+                fontSize: isBack ? "24px" : "36px",
+                fontWeight: isBack ? "normal" : "300",
+                WebkitTapHighlightColor: "transparent",
+              }}
+            >
+              {d}
+            </button>
+          );
+        })}
+      </div>
+    );
+  }, [handleDigit, handleBackspace, numpad]);
 
   return (
     <div
@@ -136,31 +169,7 @@ export default function PinLock({ onUnlock }) {
       </div>
 
       {/* Numpad */}
-      <div className="grid grid-cols-3 gap-3" style={{ width: "min(280px, 80vw)" }}>
-        {numpad.map((d, i) => {
-          if (d === "") return <div key={i} />;
-          const isBack = d === "⌫";
-          return (
-            <button
-              key={i}
-              type="button"
-              onClick={() => isBack ? handleBackspace() : handleDigit(d)}
-              className="aspect-[4/3] rounded-2xl flex items-center justify-center font-bold transition-all duration-100 active:scale-90 active:bg-white/15"
-              style={{
-                background: isBack ? "transparent" : "rgba(255,255,255,0.06)",
-                border: isBack ? "none" : "1px solid rgba(255,255,255,0.1)",
-                color: "var(--text-primary)",
-                fontSize: isBack ? "18px" : "22px",
-                backdropFilter: isBack ? "none" : "blur(8px)",
-                WebkitBackdropFilter: isBack ? "none" : "blur(8px)",
-                WebkitTapHighlightColor: "transparent",
-              }}
-            >
-              {d}
-            </button>
-          );
-        })}
-      </div>
+      {numpadGrid}
 
       <style>{`
         @keyframes pinShake {
