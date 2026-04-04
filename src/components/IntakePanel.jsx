@@ -27,7 +27,7 @@ const makePatientState = () => ({
    IntakePanel — dual pill columns, mobile-optimised
    ═══════════════════════════════════════════════════════════════════════════ */
 
-export default function IntakePanel({ onAddSuccess, disabled = false }) {
+export default function IntakePanel({ onAddSuccess }) {
   const [activePatient, setActivePatient] = useState("AH");
   const [stateAH, setStateAH] = useState(makePatientState);
   const [stateEI, setStateEI] = useState(makePatientState);
@@ -175,12 +175,10 @@ export default function IntakePanel({ onAddSuccess, disabled = false }) {
                 style={{ opacity: isActive ? 1 : 0.35, textShadow: isActive ? `0 0 12px ${accent}88` : "none" }}>
                 {id === "AH" ? "P1" : id === "EI" ? "P2" : id}
               </span>
-              {!disabled && (
-                <span className="text-[9px] font-bold mt-0.5 tabular-nums"
+              <span className="text-[9px] font-bold mt-0.5 tabular-nums"
                   style={{ color: isActive ? accent : "var(--text-secondary)", opacity: isActive ? 0.85 : 0.25 }}>
                   {mg} мг
                 </span>
-              )}
             </button>
           );
         })}
@@ -188,22 +186,7 @@ export default function IntakePanel({ onAddSuccess, disabled = false }) {
 
       {/* ── BODY — pill towers + controls ── */}
       <div className="relative z-10">
-        {disabled ? (
-          /* PANIC MODE VIEW */
-          <div className="flex py-10 px-4">
-            <div className="flex-1 flex flex-col items-center border-r" style={{ borderColor: "var(--glass-border)" }}>
-              <span className="text-3xl font-black mb-1" style={{ color: "var(--accent-ah)" }}>Пацієнт 1</span>
-              <span className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>01.04.2026</span>
-              <span className="text-[9px] font-black tracking-widest uppercase mt-1 opacity-50" style={{ color: "var(--text-secondary)" }}>Початок лікування</span>
-            </div>
-            <div className="flex-1 flex flex-col items-center">
-              <span className="text-3xl font-black mb-1" style={{ color: "var(--accent-ei)" }}>Пацієнт 2</span>
-              <span className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>31.03.2026</span>
-              <span className="text-[9px] font-black tracking-widest uppercase mt-1 opacity-50" style={{ color: "var(--text-secondary)" }}>Початок лікування</span>
-            </div>
-          </div>
-        ) : (
-          /* IDLE state: pills + controls */
+          {/* Pills + controls */}
           <div
             className="flex flex-col transition-all duration-300"
             style={{
@@ -347,7 +330,6 @@ export default function IntakePanel({ onAddSuccess, disabled = false }) {
               </button>
             </div>
           </div>
-        )}
 
         {/* ── CONFIRM OVERLAY ── */}
         {confirmStep !== "idle" && (

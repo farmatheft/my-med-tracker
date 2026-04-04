@@ -535,8 +535,38 @@ export default function App() {
           <div className="flex flex-col gap-4 flex-grow page-enter-left pt-1">
             {/* BankProgress is temporarily hidden per user request */}
             {/* {!isPanic && <BankProgress />} */}
-            {/* Unified intake panel — works on all screen sizes */}
-            <IntakePanel onAddSuccess={setNotification} disabled={isPanic} />
+
+            {/* Intake panel — hidden in panic mode to prevent data leak */}
+            {!isPanic && <IntakePanel onAddSuccess={setNotification} disabled={false} />}
+
+            {/* Panic mode: treatment start dates panel */}
+            {isPanic && (
+              <div
+                className="rounded-3xl overflow-hidden relative"
+                style={{
+                  background: "var(--surface-2)",
+                  backdropFilter: "blur(32px)",
+                  WebkitBackdropFilter: "blur(32px)",
+                  border: "1px solid var(--glass-border)",
+                  boxShadow: "0 8px 40px var(--shadow-color-strong), inset 0 1px 0 var(--glass-shine)",
+                }}
+              >
+                <div className="absolute inset-x-0 top-0 h-px pointer-events-none z-10"
+                  style={{ background: "linear-gradient(90deg, transparent 5%, var(--glass-shine) 50%, transparent 95%)" }} />
+                <div className="flex py-8 px-4">
+                  <div className="flex-1 flex flex-col items-center border-r" style={{ borderColor: "var(--glass-border)" }}>
+                    <span className="text-2xl font-black mb-1" style={{ color: "var(--accent-ah)" }}>Пацієнт 1</span>
+                    <span className="text-sm font-semibold tabular-nums" style={{ color: "var(--text-secondary)" }}>01.04.2026</span>
+                    <span className="text-[9px] font-black tracking-widest uppercase mt-1 opacity-50" style={{ color: "var(--text-secondary)" }}>Початок лікування</span>
+                  </div>
+                  <div className="flex-1 flex flex-col items-center">
+                    <span className="text-2xl font-black mb-1" style={{ color: "var(--accent-ei)" }}>Пацієнт 2</span>
+                    <span className="text-sm font-semibold tabular-nums" style={{ color: "var(--text-secondary)" }}>31.03.2026</span>
+                    <span className="text-[9px] font-black tracking-widest uppercase mt-1 opacity-50" style={{ color: "var(--text-secondary)" }}>Початок лікування</span>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div
               className="rounded-[2rem] pt-4 flex flex-col overflow-hidden relative"
@@ -548,8 +578,8 @@ export default function App() {
                 WebkitBackdropFilter: "blur(32px)",
                 border: "1px solid var(--glass-border)",
                 boxShadow: "0 20px 60px var(--shadow-color-strong), inset 0 1px 0 var(--glass-shine)",
-                height: "min(600px, calc(100dvh - 350px))",
-                minHeight: "300px",
+                height: isPanic ? "min(700px, calc(100dvh - 250px))" : "min(700px, calc(100dvh - 350px))",
+                minHeight: "350px",
               }}
             >
               {/* Top glass shine edge */}
