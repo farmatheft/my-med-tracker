@@ -156,9 +156,9 @@ export default function PillTower({
               return (
                 <g key={floor.id}>
                   <path
-                    d={`M ${x} ${y - PILL_RY} v ${PILL_THICKNESS} A ${PILL_RX} ${PILL_RY} 0 0 1 ${x - PILL_RX} ${y + PILL_THICKNESS} v -${PILL_THICKNESS} A ${PILL_RX} ${PILL_RY} 0 0 0 ${x} ${y - PILL_RY} Z`}
+                    d={`M ${x} ${y - PILL_RY} v ${PILL_THICKNESS} A ${PILL_RX} ${PILL_RY} 0 0 0 ${x} ${y + PILL_RY + PILL_THICKNESS} v -${PILL_THICKNESS} A ${PILL_RX} ${PILL_RY} 0 0 1 ${x} ${y - PILL_RY} Z`}
                     fill={`url(#${uid}-side)`} stroke="#94a3b8" strokeWidth="0.4" />
-                  <rect x={x - 0.8} y={y - PILL_RY} width="1.6" height={PILL_RY * 2}
+                  <rect x={x - 0.8} y={y - PILL_RY} width="1.6" height={PILL_RY * 2 + PILL_THICKNESS}
                     fill={`url(#${uid}-cut)`} stroke="#cbd5e1" strokeWidth="0.3" />
                   <path
                     d={`M ${x} ${y - PILL_RY} A ${PILL_RX} ${PILL_RY} 0 0 0 ${x} ${y + PILL_RY} Z`}

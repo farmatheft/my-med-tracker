@@ -607,13 +607,12 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, scrollToNext
                             e.stopPropagation();
                             onSelectIntake(isSelected ? null : intake);
                           }}
-                          className={`absolute flex items-center transition-all duration-200 cursor-pointer ${
-                            isNO
-                              ? "left-1/2 justify-center"
-                              : !isAH
-                                ? "left-1/2 -ml-[9px] justify-end"
-                                : "right-1/2 -mr-[9px] justify-start"
-                          } ${selectedId && !isSelected ? "opacity-30" : isNO ? "opacity-40 hover:opacity-70" : "opacity-100"}`}
+                          className={`absolute flex items-center transition-all duration-200 cursor-pointer ${isNO
+                            ? "left-1/2 justify-center"
+                            : !isAH
+                              ? "left-1/2 ml-[20px] justify-end"
+                              : "right-1/2 mr-[20px] justify-start"
+                            } ${selectedId && !isSelected ? "opacity-80" : isNO ? "opacity-80 hover:opacity-100" : "opacity-100"}`}
                           style={{
                             top: `${panelY}px`,
                             transform: isNO ? "translate(-50%, -50%)" : "translateY(-50%)",
@@ -764,11 +763,10 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, scrollToNext
                         <div
                           key={`cluster-${clusterKey}`}
                           onClick={toggleExpand}
-                          className={`absolute flex items-center transition-all duration-200 cursor-pointer ${
-                            !isAH
-                              ? "left-1/2 -ml-[9px] justify-end"
-                              : "right-1/2 -mr-[9px] justify-start"
-                          } opacity-100`}
+                          className={`absolute flex items-center transition-all duration-200 cursor-pointer ${!isAH
+                            ? "left-1/2 ml-[20px] justify-end"
+                            : "right-1/2 mr-[20px] justify-start"
+                            } opacity-100`}
                           style={{ top: `${cluster.topPx}px`, transform: "translateY(-50%)", maxWidth: "calc(50% - 18px)", zIndex: 12 }}
                         >
                           {/* Cluster dot */}
