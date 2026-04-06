@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isometric 3D Pill Animation</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #2e8b57;
+            /* Зелений фон як на референсі */
+            overflow: hidden;
+            font-family: sans-serif;
+        }
+
+        /* Камера для перспективи */
+        .camera {
+            perspective: 1200px;
+        }
+
+        /* Ізометрична сцена */
+        .scene {
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateX(60deg) rotateZ(45deg);
+        }
+
+        /* Тінь таблетки */
+        .shadow {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 50%;
+            top: -50px;
+            left: -50px;
+            filter: blur(8px);
+            animation: shadowPulse 1.8s infinite;
+        }
+
+        /* Контейнер для стрибка (вісь Z) */
+        .jump-container {
+            position: absolute;
+            transform-style: preserve-3d;
+            animation: jumpBounce 1.8s infinite;
+        }
+
+        /* Контейнер для обертання (вісь X) */
+        .spin-container {
+            position: absolute;
+            transform-style: preserve-3d;
+            animation: spinFlip 1.8s infinite linear;
+        }
+
+        /* Сама таблетка (збирається з шарів) */
+        .pill {
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .layer {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: #d8d8d8;
+            /* Колір боковин */
+            border-radius: 50%;
+            top: -50px;
+            left: -50px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Верхня грань (з градієнтом для об'єму) */
+        .layer.top {
+            background: radial-gradient(circle at 30% 30%, #ffffff 0%, #e6e6e6 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            /* Додано для ідеального обрізання лінії по краях */
+        }
+
+        /* Нижня грань */
+        .layer.bottom {
+            background: #cccccc;
+        }
+
+        /* SVG лінія (score line) */
+        .score-svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-45deg);
+            /* Початковий кут повороту лінії */
+        }
+
+        /* Анімація стрибка (ease-out вгору, ease-in вниз) */
+        @keyframes jumpBounce {
+
+            0%,
+            100% {
+                transform: translateZ(5px);
+                animation-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+            }
+
+            50% {
+                transform: translateZ(220px);
+                animation-timing-function: cubic-bezier(0.32, 0, 0.67, 0);
+            }
+        }
+
+        /* Анімація обертання (збереження моменту імпульсу - лінійно) */
+        @keyframes spinFlip {
+            0% {
+                transform: rotateY(0deg) rotateX(0deg);
+            }
+
+            100% {
+                transform: rotateY(1080deg) rotateX(360deg);
+            }
+
+            /* 3 повних оберти */
+        }
+
+        /* Анімація тіні */
+        @keyframes shadowPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.7;
+                animation-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+            }
+
+            50% {
+                transform: scale(0.35);
+                opacity: 0.1;
+                animation-timing-function: cubic-bezier(0.32, 0, 0.67, 0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="camera">
+        <div class="scene">
+            <div class="shadow"></div>
+            <div class="jump-container">
+                <div class="spin-container">
+                    <div class="pill" id="pill-body">
+                        <!-- Шари генеруються через JS для DRY (Don't Repeat Yourself) -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const pillBody = document.getElementById('pill-body');
+            const thickness = 16; // Товщина таблетки у пікселях
+
+            // Генеруємо 3D циліндр пошарово (оптимально для CSS 3D)
+            for (let i = 0; i <= thickness; i++) {
+                const layer = document.createElement('div');
+                layer.classList.add('layer');
+                layer.style.transform = `translateZ(${i}px)`;
+
+                if (i === thickness) {
+                    layer.classList.add('top');
+                    // Додаємо SVG лінію (Score line) на верхню грань
+                    layer.innerHTML = `
+            <svg class="score-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <!-- Тінь від канавки -->
+              <line x1="0" y1="51" x2="100" y2="51" stroke="rgba(255,255,255,0.9)" stroke-width="6" />
+              <!-- Сама канавка -->
+              <line x1="0" y1="49" x2="100" y2="49" stroke="#b3b3b3" stroke-width="6" />
+            </svg>
+          `;
+                } else if (i === 0) {
+                    layer.classList.add('bottom');
+                }
+
+                pillBody.appendChild(layer);
+            }
+        });
+    </script>
+
+</body>
+
+</html>

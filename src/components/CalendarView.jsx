@@ -84,7 +84,9 @@ const CalendarView = ({ onMonthChange, scrollToNextMonth, scrollToPrevMonth }) =
         hasIntakes,
         intakes: hasIntakes ? intakesByKey.get(key).intakes : [],
       });
-      cur = new Date(cur.getTime() + 86400000);
+      const nextDate = new Date(cur);
+      nextDate.setDate(nextDate.getDate() + 1);
+      cur = nextDate;
     }
     return days;
   }, [intakesByKey]);

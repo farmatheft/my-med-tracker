@@ -8,6 +8,7 @@ import CalendarView from "./components/CalendarView";
 import Statistics from "./components/Statistics";
 import BankProgress from "./components/BankProgress";
 import PinLock from "./components/PinLock";
+import SplashScreen from "./components/SplashScreen";
 import { TIMELINE_TITLE_DEFAULT } from "./utils/time";
 
 const AUTO_LOCK_MS = 60_000; // 1 minute
@@ -202,6 +203,7 @@ export default function App() {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [selectedIntakeId, setSelectedIntakeId] = useState(null);
   const [activeIntake, setActiveIntake] = useState(null);
+  const [showSplash, setShowSplash] = useState(true);
 
   // ── PIN lock state ──────────────────────────────────────────────────────
   const [isLocked, setIsLocked] = useState(true); // always locked on mount
@@ -757,7 +759,11 @@ export default function App() {
       )}
 
       {/* PIN Lock overlay — always shown on mount (refresh) */}
-      {isLocked && <PinLock onUnlock={handleUnlock} />}
+      {isLocked && !showSplash && <PinLock onUnlock={handleUnlock} />}
+      {isLocked && showSplash && <div className="fixed inset-0 z-50 bg-[#080c1c]" />} {/* Block UI beneath splash */}
+
+      {/* Splash Screen */}
+      {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
     </div>
   );
 }

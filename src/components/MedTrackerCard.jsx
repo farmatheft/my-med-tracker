@@ -90,7 +90,8 @@ const MedTrackerCard = ({ title, onAddSuccess }) => {
         timestamp: Timestamp.fromDate(intakeTimestamp),
         createdAt: Timestamp.now(),
       });
-      onAddSuccess(`${finalPatientId}: Додано ${currentDosage} ${unit}${subtype === "LOST" ? " (LOST)" : ""}`);
+      const displayPatientId = finalPatientId === "AH" ? "P1" : finalPatientId === "EI" ? "P2" : finalPatientId;
+      onAddSuccess(`${displayPatientId}: Додано ${currentDosage} ${unit}${subtype === "LOST" ? " (LOST)" : ""}`);
       setCurrentDosage(0);
       setCustomTime(null); // Reset time
     } catch (e) {

@@ -1,30 +1,108 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
   <defs>
-    <linearGradient id="pillGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#60A5FA" />
-      <stop offset="100%" stop-color="#3B82F6" />
-    </linearGradient>
-    <linearGradient id="pillGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#C084FC" />
-      <stop offset="100%" stop-color="#9333EA" />
-    </linearGradient>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#9333EA" flood-opacity="0.25" />
+    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#4B4B52"/>
+      <stop offset="100%" stop-color="#18181A"/>
+    </radialGradient>
+    <pattern id="tex" width="8" height="8" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="rgba(255,255,255,0.03)" />
+      <circle cx="5" cy="5" r="1.5" fill="rgba(0,0,0,0.08)" />
+    </pattern>
+    <radialGradient id="pillTop" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#cccccc"/>
+    </radialGradient>
+    <filter id="blurL">
+      <feGaussianBlur stdDeviation="16" />
     </filter>
+    <filter id="blurS">
+      <feGaussianBlur stdDeviation="6" />
+    </filter>
+
+    <!-- Cushion slice -->
+    <g id="cushion">
+      <g transform="scale(1, 0.5) rotate(45)">
+        <rect x="-110" y="-110" width="220" height="220" rx="36" fill="#3A3A40" />
+      </g>
+    </g>
+
+    <!-- Pill slice -->
+    <g id="pill">
+      <g transform="scale(1, 0.5) rotate(45)">
+        <circle cx="0" cy="0" r="45" fill="#D4D4D4" />
+      </g>
+    </g>
   </defs>
-  
-  <g transform="translate(128, 128) rotate(45) translate(-128, -128)" filter="url(#shadow)">
-    <!-- Bottom/Right Half -->
-    <path d="M128 64 h32 a64 64 0 0 1 0 128 h-32 v-128 z" fill="url(#pillGrad2)" />
-    <!-- Top/Left Half -->
-    <path d="M128 64 h-32 a64 64 0 0 0 0 128 h32 v-128 z" fill="url(#pillGrad1)" />
-    <!-- Center Line -->
-    <line x1="128" y1="64" x2="128" y2="192" stroke="rgba(255, 255, 255, 0.4)" stroke-width="4" />
+
+  <rect width="100%" height="100%" fill="url(#bg)"/>
+  <rect width="100%" height="100%" fill="url(#tex)"/>
+
+  <!-- Scene centered -->
+  <g transform="translate(256, 350)">
     
-    <!-- Cross on the left half -->
-    <path d="M76 128 h24 M88 116 v24" stroke="white" stroke-width="8" stroke-linecap="round" />
+    <!-- Cushion Shadow -->
+    <g transform="scale(1, 0.5) rotate(45)">
+      <rect x="-115" y="-115" width="230" height="230" rx="35" fill="rgba(0,0,0,0.6)" filter="url(#blurL)"/>
+    </g>
+
+    <!-- Cushion Body (Z from 0 to 35) -->
+    <use href="#cushion" transform="translate(0, 0)" />
+    <use href="#cushion" transform="translate(0, -2)" />
+    <use href="#cushion" transform="translate(0, -4)" />
+    <use href="#cushion" transform="translate(0, -6)" />
+    <use href="#cushion" transform="translate(0, -8)" />
+    <use href="#cushion" transform="translate(0, -10)" />
+    <use href="#cushion" transform="translate(0, -12)" />
+    <use href="#cushion" transform="translate(0, -14)" />
+    <use href="#cushion" transform="translate(0, -16)" />
+    <use href="#cushion" transform="translate(0, -18)" />
+    <use href="#cushion" transform="translate(0, -20)" />
+    <use href="#cushion" transform="translate(0, -22)" />
+    <use href="#cushion" transform="translate(0, -24)" />
+    <use href="#cushion" transform="translate(0, -26)" />
+    <use href="#cushion" transform="translate(0, -28)" />
+    <use href="#cushion" transform="translate(0, -30)" />
+    <use href="#cushion" transform="translate(0, -32)" />
+    <use href="#cushion" transform="translate(0, -34)" />
     
-    <!-- Light Reflection -->
-    <path d="M112 76 c -10 0 -20 5 -26 14" stroke="rgba(255,255,255,0.6)" stroke-width="6" stroke-linecap="round" fill="none" />
+    <!-- Cushion Top Surface -->
+    <g transform="translate(0, -35)">
+      <g transform="scale(1, 0.5) rotate(45)">
+        <rect x="-110" y="-110" width="220" height="220" rx="36" fill="#4D4D54" />
+        <rect x="-105" y="-105" width="210" height="210" rx="32" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="2"/>
+        <circle cx="0" cy="0" r="50" fill="rgba(0,0,0,0.15)" filter="url(#blurS)"/>
+      </g>
+    </g>
+
+    <!-- Pill Shadow on Cushion (Sunk into surface) -->
+    <g transform="translate(0, -30)">
+      <g transform="scale(1, 0.5) rotate(45)">
+        <circle cx="0" cy="0" r="55" fill="rgba(0,0,0,0.5)" filter="url(#blurS)"/>
+      </g>
+    </g>
+
+    <!-- Pill Body (Z from 30 to 50) -->
+    <use href="#pill" transform="translate(0, -30)" />
+    <use href="#pill" transform="translate(0, -32)" />
+    <use href="#pill" transform="translate(0, -34)" />
+    <use href="#pill" transform="translate(0, -36)" />
+    <use href="#pill" transform="translate(0, -38)" />
+    <use href="#pill" transform="translate(0, -40)" />
+    <use href="#pill" transform="translate(0, -42)" />
+    <use href="#pill" transform="translate(0, -44)" />
+    <use href="#pill" transform="translate(0, -46)" />
+    <use href="#pill" transform="translate(0, -48)" />
+
+    <!-- Pill Top Surface -->
+    <g transform="translate(0, -50)">
+      <g transform="scale(1, 0.5) rotate(45)">
+        <circle cx="0" cy="0" r="45" fill="url(#pillTop)" />
+        <g transform="rotate(30)">
+          <line x1="-45" y1="2" x2="45" y2="2" stroke="rgba(255,255,255,1)" stroke-width="3"/>
+          <line x1="-45" y1="-1" x2="45" y2="-1" stroke="#A8A8A8" stroke-width="4"/>
+        </g>
+      </g>
+    </g>
+
   </g>
 </svg>

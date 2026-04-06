@@ -94,7 +94,8 @@ export default function IntakePanel({ onAddSuccess }) {
         }
       }
 
-      onAddSuccess(`${activePatient}: Додано ${totalMg} мг (PO)`);
+      const displayPatient = activePatient === "AH" ? "P1" : activePatient === "EI" ? "P2" : activePatient;
+      onAddSuccess(`${displayPatient}: Додано ${totalMg} мг (PO)`);
       patchState(activePatient, { pills25: 0, pills10: 0 });
       setConfirmStep("idle");
     } catch (e) {
