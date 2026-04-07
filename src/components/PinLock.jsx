@@ -79,7 +79,7 @@ export default function PinLock({ onUnlock }) {
   // Memoize the numpad to completely prevent re-renders of the keys on every digit press
   const numpadGrid = useMemo(() => {
     return (
-      <div className="grid grid-cols-3 gap-3" style={{ width: "min(280px, 80vw)" }}>
+      <div className="grid grid-cols-3" style={{ gap: 10, width: "min(260px, 78vw)" }}>
         {numpad.map((d, i) => {
           if (d === "") return <div key={i} />;
           const isBack = d === "⌫";
@@ -97,7 +97,7 @@ export default function PinLock({ onUnlock }) {
                 background: "transparent",
                 border: "none",
                 color: "var(--text-primary)",
-                fontSize: isBack ? "24px" : "36px",
+                fontSize: isBack ? 22 : 32,
                 fontWeight: isBack ? "normal" : "300",
                 WebkitTapHighlightColor: "transparent",
               }}
@@ -137,7 +137,7 @@ export default function PinLock({ onUnlock }) {
       </div>
 
       {/* Title */}
-      <p className="text-xs font-black uppercase tracking-[0.25em] mb-6" style={{ color: "var(--text-secondary)", opacity: 0.6 }}>
+      <p style={{ fontSize: 11, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.25em", marginBottom: 20, color: "var(--text-secondary)", opacity: 0.6 }}>
         Введіть PIN
       </p>
 

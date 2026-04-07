@@ -78,15 +78,14 @@ const IntakeDetailsModal = ({ intake, onClose }) => {
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h3 className="text-base font-black" style={{ color: "var(--text-primary)" }}>
+            <h3 style={{ fontSize: 15, fontWeight: 900, color: "var(--text-primary)" }}>
               Редагувати запис
             </h3>
             <div className="flex items-center gap-1.5 mt-1">
-              <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full"
-                style={{ color: accentColor, background: `color-mix(in srgb, ${accentColor} 12%, transparent)` }}>
+              <span style={{ fontSize: 9, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.12em", padding: "2px 8px", borderRadius: 999, color: accentColor, background: `color-mix(in srgb, ${accentColor} 12%, transparent)` }}>
                 {intake.patientId === "AH" ? "P1" : "P2"}
               </span>
-              <span className="text-[10px] font-bold" style={{ color: "var(--text-secondary)" }}>PO</span>
+              <span style={{ fontSize: 9, fontWeight: 700, color: "var(--text-secondary)" }}>PO</span>
             </div>
           </div>
           <button type="button" onClick={onClose}
@@ -102,8 +101,8 @@ const IntakeDetailsModal = ({ intake, onClose }) => {
             <PillTower pills={pills10 / PILL10_MG} accentColor={accentColor} pillType="10" />
           </div>
           <div className="text-center px-3">
-            <div className="text-3xl font-black tabular-nums leading-none" style={{ color: accentColor }}>{totalMg}</div>
-            <div className="text-[10px] font-bold mt-0.5" style={{ color: accentColor, opacity: 0.6 }}>мг</div>
+            <div style={{ fontSize: 26, fontWeight: 900, fontVariantNumeric: "tabular-nums", lineHeight: 1, color: accentColor }}>{totalMg}</div>
+            <div style={{ fontSize: 9, fontWeight: 700, marginTop: 2, color: accentColor, opacity: 0.6 }}>мг</div>
           </div>
           <div className="w-20">
             <PillTower pills={pills25 / PILL25_MG} accentColor={accentColor} pillType="25" />
@@ -144,11 +143,14 @@ const IntakeDetailsModal = ({ intake, onClose }) => {
             { label: "Час", type: "time", val: timeValue, set: setTimeValue },
           ].map(({ label, type, val, set }) => (
             <div key={type}>
-              <label className="block text-[9px] font-black uppercase tracking-wider mb-1.5"
-                style={{ color: "var(--text-secondary)" }}>{label}</label>
+              <label style={{ display: "block", fontSize: 8, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 5, color: "var(--text-secondary)" }}>{label}</label>
               <input type={type} value={val} onChange={(e) => set(e.target.value)}
-                className="w-full rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none"
+                className="w-full focus:outline-none"
                 style={{
+                  borderRadius: 10,
+                  padding: "7px 10px",
+                  fontSize: 12,
+                  fontWeight: 600,
                   background: "rgba(255,255,255,0.06)",
                   border: "1px solid var(--glass-border)",
                   color: "var(--text-primary)",
@@ -165,13 +167,16 @@ const IntakeDetailsModal = ({ intake, onClose }) => {
             <FaTrash size={14} />
           </button>
           <button type="button" onClick={onClose}
-            className="flex-1 rounded-2xl px-4 py-2.5 text-xs font-bold transition-all hover:opacity-80"
-            style={{ border: "1px solid var(--glass-border)", color: "var(--text-primary)", background: "rgba(255,255,255,0.04)" }}>
+            className="flex-1 rounded-2xl transition-all hover:opacity-80 btn-mobile"
+            style={{ border: "1px solid var(--glass-border)", color: "var(--text-primary)", background: "rgba(255,255,255,0.04)", padding: "9px 12px", fontSize: 12, fontWeight: 700 }}>
             Закрити
           </button>
           <button type="button" onClick={handleSave}
-            className="flex-1 rounded-2xl px-4 py-2.5 text-xs font-black shadow-lg transition-all hover:scale-[1.02] active:scale-[0.97]"
+            className="flex-1 rounded-2xl shadow-lg transition-all hover:scale-[1.02] active:scale-[0.97] btn-mobile"
             style={{
+              padding: "9px 12px",
+              fontSize: 12,
+              fontWeight: 900,
               background: `linear-gradient(135deg, ${accentColor}, color-mix(in srgb, ${accentColor} 70%, #fff))`,
               color: "white",
               boxShadow: `0 6px 20px color-mix(in srgb, ${accentColor} 35%, transparent)`,
@@ -214,32 +219,40 @@ const IntakeDetailsModal = ({ intake, onClose }) => {
 
 function ModalPillControl({ label, count, mg, step, onMinus, onPlus, accent, pillType }) {
   return (
-    <div className="flex items-center gap-2 rounded-xl px-3 py-2"
-      style={{ background: "rgba(255,255,255,0.03)", border: "1px solid var(--glass-border)" }}>
+    <div className="flex items-center rounded-xl"
+      style={{ gap: 8, padding: "7px 10px", background: "rgba(255,255,255,0.03)", border: "1px solid var(--glass-border)" }}>
       <button type="button" onClick={onMinus}
-        className="w-9 h-9 rounded-xl flex items-center justify-center text-base font-black transition-all active:scale-90"
+        className="rounded-xl flex items-center justify-center transition-all active:scale-90 btn-mobile"
         style={{
+          width: 34,
+          height: 34,
+          fontSize: 15,
+          fontWeight: 900,
           background: `color-mix(in srgb, ${accent} 10%, transparent)`, color: accent,
           border: `1px solid color-mix(in srgb, ${accent} 25%, transparent)`,
           WebkitTapHighlightColor: "transparent",
         }}>−</button>
-      <div className="flex-1 text-center">
-        <div className="flex items-center justify-center gap-1.5">
+      <div className="flex-1 text-center" style={{ minWidth: 0 }}>
+        <div className="flex items-center justify-center" style={{ gap: 5 }}>
           <PillTower pills={0} pillType={pillType} mini className="flex-shrink-0" />
-          <span className="text-xs font-black tabular-nums" style={{ color: accent }}>
+          <span style={{ fontSize: 12, fontWeight: 900, fontVariantNumeric: "tabular-nums", color: accent }}>
             {pillType === "25" ? count.toFixed(1).replace(".0", "") : count} таб
           </span>
-          <span className="text-[9px] font-bold" style={{ color: "var(--text-secondary)", opacity: 0.5 }}>
+          <span style={{ fontSize: 9, fontWeight: 700, color: "var(--text-secondary)", opacity: 0.5 }}>
             ({mg} мг)
           </span>
         </div>
-        <div className="text-[8px] font-bold mt-0.5" style={{ color: "var(--text-secondary)", opacity: 0.4 }}>
+        <div style={{ fontSize: 8, fontWeight: 700, marginTop: 2, color: "var(--text-secondary)", opacity: 0.4 }}>
           {label} · крок {step}
         </div>
       </div>
       <button type="button" onClick={onPlus}
-        className="w-9 h-9 rounded-xl flex items-center justify-center text-base font-black transition-all active:scale-90"
+        className="rounded-xl flex items-center justify-center transition-all active:scale-90 btn-mobile"
         style={{
+          width: 34,
+          height: 34,
+          fontSize: 15,
+          fontWeight: 900,
           background: `color-mix(in srgb, ${accent} 10%, transparent)`, color: accent,
           border: `1px solid color-mix(in srgb, ${accent} 25%, transparent)`,
           WebkitTapHighlightColor: "transparent",

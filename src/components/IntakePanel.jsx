@@ -172,12 +172,10 @@ export default function IntakePanel({ onAddSuccess }) {
             >
               <div className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full transition-all duration-300"
                 style={{ background: accent, opacity: isActive ? 1 : 0, boxShadow: isActive ? `0 0 8px ${accent}` : "none" }} />
-              <span className="text-[11px] font-black tracking-[0.18em] uppercase leading-none"
-                style={{ opacity: isActive ? 1 : 0.35, textShadow: isActive ? `0 0 12px ${accent}88` : "none" }}>
+              <span style={{ fontSize: 11, fontWeight: 900, letterSpacing: "0.18em", textTransform: "uppercase", lineHeight: 1, opacity: isActive ? 1 : 0.35, textShadow: isActive ? `0 0 12px ${accent}88` : "none" }}>
                 {id === "AH" ? "P1" : id === "EI" ? "P2" : id}
               </span>
-              <span className="text-[9px] font-bold mt-0.5 tabular-nums"
-                  style={{ color: isActive ? accent : "var(--text-secondary)", opacity: isActive ? 0.85 : 0.25 }}>
+              <span style={{ fontSize: 9, fontWeight: 700, marginTop: 2, fontVariantNumeric: "tabular-nums", color: isActive ? accent : "var(--text-secondary)", opacity: isActive ? 0.85 : 0.25 }}>
                   {mg} мг
                 </span>
             </button>
@@ -236,13 +234,13 @@ export default function IntakePanel({ onAddSuccess }) {
               </div>
 
               {/* CENTER — controls column */}
-              <div className="flex flex-col items-center justify-center gap-3 px-1 py-3 flex-shrink-0" style={{ width: 100 }}>
+              <div className="flex flex-col items-center justify-center flex-shrink-0" style={{ gap: 10, padding: "10px 2px", width: 92 }}>
                 {/* Total dosage */}
-                <div className="text-center mb-1">
-                  <div className="text-3xl font-black tabular-nums leading-none" style={{ color: accentColor }}>
+                <div className="text-center" style={{ marginBottom: 4 }}>
+                  <div style={{ fontSize: 26, fontWeight: 900, fontVariantNumeric: "tabular-nums", lineHeight: 1, color: accentColor }}>
                     {totalMg}
                   </div>
-                  <div className="text-[10px] font-bold mt-0.5" style={{ color: accentColor, opacity: 0.6 }}>мг</div>
+                  <div style={{ fontSize: 10, fontWeight: 700, marginTop: 2, color: accentColor, opacity: 0.6 }}>мг</div>
                 </div>
 
                 {/* 10mg control */}
@@ -308,13 +306,16 @@ export default function IntakePanel({ onAddSuccess }) {
             </div>
 
             {/* Add button */}
-            <div className="px-4 pb-3 pt-1">
+            <div style={{ padding: "4px 12px 10px" }}>
               <button
                 type="button"
                 onClick={openConfirm}
                 disabled={totalMg === 0}
-                className="w-full py-3 rounded-2xl font-black text-sm transition-all duration-300 hover:scale-[1.02] active:scale-[0.97] relative overflow-hidden group"
+                className="w-full rounded-2xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.97] relative overflow-hidden group btn-mobile"
                 style={{
+                  padding: "10px 0",
+                  fontSize: 13,
+                  fontWeight: 900,
                   background: totalMg > 0 ? "var(--add-btn-bg)" : "rgba(255,255,255,0.04)",
                   color: totalMg > 0 ? "var(--add-btn-text)" : "var(--text-secondary)",
                   border: totalMg > 0 ? "1px solid var(--add-btn-border)" : "1px solid var(--glass-border)",
@@ -346,9 +347,14 @@ export default function IntakePanel({ onAddSuccess }) {
             `}</style>
 
             {/* Summary */}
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl flex items-center justify-center font-black text-xs flex-shrink-0"
+            <div className="flex items-center" style={{ gap: 10 }}>
+              <div className="flex items-center justify-center flex-shrink-0"
                 style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 14,
+                  fontSize: 11,
+                  fontWeight: 900,
                   background: `color-mix(in srgb, ${accentColor} 18%, transparent)`,
                   border: `1.5px solid color-mix(in srgb, ${accentColor} 40%, transparent)`,
                   color: accentColor,
@@ -356,10 +362,10 @@ export default function IntakePanel({ onAddSuccess }) {
                 {activePatient === "AH" ? "P1" : "P2"}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-lg font-black tracking-tighter leading-none" style={{ color: "var(--text-primary)" }}>
-                  {totalMg} <span className="text-xs font-bold opacity-50">мг</span>
+                <div style={{ fontSize: 17, fontWeight: 900, letterSpacing: "-0.02em", lineHeight: 1, color: "var(--text-primary)" }}>
+                  {totalMg} <span style={{ fontSize: 11, fontWeight: 700, opacity: 0.5 }}>мг</span>
                 </div>
-                <div className="text-[9px] font-bold mt-0.5" style={{ color: "var(--text-secondary)", opacity: 0.7 }}>
+                <div style={{ fontSize: 9, fontWeight: 700, marginTop: 3, color: "var(--text-secondary)", opacity: 0.7 }}>
                   {st.pills25 > 0 && `${(st.pills25 / PILL25_MG).toFixed(1).replace(".0", "")}×25мг`}
                   {st.pills25 > 0 && st.pills10 > 0 && " + "}
                   {st.pills10 > 0 && `${st.pills10 / PILL10_MG}×10мг`}
@@ -367,9 +373,9 @@ export default function IntakePanel({ onAddSuccess }) {
                 </div>
               </div>
               <button type="button" onClick={() => setConfirmStep("idle")}
-                className="w-7 h-7 rounded-full flex items-center justify-center transition-all hover:opacity-70 active:scale-90 flex-shrink-0"
-                style={{ background: "rgba(255,255,255,0.07)", color: "var(--text-secondary)", border: "1px solid var(--glass-border)" }}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-3.5 h-3.5">
+                className="flex items-center justify-center transition-all hover:opacity-70 active:scale-90 flex-shrink-0 btn-mobile"
+                style={{ width: 26, height: 26, borderRadius: "50%", background: "rgba(255,255,255,0.07)", color: "var(--text-secondary)", border: "1px solid var(--glass-border)" }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ width: 12, height: 12 }}>
                   <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
               </button>
@@ -377,17 +383,20 @@ export default function IntakePanel({ onAddSuccess }) {
 
             {/* Time picker */}
             {confirmStep === "pick-time" && (
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2" style={{ gap: 8 }}>
                 {[
                   { label: "Дата", type: "date", val: dateValue, set: setDateValue },
                   { label: "Час", type: "time", val: timeValue, set: setTimeValue },
                 ].map(({ label, type, val, set }) => (
                   <div key={type}>
-                    <label className="block text-[9px] font-black uppercase tracking-wider mb-1"
-                      style={{ color: "var(--text-secondary)" }}>{label}</label>
+                    <label style={{ display: "block", fontSize: 8, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 4, color: "var(--text-secondary)" }}>{label}</label>
                     <input type={type} value={val} onChange={(e) => set(e.target.value)}
-                      className="w-full rounded-xl px-2 py-2 text-xs font-semibold focus:outline-none"
+                      className="w-full focus:outline-none"
                       style={{
+                        borderRadius: 10,
+                        padding: "7px 8px",
+                        fontSize: 12,
+                        fontWeight: 600,
                         background: "rgba(255,255,255,0.06)",
                         border: `1px solid color-mix(in srgb, ${accentColor} 30%, transparent)`,
                         color: "var(--text-primary)",
@@ -398,12 +407,15 @@ export default function IntakePanel({ onAddSuccess }) {
             )}
 
             {/* Action buttons */}
-            <div className="flex flex-col gap-1.5" style={{ borderTop: "1px solid var(--glass-border)", paddingTop: 8 }}>
+            <div className="flex flex-col" style={{ gap: 5, borderTop: "1px solid var(--glass-border)", paddingTop: 8 }}>
               {confirmStep === "confirm" ? (
                 <>
                   <button type="button" onClick={() => handleAddIntake(new Date())} disabled={isAdding}
-                    className="w-full py-3 rounded-2xl font-black text-sm transition-all duration-200 hover:scale-[1.02] active:scale-[0.97] relative overflow-hidden group"
+                    className="w-full rounded-2xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.97] relative overflow-hidden group btn-mobile"
                     style={{
+                      padding: "10px 0",
+                      fontSize: 13,
+                      fontWeight: 900,
                       background: "var(--add-btn-bg)", color: "var(--add-btn-text)",
                       border: "1px solid var(--add-btn-border)",
                       boxShadow: "0 8px 24px var(--shadow-color-strong), 0 0 16px var(--add-btn-glow)44",
@@ -411,18 +423,18 @@ export default function IntakePanel({ onAddSuccess }) {
                     }}>
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                       style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 55%)" }} />
-                    <span className="relative z-10 inline-flex items-center justify-center gap-2">
+                    <span className="relative z-10 inline-flex items-center justify-center" style={{ gap: 6 }}>
                       {isAdding
-                        ? <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                        : <span className="text-xl leading-none">+</span>}
+                        ? <span className="border-2 border-current border-t-transparent rounded-full animate-spin" style={{ width: 14, height: 14 }} />
+                        : <span style={{ fontSize: 18, lineHeight: 1 }}>+</span>}
                       Додати зараз
                     </span>
                   </button>
                   <button type="button" onClick={() => setConfirmStep("pick-time")}
-                    className="w-full py-2.5 rounded-xl font-bold text-xs transition-all hover:opacity-80 active:scale-[0.97]"
-                    style={{ background: "rgba(255,255,255,0.04)", color: "var(--text-secondary)", border: "1px solid var(--glass-border)" }}>
-                    <span className="inline-flex items-center gap-1.5">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    className="w-full rounded-xl transition-all hover:opacity-80 active:scale-[0.97] btn-mobile"
+                    style={{ padding: "8px 0", fontSize: 11, fontWeight: 700, background: "rgba(255,255,255,0.04)", color: "var(--text-secondary)", border: "1px solid var(--glass-border)" }}>
+                    <span className="inline-flex items-center" style={{ gap: 5 }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: 11, height: 11 }}>
                         <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
                       </svg>
                       Вказати час
@@ -430,15 +442,18 @@ export default function IntakePanel({ onAddSuccess }) {
                   </button>
                 </>
               ) : (
-                <div className="flex gap-2">
+                <div className="flex" style={{ gap: 8 }}>
                   <button type="button" onClick={() => setConfirmStep("confirm")}
-                    className="flex-1 rounded-xl px-3 py-2.5 text-xs font-bold transition-all active:scale-95"
-                    style={{ border: "1px solid var(--glass-border)", color: "var(--text-primary)", background: "rgba(255,255,255,0.04)" }}>
+                    className="flex-1 rounded-xl transition-all active:scale-95 btn-mobile"
+                    style={{ padding: "8px 10px", fontSize: 12, fontWeight: 700, border: "1px solid var(--glass-border)", color: "var(--text-primary)", background: "rgba(255,255,255,0.04)" }}>
                     Назад
                   </button>
                   <button type="button" onClick={handleAddWithTime} disabled={isAdding}
-                    className="flex-[2] rounded-xl px-3 py-2.5 text-xs font-black transition-all active:scale-95 hover:opacity-90 relative overflow-hidden"
+                    className="flex-[2] rounded-xl transition-all active:scale-95 hover:opacity-90 relative overflow-hidden btn-mobile"
                     style={{
+                      padding: "8px 10px",
+                      fontSize: 12,
+                      fontWeight: 900,
                       background: `linear-gradient(135deg, ${accentColor}, color-mix(in srgb, ${accentColor} 70%, #fff))`,
                       color: "white", opacity: isAdding ? 0.6 : 1,
                       boxShadow: `0 6px 20px color-mix(in srgb, ${accentColor} 40%, transparent)`,
@@ -462,21 +477,26 @@ export default function IntakePanel({ onAddSuccess }) {
 function PillControl({ count, countLabel, mgLabel, onMinus, onPlus, accentColor, pillType }) {
   return (
     <div
-      className="w-full flex flex-col items-center gap-2 rounded-xl px-2 py-2"
+      className="w-full flex flex-col items-center rounded-xl"
       style={{
+        gap: 6,
+        padding: "6px 6px",
         background: "rgba(255,255,255,0.03)",
         border: "1px solid var(--glass-border)",
       }}
     >
-      <div className="w-full flex items-center justify-between text-[11px] font-black tabular-nums" style={{ color: accentColor }}>
+      <div className="w-full flex items-center justify-between" style={{ fontSize: 10, fontWeight: 900, fontVariantNumeric: "tabular-nums", color: accentColor }}>
         <span>{countLabel}</span>
-        {/* <span style={{ opacity: 0.65 }}>{mgLabel}</span> */}
       </div>
 
-      <div className="flex items-center justify-between w-full px-2">
+      <div className="flex items-center justify-between w-full" style={{ padding: "0 6px" }}>
         <button type="button" onClick={onMinus}
-          className="text-2xl leading-none font-black transition-all active:scale-90 pb-1"
+          className="transition-all active:scale-90 btn-mobile"
           style={{
+            fontSize: 22,
+            lineHeight: 1,
+            fontWeight: 900,
+            paddingBottom: 2,
             color: accentColor,
             WebkitTapHighlightColor: "transparent",
             opacity: count > 0 ? 1 : 0.3
@@ -485,8 +505,12 @@ function PillControl({ count, countLabel, mgLabel, onMinus, onPlus, accentColor,
         <PillTower pills={0} pillType={pillType} mini className="flex-shrink-0 opacity-80" />
 
         <button type="button" onClick={onPlus}
-          className="text-2xl leading-none font-black transition-all active:scale-90 pb-1"
+          className="transition-all active:scale-90 btn-mobile"
           style={{
+            fontSize: 22,
+            lineHeight: 1,
+            fontWeight: 900,
+            paddingBottom: 2,
             color: accentColor,
             WebkitTapHighlightColor: "transparent",
           }}>+</button>

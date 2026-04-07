@@ -58,6 +58,31 @@
     --glass-shine: rgba(255, 255, 255, 0.06);
     --glass-blur: 20px;
     --glass-blur-heavy: 40px;
+
+    /* Mobile-safe spacing scale (px-based to avoid font scaling issues) */
+    --sp-xs: 4px;
+    --sp-sm: 8px;
+    --sp-md: 12px;
+    --sp-lg: 16px;
+    --sp-xl: 20px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   MOBILE-FIRST RESET — prevent Android font-size scaling from breaking layouts
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/*
+ * We set -webkit-text-size-adjust: 100% to prevent automatic text inflation
+ * on mobile browsers. All font sizes use px for critical UI elements to be
+ * immune to Android system font scaling. Clamp() is used for text that
+ * should scale sensibly.
+ */
+
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* Lock the root font size so rem is predictable even with Android scaling */
+    font-size: 16px !important;
 }
 
 body {
@@ -67,7 +92,8 @@ body {
     overflow-x: hidden;
     min-height: 100vh;
     min-height: 100dvh; /* dynamic viewport height for mobile browsers */
-    width: 100vw;
+    width: 100%;
+    max-width: 100vw; /* prevent any horizontal overflow */
     font-family: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
         sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -81,11 +107,21 @@ body {
     padding-bottom: env(safe-area-inset-bottom);
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
+    /* Prevent text wrapping from causing overflow */
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Global horizontal overflow prevention */
+*, *::before, *::after {
+    box-sizing: border-box;
 }
 
 #root {
     height: 100%;
     width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
 }
 
 /* ── Scrollbar ─────────────────────────────────────────────────────────────── */
@@ -258,4 +294,56 @@ body {
 }
 .ring-pulse {
     animation: ringPulse 2s ease-out infinite;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   MOBILE-FIRST — Galaxy A17 (384px CSS viewport width) optimisations
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/*
+ * Force all text inside the app to be sized with px so that Android system
+ * font-size settings can't break the layout. This is the "nuclear" but
+ * bulletproof approach.
+ *
+ * We do NOT restyle every generic element — only elements that Tailwind
+ * generates with rem-based text classes. We provide px-based overrides.
+ */
+
+/* Utility: shrink text to fit container — used on labels/buttons */
+.text-fit {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+/* Ensure flex children don't push parents wider than viewport */
+.flex-safe {
+    min-width: 0;
+    max-width: 100%;
+}
+
+/* Mobile-safe button: fixed dimensions, uses px sizing */
+.btn-mobile {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* ── Mobile header compact ──────────────────────────────────────────────────── */
+@media (max-width: 420px) {
+    .header-title-text {
+        font-size: 9px !important;
+        letter-spacing: 0.16em !important;
+    }
+}
+
+/* ── Prevent horizontal scroll globally ─────────────────────────────────────── */
+html, body, #root {
+    max-width: 100vw;
+    overflow-x: hidden;
 }

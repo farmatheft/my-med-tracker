@@ -291,10 +291,16 @@ export default function App() {
 
   return (
     <div
-      className="h-screen w-screen overflow-y-auto overflow-x-hidden flex flex-col relative"
+      className="flex flex-col relative"
       style={{
         background: `linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end))`,
         transition: "background 0.5s ease",
+        minHeight: "100dvh",
+        height: "100dvh",
+        width: "100%",
+        maxWidth: "100vw",
+        overflowX: "hidden",
+        overflowY: "auto",
       }}
     >
       {/* Background ambient light */}
@@ -336,13 +342,15 @@ export default function App() {
 
       {/* Header — floating glassmorphic bar */}
       <header
-        className="sticky top-0 z-50 flex-shrink-0 px-4 py-2.5"
+        className="sticky top-0 z-50 flex-shrink-0"
         style={{
           background: "rgba(0,0,0,0.0)",
+          padding: "8px 12px",
         }}
       >
         <div
-          className="flex items-center justify-between rounded-2xl px-3 py-2 relative overflow-hidden"
+          className="flex items-center justify-between rounded-2xl relative overflow-hidden"
+          /* Compact header padding for mobile */
           style={{
             background: currentTheme?.isDark
               ? "rgba(8,12,28,0.55)"
@@ -351,6 +359,7 @@ export default function App() {
             WebkitBackdropFilter: "blur(28px)",
             border: "1px solid var(--glass-border)",
             boxShadow: "0 4px 24px var(--shadow-color), inset 0 1px 0 var(--glass-shine)",
+            padding: "6px 10px",
           }}
         >
           {/* Subtle top shine line */}
@@ -367,8 +376,11 @@ export default function App() {
                 activeView === VIEW.STATISTICS ? VIEW.MAIN : VIEW.STATISTICS,
               )
             }
-            className="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 relative"
+            className="rounded-xl flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 relative btn-mobile"
+            /* Fixed 34px to avoid font scaling */
             style={{
+              width: 34,
+              height: 34,
               background: activeView === VIEW.STATISTICS
                 ? "var(--accent-primary)"
                 : "var(--glass-bg)",
@@ -402,8 +414,10 @@ export default function App() {
           <button
             type="button"
             onClick={handleLock}
-            className="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-90"
+            className="rounded-xl flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-90 btn-mobile"
             style={{
+              width: 30,
+              height: 30,
               background: "var(--glass-bg)",
               border: "1px solid var(--glass-border)",
               color: "var(--text-secondary)",
@@ -411,19 +425,29 @@ export default function App() {
             aria-label="Lock"
             title="Заблокувати"
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 14, height: 14 }}>
               <rect x="3" y="11" width="18" height="11" rx="2" />
               <path d="M7 11V7a5 5 0 0 1 10 0v4" />
             </svg>
           </button>
 
           {/* Center: page title */}
-          <div className="flex flex-col items-center select-none">
-            <div className="flex items-center gap-1.5 mb-1 pointer-events-none">
-              <img src="/logo.svg" alt="Logo" className="w-4 h-4" style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.15))" }} />
+          <div className="flex flex-col items-center select-none" style={{ minWidth: 0 }}>
+            <div className="flex items-center pointer-events-none" style={{ gap: 5, marginBottom: 3 }}>
+              <img src="/logo.svg" alt="Logo" style={{ width: 14, height: 14, flexShrink: 0, filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.15))" }} />
               <span
-                className="text-[10px] font-black uppercase tracking-[0.22em] leading-none mt-[2px]"
-                style={{ color: "var(--text-primary)", opacity: 0.9 }}
+                className="header-title-text"
+                style={{
+                  fontSize: 10,
+                  fontWeight: 900,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.2em",
+                  lineHeight: 1,
+                  marginTop: 1,
+                  color: "var(--text-primary)",
+                  opacity: 0.9,
+                  whiteSpace: "nowrap",
+                }}
               >
                 {activeView === VIEW.MAIN
                   ? "Med Tracker"
@@ -474,8 +498,10 @@ export default function App() {
                   : VIEW.THEME_SELECTOR,
               )
             }
-            className="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95"
+            className="rounded-xl flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 btn-mobile"
             style={{
+              width: 34,
+              height: 34,
               background: activeView === VIEW.THEME_SELECTOR
                 ? "var(--accent-ei)"
                 : "var(--glass-bg)",
@@ -531,10 +557,10 @@ export default function App() {
       )}
 
       {/* Main Content */}
-      <main className="flex-grow flex flex-col gap-4 max-w-3xl mx-auto w-full px-4 pb-6 min-h-0">
+      <main className="flex-grow flex flex-col min-h-0" style={{ gap: 12, maxWidth: 768, margin: "0 auto", width: "100%", paddingLeft: 12, paddingRight: 12, paddingBottom: 20, maxWidth: "100%" }}>
         {/* MAIN VIEW */}
         {activeView === VIEW.MAIN && (
-          <div className="flex flex-col gap-4 flex-grow page-enter-left pt-1">
+          <div className="flex flex-col flex-grow page-enter-left" style={{ gap: 12, paddingTop: 4 }}>
             {/* BankProgress is temporarily hidden per user request */}
             {/* {!isPanic && <BankProgress />} */}
 
@@ -555,16 +581,16 @@ export default function App() {
               >
                 <div className="absolute inset-x-0 top-0 h-px pointer-events-none z-10"
                   style={{ background: "linear-gradient(90deg, transparent 5%, var(--glass-shine) 50%, transparent 95%)" }} />
-                <div className="flex py-8 px-4">
+                <div className="flex" style={{ padding: "20px 14px" }}>
                   <div className="flex-1 flex flex-col items-center border-r" style={{ borderColor: "var(--glass-border)" }}>
-                    <span className="text-2xl font-black mb-1" style={{ color: "var(--accent-ah)" }}>Пацієнт 1</span>
-                    <span className="text-sm font-semibold tabular-nums" style={{ color: "var(--text-secondary)" }}>01.04.2026</span>
-                    <span className="text-[9px] font-black tracking-widest uppercase mt-1 opacity-50" style={{ color: "var(--text-secondary)" }}>Початок лікування</span>
+                    <span style={{ fontSize: 18, fontWeight: 900, marginBottom: 4, color: "var(--accent-ah)" }}>Пацієнт 1</span>
+                    <span style={{ fontSize: 13, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: "var(--text-secondary)" }}>01.04.2026</span>
+                    <span style={{ fontSize: 8, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase", marginTop: 4, opacity: 0.5, color: "var(--text-secondary)" }}>Початок лікування</span>
                   </div>
                   <div className="flex-1 flex flex-col items-center">
-                    <span className="text-2xl font-black mb-1" style={{ color: "var(--accent-ei)" }}>Пацієнт 2</span>
-                    <span className="text-sm font-semibold tabular-nums" style={{ color: "var(--text-secondary)" }}>31.03.2026</span>
-                    <span className="text-[9px] font-black tracking-widest uppercase mt-1 opacity-50" style={{ color: "var(--text-secondary)" }}>Початок лікування</span>
+                    <span style={{ fontSize: 18, fontWeight: 900, marginBottom: 4, color: "var(--accent-ei)" }}>Пацієнт 2</span>
+                    <span style={{ fontSize: 13, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: "var(--text-secondary)" }}>31.03.2026</span>
+                    <span style={{ fontSize: 8, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase", marginTop: 4, opacity: 0.5, color: "var(--text-secondary)" }}>Початок лікування</span>
                   </div>
                 </div>
               </div>
@@ -580,8 +606,8 @@ export default function App() {
                 WebkitBackdropFilter: "blur(32px)",
                 border: "1px solid var(--glass-border)",
                 boxShadow: "0 20px 60px var(--shadow-color-strong), inset 0 1px 0 var(--glass-shine)",
-                height: isPanic ? "min(700px, calc(100dvh - 250px))" : "min(700px, calc(100dvh - 350px))",
-                minHeight: "350px",
+                height: isPanic ? "min(1400px, calc(100dvh - 250px))" : "min(1400px, calc(100dvh - 350px))",
+                minHeight: "700px",
               }}
             >
               {/* Top glass shine edge */}
@@ -640,9 +666,19 @@ export default function App() {
               ) : (
                 <>
                   {/* Timeline header: heading + mode switcher */}
-                  <div className="flex items-center justify-between px-4 pb-3 flex-shrink-0">
+                  <div className="flex items-center justify-between flex-shrink-0" style={{ padding: "0 12px 10px" }}>
                     {/* Current date/month heading */}
-                    <span className="text-xl font-black uppercase tracking-tight select-none" style={{ color: "var(--text-primary)" }}>
+                    <span className="text-fit" style={{
+                      fontSize: 16,
+                      fontWeight: 900,
+                      textTransform: "uppercase",
+                      letterSpacing: "-0.01em",
+                      color: "var(--text-primary)",
+                      userSelect: "none",
+                      minWidth: 0,
+                      flex: "1 1 0",
+                      marginRight: 8,
+                    }}>
                       {timelineMode === "timeline"
                         ? timelineHeading
                         : (calendarHeading || "Календар")}
@@ -650,18 +686,26 @@ export default function App() {
 
                     {/* Segmented mode switcher */}
                     <div
-                      className="flex items-center rounded-xl p-0.5 gap-0.5"
+                      className="flex items-center flex-shrink-0"
                       style={{
                         background: "rgba(0,0,0,0.12)",
                         border: "1px solid var(--glass-border)",
+                        borderRadius: 10,
+                        padding: 2,
+                        gap: 2,
                       }}
                     >
                       {/* Timeline tab */}
                       <button
                         type="button"
                         onClick={() => setTimelineMode("timeline")}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-black transition-all duration-200"
+                        className="flex items-center transition-all duration-200 btn-mobile"
                         style={{
+                          gap: 4,
+                          padding: "5px 8px",
+                          borderRadius: 8,
+                          fontSize: 10,
+                          fontWeight: 900,
                           background: timelineMode === "timeline" ? "var(--accent-primary)" : "transparent",
                           color: timelineMode === "timeline"
                             ? (currentTheme?.isDark ? "#000" : "#fff")
@@ -670,8 +714,7 @@ export default function App() {
                         }}
                         aria-label="Таймлайн"
                       >
-                        {/* Timeline icon */}
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 12, height: 12, flexShrink: 0 }}>
                           <line x1="12" y1="2" x2="12" y2="22" />
                           <circle cx="12" cy="7" r="2" fill="currentColor" stroke="none" />
                           <circle cx="12" cy="14" r="2" fill="currentColor" stroke="none" />
@@ -685,8 +728,13 @@ export default function App() {
                       <button
                         type="button"
                         onClick={() => setTimelineMode("calendar")}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-black transition-all duration-200"
+                        className="flex items-center transition-all duration-200 btn-mobile"
                         style={{
+                          gap: 4,
+                          padding: "5px 8px",
+                          borderRadius: 8,
+                          fontSize: 10,
+                          fontWeight: 900,
                           background: timelineMode === "calendar" ? "var(--accent-primary)" : "transparent",
                           color: timelineMode === "calendar"
                             ? (currentTheme?.isDark ? "#000" : "#fff")
@@ -695,8 +743,7 @@ export default function App() {
                         }}
                         aria-label="Календар"
                       >
-                        {/* Calendar icon */}
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 12, height: 12, flexShrink: 0 }}>
                           <rect x="3" y="4" width="18" height="18" rx="2" />
                           <line x1="16" y1="2" x2="16" y2="6" />
                           <line x1="8" y1="2" x2="8" y2="6" />
@@ -831,17 +878,16 @@ function PremiumTextureOverlay({ textureKey, isDark }) {
 // Theme selector as a full page
 function ThemePage({ themes, currentTheme, onSelect, onBack }) {
   return (
-    <div className="flex flex-col gap-4 pb-10">
-      <div className="flex items-center gap-3 mb-2">
+    <div className="flex flex-col" style={{ gap: 14, paddingBottom: 32 }}>
+      <div className="flex items-center" style={{ gap: 10, marginBottom: 6 }}>
         <div>
-          <h2 className="text-xl font-black text-[var(--text-primary)] uppercase tracking-tight">
+          <h2 style={{ fontSize: 18, fontWeight: 900, color: "var(--text-primary)", textTransform: "uppercase", letterSpacing: "-0.01em" }}>
             Theme
           </h2>
-          <p className="text-xs font-semibold text-[var(--text-secondary)] mt-0.5">
+          <p style={{ fontSize: 11, fontWeight: 600, color: "var(--text-secondary)", marginTop: 2 }}>
             Active:{" "}
             <span
-              className="font-black"
-              style={{ color: "var(--accent-primary)" }}
+              style={{ fontWeight: 900, color: "var(--accent-primary)" }}
             >
               {currentTheme.name}
             </span>

@@ -449,45 +449,45 @@ const calculateStats = (rawIntakes, daysToShow) => {
 
 const StatCard = ({ title, value, subtext, icon: Icon, color }) => (
   <div
-    className="rounded-2xl p-4 border border-[var(--border)] relative overflow-hidden hover:scale-[1.02] transition-transform animate-in fade-in zoom-in duration-300"
-    style={{ background: "var(--surface)" }}
+    className="rounded-2xl border border-[var(--border)] relative overflow-hidden hover:scale-[1.02] transition-transform animate-in fade-in zoom-in duration-300"
+    style={{ background: "var(--surface)", padding: 12 }}
   >
-    <div className="flex justify-between items-start mb-3">
-      <div className="p-2 rounded-xl" style={{ background: `${color}22` }}>
-        <Icon className="w-4 h-4" style={{ color }} />
+    <div className="flex justify-between items-start" style={{ marginBottom: 10 }}>
+      <div style={{ padding: 6, borderRadius: 10, background: `${color}22` }}>
+        <Icon style={{ width: 14, height: 14, color }} />
       </div>
     </div>
-    <div className="text-2xl font-black text-[var(--text-primary)] mb-1 tabular-nums">
+    <div style={{ fontSize: 22, fontWeight: 900, color: "var(--text-primary)", marginBottom: 4, fontVariantNumeric: "tabular-nums" }}>
       {value}
     </div>
-    <div className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
+    <div style={{ fontSize: 9, fontWeight: 700, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.12em" }}>
       {title}
     </div>
     {subtext && (
-      <div className="text-[10px] text-[var(--text-secondary)] mt-1 opacity-60">
+      <div style={{ fontSize: 9, color: "var(--text-secondary)", marginTop: 4, opacity: 0.6 }}>
         {subtext}
       </div>
     )}
     <div
-      className="absolute -bottom-6 -right-6 w-20 h-20 rounded-full opacity-[0.06]"
-      style={{ background: color }}
+      className="absolute" style={{ bottom: -24, right: -24, width: 80, height: 80, borderRadius: "50%", opacity: 0.06, background: color }}
     />
   </div>
 );
 
 const SectionTitle = ({ icon: Icon, children }) => (
-  <h3 className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-[0.3em] mb-5 flex items-center gap-2">
-    <Icon className="opacity-70" />
+  <h3 style={{ fontSize: 9, fontWeight: 900, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.3em", marginBottom: 16, display: "flex", alignItems: "center", gap: 6 }}>
+    <Icon style={{ opacity: 0.7, width: 12, height: 12 }} />
     {children}
   </h3>
 );
 
 const ChartCard = ({ children, delay = 0, className = "" }) => (
   <div
-    className={`rounded-3xl p-5 border border-[var(--border)] animate-in fade-in slide-in-from-bottom-8 duration-700 ${className}`}
+    className={`rounded-3xl border border-[var(--border)] animate-in fade-in slide-in-from-bottom-8 duration-700 ${className}`}
     style={{
       background: "var(--surface)",
       animationDelay: `${delay}ms`,
+      padding: 16,
     }}
   >
     {children}
@@ -600,12 +600,12 @@ export default function Statistics({ onBack }) {
   const eiIntervals = patientStats.EI.intervalHistory;
 
   return (
-    <div className="flex flex-col gap-5 pb-10">
+    <div className="flex flex-col" style={{ gap: 16, paddingBottom: 32 }}>
       {/* Date Range Selector */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between" style={{ gap: 8 }}>
         <div
-          className="flex gap-1 p-1 rounded-2xl border border-[var(--border)]"
-          style={{ background: "var(--surface)" }}
+          className="flex"
+          style={{ gap: 3, padding: 3, borderRadius: 14, border: "1px solid var(--border)", background: "var(--surface)" }}
         >
           {[
             { v: "3", label: "3д" },
@@ -617,8 +617,12 @@ export default function Statistics({ onBack }) {
             <button
               key={v}
               onClick={() => setDateRange(v)}
-              className="px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200"
+              className="transition-all duration-200 btn-mobile"
               style={{
+                padding: "5px 10px",
+                borderRadius: 10,
+                fontSize: 11,
+                fontWeight: 700,
                 background:
                   dateRange === v ? "var(--accent-primary)" : "transparent",
                 color: dateRange === v ? "#fff" : "var(--text-secondary)",
@@ -628,50 +632,47 @@ export default function Statistics({ onBack }) {
             </button>
           ))}
         </div>
-        <span className="text-xs text-[var(--text-secondary)] font-semibold opacity-60">
-          {stats.totalIntakes} прийомів
+        <span style={{ fontSize: 11, color: "var(--text-secondary)", fontWeight: 600, opacity: 0.6, whiteSpace: "nowrap" }}>
+          {stats.totalIntakes} пр.
         </span>
       </div>
 
       {/* Last 24 Hours */}
       <div
-        className="rounded-3xl p-4 border border-[var(--border)] animate-in fade-in slide-in-from-bottom-4 duration-500"
-        style={{ background: "var(--surface)" }}
+        className="rounded-3xl border border-[var(--border)] animate-in fade-in slide-in-from-bottom-4 duration-500"
+        style={{ background: "var(--surface)", padding: 14 }}
       >
-        <h3 className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-[0.3em] mb-3 flex items-center gap-2">
-          <FaClock className="opacity-70" />
+        <h3 style={{ fontSize: 9, fontWeight: 900, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.3em", marginBottom: 10, display: "flex", alignItems: "center", gap: 6 }}>
+          <FaClock style={{ opacity: 0.7, width: 12, height: 12 }} />
           Останні 24 години
         </h3>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2" style={{ gap: 10 }}>
           {["AH", "EI"].map((pid) => (
             <div
               key={pid}
-              className="p-3 rounded-2xl border border-[var(--border)] text-center"
-              style={{ background: "var(--surface-2)" }}
+              className="rounded-2xl border border-[var(--border)] text-center"
+              style={{ background: "var(--surface-2)", padding: 10 }}
             >
               <div
-                className="text-[10px] font-black uppercase tracking-widest mb-2"
-                style={{ color: `var(--accent-${pid.toLowerCase()})` }}
+                style={{ fontSize: 9, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 6, color: `var(--accent-${pid.toLowerCase()})` }}
               >
                 {pid === "AH" ? "P1" : "P2"}
               </div>
               <div
-                className="text-3xl font-black tabular-nums"
-                style={{ color: `var(--accent-${pid.toLowerCase()})` }}
+                style={{ fontSize: 26, fontWeight: 900, fontVariantNumeric: "tabular-nums", color: `var(--accent-${pid.toLowerCase()})` }}
               >
                 {last24hStats[pid].mg.toFixed(0)}
                 <span
-                  className="text-xs font-medium ml-1"
-                  style={{ color: "var(--text-secondary)" }}
+                  style={{ fontSize: 11, fontWeight: 500, marginLeft: 3, color: "var(--text-secondary)" }}
                 >
                   мг
                 </span>
               </div>
-              <div className="text-xs font-semibold text-[var(--text-secondary)] opacity-60 mt-1">
-                {last24hStats[pid].count} прийомів
+              <div style={{ fontSize: 11, fontWeight: 600, color: "var(--text-secondary)", opacity: 0.6, marginTop: 4 }}>
+                {last24hStats[pid].count} пр.
               </div>
               {patientStats[pid].lastDose && (
-                <div className="text-[10px] text-[var(--text-secondary)] opacity-50 mt-0.5">
+                <div style={{ fontSize: 9, color: "var(--text-secondary)", opacity: 0.5, marginTop: 2 }}>
                   {formatLastDose(patientStats[pid].lastDose)}
                 </div>
               )}
@@ -681,9 +682,9 @@ export default function Statistics({ onBack }) {
       </div>
 
       {/* Summary Stats Grid — row 1: intervals */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2" style={{ gap: 10 }}>
         <StatCard
-          title="Середній інтервал P1"
+          title="Сер. інтервал P1"
           value={
             patientStats.AH.avgIntervalHours != null
               ? `${patientStats.AH.avgIntervalHours} год`
@@ -698,7 +699,7 @@ export default function Statistics({ onBack }) {
           color="var(--accent-ah)"
         />
         <StatCard
-          title="Середній інтервал P2"
+          title="Сер. інтервал P2"
           value={
             patientStats.EI.avgIntervalHours != null
               ? `${patientStats.EI.avgIntervalHours} год`
@@ -715,23 +716,23 @@ export default function Statistics({ onBack }) {
         <StatCard
           title="Загалом мг P1"
           value={Math.round(patientStats.AH.mg)}
-          subtext={patientStats.AH.pills10 > 0 || patientStats.AH.pills25 > 0 ? `Таблетки: ${patientStats.AH.pills10}x 10мг, ${patientStats.AH.pills25}x 25мг` : `~${patientStats.AH.avgDailyMg} мг/день`}
+          subtext={patientStats.AH.pills10 > 0 || patientStats.AH.pills25 > 0 ? `${patientStats.AH.pills10}х10 + ${patientStats.AH.pills25}х25` : `~${patientStats.AH.avgDailyMg} мг/д`}
           icon={FaSyringe}
           color="var(--accent-ah)"
         />
         <StatCard
           title="Загалом мг P2"
           value={Math.round(patientStats.EI.mg)}
-          subtext={patientStats.EI.pills10 > 0 || patientStats.EI.pills25 > 0 ? `Таблетки: ${patientStats.EI.pills10}x 10мг, ${patientStats.EI.pills25}x 25мг` : `~${patientStats.EI.avgDailyMg} мг/день`}
+          subtext={patientStats.EI.pills10 > 0 || patientStats.EI.pills25 > 0 ? `${patientStats.EI.pills10}х10 + ${patientStats.EI.pills25}х25` : `~${patientStats.EI.avgDailyMg} мг/д`}
           icon={FaDroplet}
           color="var(--accent-ei)"
         />
       </div>
 
       {/* Summary Stats Grid — row 2: streak & consistency */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2" style={{ gap: 10 }}>
         <StatCard
-          title="Серія активних днів"
+          title="Серія активних дн."
           value={`${streak} дн`}
           subtext="Поспіль днів з прийомами"
           icon={FaFire}
@@ -747,14 +748,14 @@ export default function Statistics({ onBack }) {
         <StatCard
           title="Прийомів/день P1"
           value={patientStats.AH.avgDailyCount}
-          subtext={`Макс добова ${Math.round(patientStats.AH.maxDailyMg)} мг`}
+          subtext={`Макс доб. ${Math.round(patientStats.AH.maxDailyMg)} мг`}
           icon={FaBullseye}
           color="var(--accent-ah)"
         />
         <StatCard
           title="Прийомів/день P2"
           value={patientStats.EI.avgDailyCount}
-          subtext={`Макс добова ${Math.round(patientStats.EI.maxDailyMg)} мг`}
+          subtext={`Макс доб. ${Math.round(patientStats.EI.maxDailyMg)} мг`}
           icon={FaBullseye}
           color="var(--accent-ei)"
         />

@@ -239,10 +239,15 @@ const ThemeSelector = ({ themes, currentTheme, onSelect }) => {
         </div>
 
         {/* Title & Status */}
-        <div className="mt-1.5 px-0.5 flex items-center justify-between w-full z-10 relative">
+        <div className="mt-1.5 px-0.5 flex items-center justify-between w-full z-10 relative" style={{ minWidth: 0 }}>
           <span
-            className="text-[9px] font-black uppercase tracking-wider truncate max-w-[80%]"
+            className="text-fit"
             style={{
+              fontSize: 8,
+              fontWeight: 900,
+              textTransform: "uppercase",
+              letterSpacing: "0.12em",
+              maxWidth: "80%",
               color: isSelected
                 ? isPremium ? theme.accentAH : "var(--success-color)"
                 : isPremium
@@ -278,16 +283,16 @@ const ThemeSelector = ({ themes, currentTheme, onSelect }) => {
     <div className="space-y-6">
       {lightThemes.length > 0 && (
         <div>
-          <div className="flex items-center gap-3 mb-3">
-            <h5 className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-[0.3em]">
+          <div className="flex items-center" style={{ gap: 10, marginBottom: 10 }}>
+            <h5 style={{ fontSize: 9, fontWeight: 900, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.3em" }}>
               Light
             </h5>
             <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
-            <span className="text-[10px] text-[var(--text-secondary)] opacity-50">
+            <span style={{ fontSize: 9, color: "var(--text-secondary)", opacity: 0.5 }}>
               {lightThemes.length}
             </span>
           </div>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3" style={{ gap: 10 }}>
             {lightThemes.map(renderThemeCard)}
           </div>
         </div>
@@ -295,16 +300,16 @@ const ThemeSelector = ({ themes, currentTheme, onSelect }) => {
 
       {darkThemes.length > 0 && (
         <div>
-          <div className="flex items-center gap-3 mb-3">
-            <h5 className="text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-[0.3em]">
+          <div className="flex items-center" style={{ gap: 10, marginBottom: 10 }}>
+            <h5 style={{ fontSize: 9, fontWeight: 900, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.3em" }}>
               Dark
             </h5>
             <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
-            <span className="text-[10px] text-[var(--text-secondary)] opacity-50">
+            <span style={{ fontSize: 9, color: "var(--text-secondary)", opacity: 0.5 }}>
               {darkThemes.length}
             </span>
           </div>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3" style={{ gap: 10 }}>
             {darkThemes.map(renderThemeCard)}
           </div>
         </div>
