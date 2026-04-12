@@ -285,7 +285,8 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, scrollToNext
   const getPillInfo = (intake) => {
     const pills25 = intake.pills25mg ? intake.pills25mg / 25 : 0;
     const pills10 = intake.pills10mg ? intake.pills10mg / 10 : 0;
-    return { pills25, pills10, totalMg: parseFloat(intake.dosage) || 0 };
+    const pills5 = intake.pills5mg ? intake.pills5mg / 5 : 0;
+    return { pills25, pills10, pills5, totalMg: parseFloat(intake.dosage) || 0 };
   };
 
   return (
@@ -666,14 +667,14 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, scrollToNext
 
                               <div className="flex items-stretch">
                                 {/* Pill towers mini visualization */}
-                                {(pillInfo.pills25 > 0 || pillInfo.pills10 > 0) && (
+                                {(pillInfo.pills25 > 0 || pillInfo.pills10 > 0 || pillInfo.pills5 > 0) && (
                                   <div className="flex items-end gap-0 pl-2 py-1.5 flex-shrink-0">
-                                    {pillInfo.pills25 > 0 && (
-                                      <div style={{ width: 20, height: 36 }}>
+                                    {pillInfo.pills5 > 0 && (
+                                      <div style={{ width: 14, height: 36 }}>
                                         <PillTower
-                                          pills={pillInfo.pills25}
+                                          pills={pillInfo.pills5}
                                           accentColor={accentColor}
-                                          pillType="25"
+                                          pillType="5"
                                         />
                                       </div>
                                     )}
@@ -683,6 +684,15 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, scrollToNext
                                           pills={pillInfo.pills10}
                                           accentColor={accentColor}
                                           pillType="10"
+                                        />
+                                      </div>
+                                    )}
+                                    {pillInfo.pills25 > 0 && (
+                                      <div style={{ width: 20, height: 36, marginLeft: -2 }}>
+                                        <PillTower
+                                          pills={pillInfo.pills25}
+                                          accentColor={accentColor}
+                                          pillType="25"
                                         />
                                       </div>
                                     )}
@@ -701,16 +711,18 @@ const TimelineHistory = ({ onDayChange, selectedId, onSelectIntake, scrollToNext
                                   </div>
 
                                   {/* Pill breakdown */}
-                                  {(pillInfo.pills25 > 0 || pillInfo.pills10 > 0) && (
+                                  {(pillInfo.pills25 > 0 || pillInfo.pills10 > 0 || pillInfo.pills5 > 0) && (
                                     <div className="text-[8px] font-bold leading-tight" style={{ color: "var(--text-secondary)", opacity: 0.5 }}>
-                                      {pillInfo.pills25 > 0 && `${pillInfo.pills25 % 1 !== 0 ? pillInfo.pills25.toFixed(1) : pillInfo.pills25}×25`}
-                                      {pillInfo.pills25 > 0 && pillInfo.pills10 > 0 && " + "}
+                                      {pillInfo.pills5 > 0 && `${pillInfo.pills5}×5`}
+                                      {pillInfo.pills5 > 0 && (pillInfo.pills10 > 0 || pillInfo.pills25 > 0) && " + "}
                                       {pillInfo.pills10 > 0 && `${pillInfo.pills10}×10`}
+                                      {pillInfo.pills10 > 0 && pillInfo.pills25 > 0 && " + "}
+                                      {pillInfo.pills25 > 0 && `${pillInfo.pills25}×25`}
                                     </div>
                                   )}
 
                                   {/* Non-pill dosage for legacy records */}
-                                  {pillInfo.pills25 === 0 && pillInfo.pills10 === 0 && intake.unit === "ml" && (
+                                  {pillInfo.pills25 === 0 && pillInfo.pills10 === 0 && pillInfo.pills5 === 0 && intake.unit === "ml" && (
                                     <div className="text-[8px] font-bold" style={{ color: "var(--text-secondary)", opacity: 0.45 }}>
                                       {intake.dosage} мл
                                     </div>

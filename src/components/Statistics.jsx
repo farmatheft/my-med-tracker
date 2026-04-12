@@ -280,6 +280,7 @@ const calculateStats = (rawIntakes, daysToShow) => {
       maxSingleDoseMg: 0,
       pills10: 0,
       pills25: 0,
+      pills5: 0,
     },
     EI: {
       count: 0,
@@ -291,6 +292,7 @@ const calculateStats = (rawIntakes, daysToShow) => {
       maxSingleDoseMg: 0,
       pills10: 0,
       pills25: 0,
+      pills5: 0,
     },
   };
 
@@ -348,6 +350,7 @@ const calculateStats = (rawIntakes, daysToShow) => {
     if (patientStats[patientId]) {
       patientStats[patientId].count += 1;
       patientStats[patientId].mg += mg;
+      if (intake.pills5mg) patientStats[patientId].pills5 += intake.pills5mg / 5;
       if (intake.pills10mg) patientStats[patientId].pills10 += intake.pills10mg / 10;
       if (intake.pills25mg) patientStats[patientId].pills25 += intake.pills25mg / 25;
       
@@ -716,14 +719,14 @@ export default function Statistics({ onBack }) {
         <StatCard
           title="Загалом мг P1"
           value={Math.round(patientStats.AH.mg)}
-          subtext={patientStats.AH.pills10 > 0 || patientStats.AH.pills25 > 0 ? `${patientStats.AH.pills10}х10 + ${patientStats.AH.pills25}х25` : `~${patientStats.AH.avgDailyMg} мг/д`}
+          subtext={patientStats.AH.pills5 > 0 || patientStats.AH.pills10 > 0 || patientStats.AH.pills25 > 0 ? `${patientStats.AH.pills5 > 0 ? patientStats.AH.pills5 + 'х5 + ' : ''}${patientStats.AH.pills10}х10 + ${patientStats.AH.pills25}х25` : `~${patientStats.AH.avgDailyMg} мг/д`}
           icon={FaSyringe}
           color="var(--accent-ah)"
         />
         <StatCard
           title="Загалом мг P2"
           value={Math.round(patientStats.EI.mg)}
-          subtext={patientStats.EI.pills10 > 0 || patientStats.EI.pills25 > 0 ? `${patientStats.EI.pills10}х10 + ${patientStats.EI.pills25}х25` : `~${patientStats.EI.avgDailyMg} мг/д`}
+          subtext={patientStats.EI.pills5 > 0 || patientStats.EI.pills10 > 0 || patientStats.EI.pills25 > 0 ? `${patientStats.EI.pills5 > 0 ? patientStats.EI.pills5 + 'х5 + ' : ''}${patientStats.EI.pills10}х10 + ${patientStats.EI.pills25}х25` : `~${patientStats.EI.avgDailyMg} мг/д`}
           icon={FaDroplet}
           color="var(--accent-ei)"
         />

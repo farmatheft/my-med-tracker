@@ -5,23 +5,28 @@ import { db } from "../firebase";
 import { formatDateInput, formatTimeInput } from "../utils/time";
 import PillTower from "./PillTower";
 
-const PILL25_MG = 25;
-const PILL25_STEP = 12.5;
+const PILL5_MG = 5;
+const PILL5_STEP = 5;
 const PILL10_MG = 10;
 const PILL10_STEP = 10;
+const PILL25_MG = 25;
+const PILL25_STEP = 25;    // 1 pill step now (was 12.5)
+const MAX_PILLS = 10;
 
 const IntakeDetailsModal = ({ intake, onClose }) => {
   // Try to detect pill breakdown from record, fallback to dosage
   const initial25 = intake.pills25mg ?? intake.dosage ?? 0;
   const initial10 = intake.pills10mg ?? 0;
+  const initial5 = intake.pills5mg ?? 0;
 
   const [pills25, setPills25] = useState(initial25);
   const [pills10, setPills10] = useState(initial10);
+  const [pills5, setPills5] = useState(initial5);
   const [dateValue, setDateValue] = useState(formatDateInput(intake.timestamp));
   const [timeValue, setTimeValue] = useState(formatTimeInput(intake.timestamp));
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const totalMg = pills25 + pills10;
+  const totalMg = pills25 + pills10 + pills5;
   const accentColor = intake.patientId === "AH" ? "var(--accent-ah)" : "var(--accent-ei)";
 
   const handleSave = async () => {
@@ -31,8 +36,9 @@ const IntakeDetailsModal = ({ intake, onClose }) => {
       unit: "mg",
       subtype: "PO",
       instrument: "pills",
-      pills25mg: pills25,
+      pills5mg: pills5,
       pills10mg: pills10,
+      pills25mg: pills25,
       timestamp: Timestamp.fromDate(nextDate),
       updatedAt: Timestamp.now(),
     });
@@ -96,21 +102,42 @@ const IntakeDetailsModal = ({ intake, onClose }) => {
         </div>
 
         {/* Pill towers + total */}
-        <div className="flex items-end justify-center gap-3 mb-4 py-2" style={{ height: 110 }}>
-          <div className="w-12">
-            <PillTower pills={pills10 / PILL10_MG} accentColor={accentColor} pillType="10" />
-          </div>
+        <div className="flex items-end justify-center gap-2 mb-4 py-2" style={{ height: 110 }}>
+          {pills5 > 0 && (
+            <div className="w-10">
+              <PillTower pills={pills5 / PILL5_MG} accentColor={accentColor} pillType="5" />
+            </div>
+          )}
+          {pills10 > 0 && (
+            <div className="w-12">
+              <PillTower pills={pills10 / PILL10_MG} accentColor={accentColor} pillType="10" />
+            </div>
+          )}
           <div className="text-center px-3">
             <div style={{ fontSize: 26, fontWeight: 900, fontVariantNumeric: "tabular-nums", lineHeight: 1, color: accentColor }}>{totalMg}</div>
             <div style={{ fontSize: 9, fontWeight: 700, marginTop: 2, color: accentColor, opacity: 0.6 }}>мг</div>
           </div>
-          <div className="w-20">
-            <PillTower pills={pills25 / PILL25_MG} accentColor={accentColor} pillType="25" />
-          </div>
+          {pills25 > 0 && (
+            <div className="w-20">
+              <PillTower pills={pills25 / PILL25_MG} accentColor={accentColor} pillType="25" />
+            </div>
+          )}
         </div>
 
         {/* Controls */}
         <div className="space-y-2.5 mb-4">
+          {/* 5mg row */}
+          <ModalPillControl
+            label="5 мг"
+            count={pills5 / PILL5_MG}
+            mg={pills5}
+            step="×1"
+            onMinus={() => setPills5((v) => Math.max(0, v - PILL5_STEP))}
+            onPlus={() => setPills5((v) => Math.min(MAX_PILLS * PILL5_MG, v + PILL5_STEP))}
+            accent={accentColor}
+            pillType="5"
+          />
+
           {/* 10mg row */}
           <ModalPillControl
             label="10 мг"
@@ -118,7 +145,7 @@ const IntakeDetailsModal = ({ intake, onClose }) => {
             mg={pills10}
             step="×1"
             onMinus={() => setPills10((v) => Math.max(0, v - PILL10_STEP))}
-            onPlus={() => setPills10((v) => Math.max(0, Math.min(200 - pills25, v + PILL10_STEP)))}
+            onPlus={() => setPills10((v) => Math.min(MAX_PILLS * PILL10_MG, v + PILL10_STEP))}
             accent={accentColor}
             pillType="10"
           />
@@ -128,9 +155,9 @@ const IntakeDetailsModal = ({ intake, onClose }) => {
             label="25 мг"
             count={pills25 / PILL25_MG}
             mg={pills25}
-            step="×½"
+            step="×1"
             onMinus={() => setPills25((v) => Math.max(0, v - PILL25_STEP))}
-            onPlus={() => setPills25((v) => Math.max(0, Math.min(200 - pills10, v + PILL25_STEP)))}
+            onPlus={() => setPills25((v) => Math.min(MAX_PILLS * PILL25_MG, v + PILL25_STEP))}
             accent={accentColor}
             pillType="25"
           />
@@ -236,7 +263,7 @@ function ModalPillControl({ label, count, mg, step, onMinus, onPlus, accent, pil
         <div className="flex items-center justify-center" style={{ gap: 5 }}>
           <PillTower pills={0} pillType={pillType} mini className="flex-shrink-0" />
           <span style={{ fontSize: 12, fontWeight: 900, fontVariantNumeric: "tabular-nums", color: accent }}>
-            {pillType === "25" ? count.toFixed(1).replace(".0", "") : count} таб
+            {count} таб
           </span>
           <span style={{ fontSize: 9, fontWeight: 700, color: "var(--text-secondary)", opacity: 0.5 }}>
             ({mg} мг)
