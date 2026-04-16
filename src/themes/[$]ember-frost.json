@@ -1,0 +1,41 @@
+{
+  "name": "[$] ember-frost",
+  "isDark": true,
+  "isPremium": true,
+  "backgroundGradient": ["#0c1220", "#0f1a2e"],
+  "cardBackground": ["rgba(15, 26, 46, 0.95)", "rgba(12, 18, 32, 0.9)"],
+  "textPrimary": "#e8f0ff",
+  "textSecondary": "#7a9ab8",
+  "accentAH": "#ff6b00",
+  "accentEI": "#38bdf8",
+  "border": "rgba(255, 107, 0, 0.2)",
+  "timelineLine": "rgba(56, 189, 248, 0.15)",
+  "markerColor": "#ff6b00",
+  "timelineBackground": ["rgba(12, 18, 32, 0.85)", "rgba(8, 12, 22, 0.7)"],
+  "timelineSecondaryBackground": ["rgba(15, 26, 46, 0.7)", "rgba(12, 18, 32, 0.5)"],
+  "success": "#34d399",
+  "subtypeColors": {
+    "iv": "#38bdf8",
+    "im": "#ff6b00",
+    "po": "#fbbf24",
+    "ivpo": "#34d399",
+    "vtrk": "#fb7185"
+  },
+  "subtypePanel": {
+    "bg": "rgba(255, 107, 0, 0.06)",
+    "border": "rgba(255, 107, 0, 0.18)"
+  },
+  "addButton": {
+    "bg": "linear-gradient(135deg, #ff6b00, #38bdf8)",
+    "text": "#0c1220",
+    "border": "rgba(255, 107, 0, 0.5)",
+    "glow": "#ff6b00"
+  },
+  "gradientHeader": {
+    "start": "#ff6b00",
+    "end": "#38bdf8",
+    "overlay": "rgba(0, 0, 0, 0.5)",
+    "textColor": "#e8f0ff"
+  },
+  "premiumTexture": "frost-cracks"
+}

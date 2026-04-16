@@ -1,0 +1,41 @@
+{
+  "name": "[$] ceramic-bloom",
+  "isDark": false,
+  "isPremium": true,
+  "backgroundGradient": ["#f5f0ff", "#fcf5f0"],
+  "cardBackground": ["rgba(255, 255, 255, 0.96)", "rgba(245, 240, 255, 0.88)"],
+  "textPrimary": "#2d1a4e",
+  "textSecondary": "#7a5a9a",
+  "accentAH": "#7c3aed",
+  "accentEI": "#c2410c",
+  "border": "rgba(124, 58, 237, 0.18)",
+  "timelineLine": "rgba(124, 58, 237, 0.2)",
+  "markerColor": "#c4b5fd",
+  "timelineBackground": ["rgba(255, 255, 255, 0.85)", "rgba(245, 240, 255, 0.7)"],
+  "timelineSecondaryBackground": ["rgba(255, 255, 255, 0.95)", "rgba(255, 255, 255, 0.85)"],
+  "success": "#10b981",
+  "subtypeColors": {
+    "iv": "#3b82f6",
+    "im": "#c2410c",
+    "po": "#f59e0b",
+    "ivpo": "#22c55e",
+    "vtrk": "#ef4444"
+  },
+  "subtypePanel": {
+    "bg": "rgba(245, 240, 255, 0.6)",
+    "border": "rgba(196, 181, 253, 0.5)"
+  },
+  "addButton": {
+    "bg": "linear-gradient(135deg, #7c3aed, #8b5cf6)",
+    "text": "#ffffff",
+    "border": "rgba(124, 58, 237, 0.3)",
+    "glow": "rgba(124, 58, 237, 0.35)"
+  },
+  "gradientHeader": {
+    "start": "#7c3aed",
+    "end": "#8b5cf6",
+    "overlay": "rgba(255, 255, 255, 0.12)",
+    "textColor": "#ffffff"
+  },
+  "premiumTexture": "mosaic-tiles"
+}

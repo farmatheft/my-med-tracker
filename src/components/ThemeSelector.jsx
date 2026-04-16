@@ -40,6 +40,42 @@ const TEXTURES = {
       <line x1='0' y1='0' x2='0' y2='8' stroke='rgba(200,134,10,0.08)' stroke-width='0.6'/>
       <line x1='4' y1='0' x2='4' y2='8' stroke='rgba(200,134,10,0.05)' stroke-width='0.6'/>
     </svg>`,
+  "wave-lines": `
+    <svg xmlns='http://www.w3.org/2000/svg' width='60' height='20'>
+      <path d='M0 10 Q15 2 30 10 Q45 18 60 10' fill='none' stroke='rgba(0,119,182,0.1)' stroke-width='0.8'/>
+      <path d='M0 16 Q15 8 30 16 Q45 24 60 16' fill='none' stroke='rgba(230,57,70,0.06)' stroke-width='0.8'/>
+    </svg>`,
+  "leaf-pattern": `
+    <svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>
+      <path d='M16 4 Q24 12 16 28 Q8 12 16 4 Z' fill='none' stroke='rgba(22,163,74,0.08)' stroke-width='0.6'/>
+      <line x1='16' y1='4' x2='16' y2='28' stroke='rgba(22,163,74,0.05)' stroke-width='0.4'/>
+    </svg>`,
+  "mosaic-tiles": `
+    <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'>
+      <rect x='0' y='0' width='8' height='8' fill='none' stroke='rgba(124,58,237,0.08)' stroke-width='0.5'/>
+      <rect x='8' y='8' width='8' height='8' fill='none' stroke='rgba(194,65,12,0.06)' stroke-width='0.5'/>
+      <rect x='4' y='4' width='8' height='8' fill='none' stroke='rgba(124,58,237,0.04)' stroke-width='0.4' rx='1'/>
+    </svg>`,
+  "circuit-board": `
+    <svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'>
+      <line x1='0' y1='20' x2='15' y2='20' stroke='rgba(255,45,135,0.08)' stroke-width='0.6'/>
+      <line x1='25' y1='20' x2='40' y2='20' stroke='rgba(0,240,255,0.06)' stroke-width='0.6'/>
+      <line x1='20' y1='0' x2='20' y2='15' stroke='rgba(0,240,255,0.08)' stroke-width='0.6'/>
+      <line x1='20' y1='25' x2='20' y2='40' stroke='rgba(255,45,135,0.06)' stroke-width='0.6'/>
+      <circle cx='20' cy='20' r='2' fill='none' stroke='rgba(255,45,135,0.1)' stroke-width='0.5'/>
+      <rect x='13' y='13' width='4' height='4' fill='none' stroke='rgba(0,240,255,0.07)' stroke-width='0.4'/>
+    </svg>`,
+  "frost-cracks": `
+    <svg xmlns='http://www.w3.org/2000/svg' width='50' height='50'>
+      <path d='M0 25 L20 15 L25 25 L35 10 L50 20' fill='none' stroke='rgba(56,189,248,0.08)' stroke-width='0.6'/>
+      <path d='M10 50 L25 35 L30 45 L45 30' fill='none' stroke='rgba(255,107,0,0.06)' stroke-width='0.6'/>
+      <path d='M25 25 L22 35' fill='none' stroke='rgba(56,189,248,0.05)' stroke-width='0.4'/>
+    </svg>`,
+  "diamond-lattice": `
+    <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'>
+      <polygon points='12,2 22,12 12,22 2,12' fill='none' stroke='rgba(251,191,36,0.09)' stroke-width='0.6'/>
+      <polygon points='12,6 18,12 12,18 6,12' fill='none' stroke='rgba(5,150,105,0.06)' stroke-width='0.4'/>
+    </svg>`,
 };
 
 function getTextureCss(textureKey) {

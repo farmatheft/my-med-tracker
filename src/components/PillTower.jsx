@@ -114,15 +114,15 @@ export default function PillTower({
     );
   }
 
-  // Visual constants per pill type
-  const PILL_RX = is5 ? 13 : is10 ? 16 : 28;
-  const PILL_RY = is5 ? 8 : is10 ? 10 : 10;
-  const PILL_THICKNESS = is5 ? 5 : is10 ? 6 : 8;
-  const SPACING = is5 ? 8 : is10 ? 10 : 12;
+  // Visual constants per pill type (enlarged for visibility)
+  const PILL_RX = is5 ? 18 : is10 ? 22 : 36;
+  const PILL_RY = is5 ? 11 : is10 ? 13 : 14;
+  const PILL_THICKNESS = is5 ? 7 : is10 ? 8 : 10;
+  const SPACING = is5 ? 10 : is10 ? 13 : 15;
 
   const maxFloor = Math.max(floors.length, 1);
   const vHeight = 60 + maxFloor * SPACING;
-  const vWidth = is5 ? 42 : is10 ? 50 : 80;
+  const vWidth = is5 ? 54 : is10 ? 62 : 96;
 
   const uid = useMemo(() => `pt-${Math.random().toString(36).slice(2, 8)}`, []);
 
@@ -173,45 +173,31 @@ export default function PillTower({
         </defs>
 
         <style>{`
-          @keyframes pillShake${uid} {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            20% { transform: translate(-0.3px, 0.2px) rotate(-0.2deg); }
-            40% { transform: translate(0.4px, -0.2px) rotate(0.3deg); }
-            60% { transform: translate(-0.2px, 0.3px) rotate(-0.15deg); }
-            80% { transform: translate(0.3px, 0.15px) rotate(0.2deg); }
+          @keyframes pillAppear${uid} {
+            0% { opacity: 0; transform: scale(0.7); }
+            100% { opacity: 1; transform: scale(1); }
           }
-          .ps-${uid} {
-            animation: pillShake${uid} 4s infinite ease-in-out;
-            transform-origin: ${vWidth / 2}px ${vHeight - 20}px;
+          @keyframes pillDisappear${uid} {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.7); }
           }
-          @keyframes pillFallIn${uid} {
-            0% { transform: translateY(-40px); opacity: 0; }
-            60% { transform: translateY(3px); opacity: 1; }
-            80% { transform: translateY(-1px); }
-            100% { transform: translateY(0); opacity: 1; }
+          .pill-add-${uid} {
+            animation: pillAppear${uid} 0.15s ease-out both;
           }
-          @keyframes pillFlyOut${uid} {
-            0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(-40px); opacity: 0; }
-          }
-          .pill-fall-${uid} {
-            animation: pillFallIn${uid} 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-          }
-          .pill-fly-${uid} {
-            animation: pillFlyOut${uid} 0.35s ease-in both;
+          .pill-remove-${uid} {
+            animation: pillDisappear${uid} 0.12s ease-in both;
           }
         `}</style>
 
-        <g className={floors.length > 2 ? `ps-${uid}` : ""}>
+        <g>
           {floors.map((floor, idx) => {
             const y = vHeight - 20 - floor.floor * SPACING;
             const cx = vWidth / 2;
             const offsetX = Math.sin(floor.floor * 7.13) * (is5 ? 1.5 : is10 ? 2 : 3);
             const x = cx + offsetX;
 
-            // Check if this pill is being animated
             const animInfo = animatingPills.find(a => a.floor === floor.floor && a.type === 'add');
-            const animClass = animInfo ? `pill-fall-${uid}` : '';
+            const animClass = animInfo ? `pill-add-${uid}` : '';
             const animDelay = animInfo ? `${animInfo.delay}ms` : '0ms';
 
             if (is5) {

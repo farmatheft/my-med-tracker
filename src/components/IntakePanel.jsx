@@ -17,7 +17,8 @@ const PILL5_STEP = 5;    // +/- 1 pill = +/- 5mg
 const PILL10_STEP = 10;  // +/- 1 pill = +/- 10mg
 const PILL25_STEP = 25;  // +/- 1 pill = +/- 25mg
 
-const MAX_PILLS_PER_TYPE = 10; // max pills in any single tower
+const MAX_PILLS_PER_TYPE = 30; // allow up to 30 pills, towers split at 10
+const TOWER_SPLIT = 10; // pills per tower segment
 
 const getActiveColor = (patient) =>
   patient === "AH" ? "var(--accent-ah)" : "var(--accent-ei)";
@@ -25,7 +26,7 @@ const getActiveColor = (patient) =>
 const makePatientState = () => ({
   pills5: 0,   // stored as mg
   pills10: 0,
-  pills25: 50, // 2 pills default
+  pills25: 0,  // start empty
 });
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -34,7 +35,7 @@ const makePatientState = () => ({
 
 function IsoPill5({ active, accentColor }) {
   return (
-    <svg viewBox="0 0 44 44" style={{ width: 40, height: 40 }}>
+    <svg viewBox="0 0 44 44" style={{ width: 14, height: 14 }}>
       <defs>
         <linearGradient id="iso5-top" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#f8fafc" />
@@ -45,15 +46,12 @@ function IsoPill5({ active, accentColor }) {
           <stop offset="100%" stopColor="#d1d5db" />
         </linearGradient>
       </defs>
-      {/* Side */}
       <ellipse cx="22" cy="27" rx="14" ry="9" fill="url(#iso5-side)" stroke="#b0b8c4" strokeWidth="0.6" />
-      {/* Top */}
       <ellipse cx="22" cy="22" rx="14" ry="9" fill="url(#iso5-top)" stroke="#b0b8c4" strokeWidth="0.8" />
-      {/* Highlight */}
       <ellipse cx="19" cy="20" rx="5" ry="3" fill="white" opacity="0.5" />
       {active && (
         <ellipse cx="22" cy="22" rx="16" ry="11" fill="none"
-          stroke={accentColor} strokeWidth="1.5" opacity="0.6" />
+          stroke={accentColor} strokeWidth="2.5" opacity="0.6" />
       )}
     </svg>
   );
@@ -61,7 +59,7 @@ function IsoPill5({ active, accentColor }) {
 
 function IsoPill10({ active, accentColor }) {
   return (
-    <svg viewBox="0 0 50 50" style={{ width: 44, height: 44 }}>
+    <svg viewBox="0 0 50 50" style={{ width: 16, height: 16 }}>
       <defs>
         <linearGradient id="iso10-top" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#ffffff" />
@@ -77,7 +75,7 @@ function IsoPill10({ active, accentColor }) {
       <ellipse cx="21" cy="22" rx="6" ry="4" fill="white" opacity="0.4" />
       {active && (
         <ellipse cx="25" cy="24" rx="19" ry="13" fill="none"
-          stroke={accentColor} strokeWidth="1.5" opacity="0.6" />
+          stroke={accentColor} strokeWidth="2.5" opacity="0.6" />
       )}
     </svg>
   );
@@ -85,7 +83,7 @@ function IsoPill10({ active, accentColor }) {
 
 function IsoPill25({ active, accentColor }) {
   return (
-    <svg viewBox="0 0 60 44" style={{ width: 52, height: 38 }}>
+    <svg viewBox="0 0 60 44" style={{ width: 20, height: 14 }}>
       <defs>
         <linearGradient id="iso25-top" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#ffffff" />
@@ -109,7 +107,7 @@ function IsoPill25({ active, accentColor }) {
       <ellipse cx="24" cy="20" rx="10" ry="4" fill="white" opacity="0.35" />
       {active && (
         <ellipse cx="30" cy="22" rx="29" ry="12" fill="none"
-          stroke={accentColor} strokeWidth="1.5" opacity="0.6" />
+          stroke={accentColor} strokeWidth="2.5" opacity="0.6" />
       )}
     </svg>
   );
@@ -120,124 +118,93 @@ function IsoPill25({ active, accentColor }) {
    appear/disappear animations and rearrangement
    ═══════════════════════════════════════════════════════════════════════════ */
 
-function AnimatedTowerArea({ pills5, pills10, pills25, accentColor }) {
+function AnimatedTowerArea({ pills5, pills10, pills25, accentColor, onTowerTap }) {
   const count5 = pills5 / PILL5_MG;
   const count10 = pills10 / PILL10_MG;
   const count25 = pills25 / PILL25_MG;
 
-  // Build list of active towers (non-zero only)
+  // Build list of active towers — split into groups of TOWER_SPLIT (10)
   const towers = useMemo(() => {
     const list = [];
-    if (count5 > 0) list.push({ key: '5', type: '5', count: count5, width: 36 });
-    if (count10 > 0) list.push({ key: '10', type: '10', count: count10, width: 40 });
-    if (count25 > 0) list.push({ key: '25', type: '25', count: count25, width: 52 });
+    const addSplit = (type, count, baseWidth) => {
+      if (count <= 0) return;
+      const full = Math.floor(count / TOWER_SPLIT);
+      const rem = count % TOWER_SPLIT;
+      for (let i = 0; i < full; i++) {
+        list.push({ key: `${type}-${i}`, type, count: TOWER_SPLIT, width: baseWidth });
+      }
+      if (rem > 0) {
+        list.push({ key: `${type}-${full}`, type, count: rem, width: baseWidth });
+      }
+    };
+    addSplit('5', count5, 50);
+    addSplit('10', count10, 56);
+    addSplit('25', count25, 72);
     return list;
   }, [count5, count10, count25]);
 
-  // Track towers for appear/disappear
-  const [visibleTowers, setVisibleTowers] = useState(new Set());
-  const [removingTowers, setRemovingTowers] = useState(new Set());
-  const prevTowersRef = useRef(new Set());
-
-  useEffect(() => {
-    const currentKeys = new Set(towers.map(t => t.key));
-    const prevKeys = prevTowersRef.current;
-
-    // New towers appearing
-    const appearing = [...currentKeys].filter(k => !prevKeys.has(k));
-    // Towers disappearing
-    const disappearing = [...prevKeys].filter(k => !currentKeys.has(k));
-
-    if (disappearing.length > 0) {
-      setRemovingTowers(new Set(disappearing));
-      setTimeout(() => {
-        setRemovingTowers(new Set());
-        setVisibleTowers(currentKeys);
-      }, 350);
-    } else {
-      setVisibleTowers(currentKeys);
-    }
-
-    prevTowersRef.current = currentKeys;
-  }, [towers]);
-
-  // Merge visible and removing towers for render
-  const renderTowers = useMemo(() => {
-    const list = [];
-    // Add all currently visible
-    towers.forEach(t => list.push({ ...t, state: 'visible' }));
-    // Add removing towers (only if not already in current)
-    removingTowers.forEach(key => {
-      if (!towers.find(t => t.key === key)) {
-        const width = key === '5' ? 36 : key === '10' ? 40 : 52;
-        list.push({ key, type: key, count: 0, width, state: 'removing' });
-      }
-    });
-    // Sort: 5, 10, 25
-    list.sort((a, b) => parseInt(a.key) - parseInt(b.key));
-    return list;
-  }, [towers, removingTowers]);
+  const hasTowers = towers.length > 0;
 
   // Calculate gap — shrinks as more towers are added
-  const gap = renderTowers.length >= 3 ? 4 : renderTowers.length === 2 ? 8 : 0;
+  const gap = towers.length >= 4 ? 3 : towers.length >= 3 ? 5 : towers.length === 2 ? 8 : 0;
 
   return (
     <div
-      className="flex items-end justify-center transition-all duration-400"
+      className="flex items-end justify-center flex-wrap transition-all duration-300"
       style={{
         gap,
-        minHeight: 130,
-        padding: '10px 4px 0',
+        minHeight: 200,
+        padding: '12px 4px 0',
+        maxWidth: '100%',
+        overflowX: 'hidden',
       }}
     >
-      {renderTowers.length === 0 && (
-        <div className="flex items-center justify-center" style={{ height: 100, opacity: 0.15 }}>
-          <svg viewBox="0 0 60 24" style={{ width: 60, height: 24 }}>
-            <ellipse cx="30" cy="12" rx="28" ry="10" fill="var(--text-secondary)" opacity="0.3"
-              stroke="var(--text-secondary)" strokeWidth="0.8" strokeDasharray="3 3" />
-          </svg>
+      {!hasTowers && (
+        <div className="flex items-center justify-center w-full" style={{ height: 180 }}>
+          <div style={{
+            fontSize: 13,
+            fontWeight: 600,
+            color: 'var(--text-secondary)',
+            opacity: 0.3,
+            textAlign: 'center',
+            lineHeight: 1.5,
+            padding: '0 20px',
+          }}>
+            Оберіть та додайте<br/>таблетки нижче
+          </div>
         </div>
       )}
-      {renderTowers.map((tower) => {
-        const isNew = !prevTowersRef.current?.has?.(tower.key) && tower.state !== 'removing';
-        const isRemoving = tower.state === 'removing';
-
-        return (
-          <div
-            key={tower.key}
-            className="flex flex-col items-center"
-            style={{
-              width: tower.width,
-              height: 130,
-              transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
-              animation: isRemoving
-                ? 'towerDisappear 0.35s ease-in forwards'
-                : isNew
-                  ? 'towerAppear 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both'
-                  : 'none',
-              transformOrigin: 'bottom center',
-            }}
-          >
-            <PillTower
-              pills={tower.count}
-              accentColor={accentColor}
-              pillType={tower.type}
-              animate={true}
-            />
-            {/* Tower label */}
-            <div style={{
-              fontSize: 8,
-              fontWeight: 800,
-              color: accentColor,
-              opacity: 0.5,
-              marginTop: -2,
-              textAlign: 'center',
-            }}>
-              {tower.count}×{tower.type === '5' ? '5' : tower.type === '10' ? '10' : '25'}
-            </div>
+      {towers.map((tower) => (
+        <div
+          key={tower.key}
+          className="flex flex-col items-center"
+          onClick={() => onTowerTap?.(tower.type)}
+          style={{
+            width: tower.width,
+            height: 190,
+            cursor: 'pointer',
+            transition: 'opacity 0.15s',
+          }}
+        >
+          <PillTower
+            pills={tower.count}
+            accentColor={accentColor}
+            pillType={tower.type}
+            animate={true}
+          />
+          {/* Tower label */}
+          <div style={{
+            fontSize: 8,
+            fontWeight: 800,
+            color: accentColor,
+            opacity: 0.5,
+            marginTop: -2,
+            textAlign: 'center',
+          }}>
+            {tower.count}×{tower.type === '5' ? '5' : tower.type === '10' ? '10' : '25'}
           </div>
-        );
-      })}
+        </div>
+      ))}
     </div>
   );
 }
@@ -390,15 +357,6 @@ export default function IntakePanel({ onAddSuccess }) {
     >
       {/* Keyframe animations */}
       <style>{`
-        @keyframes towerAppear {
-          0% { transform: scaleY(0) scaleX(0.5); opacity: 0; }
-          60% { transform: scaleY(1.05) scaleX(1.02); opacity: 1; }
-          100% { transform: scaleY(1) scaleX(1); opacity: 1; }
-        }
-        @keyframes towerDisappear {
-          0% { transform: scaleY(1) scaleX(1); opacity: 1; }
-          100% { transform: scaleY(0) scaleX(0.5); opacity: 0; }
-        }
         @keyframes fadeSlideUp {
           from { opacity:0; transform:translateY(12px) scale(0.97); }
           to   { opacity:1; transform:translateY(0)    scale(1);    }
@@ -470,10 +428,11 @@ export default function IntakePanel({ onAddSuccess }) {
               pills10={st.pills10}
               pills25={st.pills25}
               accentColor={accentColor}
+              onTowerTap={(type) => setActivePillType(type)}
             />
 
             {/* ── Pill Type Tabs (3 isometric pills) ── */}
-            <div className="flex items-end justify-center" style={{ gap: 2, padding: "0 8px", marginTop: 4 }}>
+            <div className="flex items-center justify-center" style={{ gap: 4, padding: "0 12px", marginTop: 4 }}>
               {[
                 { type: "5", label: "5мг", Comp: IsoPill5 },
                 { type: "10", label: "10мг", Comp: IsoPill10 },
@@ -485,26 +444,26 @@ export default function IntakePanel({ onAddSuccess }) {
                     key={type}
                     type="button"
                     onClick={() => setActivePillType(type)}
-                    className="flex flex-col items-center transition-all duration-200 active:scale-95"
+                    className="flex items-center transition-all duration-200 active:scale-95"
                     style={{
                       flex: 1,
-                      padding: "6px 2px 4px",
-                      borderRadius: 14,
+                      padding: "5px 6px",
+                      borderRadius: 10,
+                      gap: 5,
+                      justifyContent: 'center',
                       background: isActive
-                        ? `color-mix(in srgb, ${accentColor} 10%, transparent)`
+                        ? `color-mix(in srgb, ${accentColor} 12%, transparent)`
                         : "transparent",
                       border: isActive
                         ? `1.5px solid color-mix(in srgb, ${accentColor} 30%, transparent)`
                         : "1.5px solid transparent",
                       WebkitTapHighlightColor: "transparent",
-                      transform: isActive ? "scale(1.05)" : "scale(1)",
                     }}
                   >
                     <Comp active={isActive} accentColor={accentColor} />
                     <span style={{
-                      fontSize: 9,
+                      fontSize: 10,
                       fontWeight: 900,
-                      marginTop: 2,
                       color: isActive ? accentColor : "var(--text-secondary)",
                       opacity: isActive ? 1 : 0.4,
                       letterSpacing: "0.05em",

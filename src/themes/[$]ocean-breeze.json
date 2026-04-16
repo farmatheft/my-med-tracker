@@ -1,0 +1,41 @@
+{
+  "name": "[$] ocean-breeze",
+  "isDark": false,
+  "isPremium": true,
+  "backgroundGradient": ["#eef6fc", "#f0f8ff"],
+  "cardBackground": ["rgba(255, 255, 255, 0.96)", "rgba(240, 248, 255, 0.85)"],
+  "textPrimary": "#1a2a3a",
+  "textSecondary": "#4a6f8a",
+  "accentAH": "#0077b6",
+  "accentEI": "#e63946",
+  "border": "rgba(0, 119, 182, 0.18)",
+  "timelineLine": "rgba(0, 119, 182, 0.2)",
+  "markerColor": "#7ec8e3",
+  "timelineBackground": ["rgba(255, 255, 255, 0.85)", "rgba(238, 246, 252, 0.7)"],
+  "timelineSecondaryBackground": ["rgba(255, 255, 255, 0.95)", "rgba(255, 255, 255, 0.85)"],
+  "success": "#10b981",
+  "subtypeColors": {
+    "iv": "#0096c7",
+    "im": "#e63946",
+    "po": "#f4a261",
+    "ivpo": "#2a9d8f",
+    "vtrk": "#e9c46a"
+  },
+  "subtypePanel": {
+    "bg": "rgba(238, 246, 252, 0.6)",
+    "border": "rgba(126, 200, 227, 0.5)"
+  },
+  "addButton": {
+    "bg": "linear-gradient(135deg, #0077b6, #0096c7)",
+    "text": "#ffffff",
+    "border": "rgba(0, 119, 182, 0.3)",
+    "glow": "rgba(0, 119, 182, 0.35)"
+  },
+  "gradientHeader": {
+    "start": "#0077b6",
+    "end": "#0096c7",
+    "overlay": "rgba(255, 255, 255, 0.12)",
+    "textColor": "#ffffff"
+  },
+  "premiumTexture": "wave-lines"
+}

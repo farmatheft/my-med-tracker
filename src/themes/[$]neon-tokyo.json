@@ -1,0 +1,41 @@
+{
+  "name": "[$] neon-tokyo",
+  "isDark": true,
+  "isPremium": true,
+  "backgroundGradient": ["#0a0612", "#120822"],
+  "cardBackground": ["rgba(18, 8, 34, 0.95)", "rgba(10, 6, 18, 0.9)"],
+  "textPrimary": "#f0e6ff",
+  "textSecondary": "#9a7abf",
+  "accentAH": "#ff2d87",
+  "accentEI": "#00f0ff",
+  "border": "rgba(255, 45, 135, 0.2)",
+  "timelineLine": "rgba(255, 45, 135, 0.15)",
+  "markerColor": "#ff2d87",
+  "timelineBackground": ["rgba(10, 6, 18, 0.85)", "rgba(6, 4, 12, 0.7)"],
+  "timelineSecondaryBackground": ["rgba(18, 8, 34, 0.7)", "rgba(10, 6, 18, 0.5)"],
+  "success": "#00ff88",
+  "subtypeColors": {
+    "iv": "#00f0ff",
+    "im": "#ff2d87",
+    "po": "#ffaa00",
+    "ivpo": "#00ff88",
+    "vtrk": "#ff6b6b"
+  },
+  "subtypePanel": {
+    "bg": "rgba(255, 45, 135, 0.06)",
+    "border": "rgba(255, 45, 135, 0.18)"
+  },
+  "addButton": {
+    "bg": "linear-gradient(135deg, #ff2d87, #00f0ff)",
+    "text": "#0a0612",
+    "border": "rgba(255, 45, 135, 0.5)",
+    "glow": "#ff2d87"
+  },
+  "gradientHeader": {
+    "start": "#ff2d87",
+    "end": "#00f0ff",
+    "overlay": "rgba(0, 0, 0, 0.5)",
+    "textColor": "#f0e6ff"
+  },
+  "premiumTexture": "circuit-board"
+}

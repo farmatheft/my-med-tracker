@@ -1,0 +1,41 @@
+{
+  "name": "[$] meadow-sun",
+  "isDark": false,
+  "isPremium": true,
+  "backgroundGradient": ["#f5faf0", "#fdf8ee"],
+  "cardBackground": ["rgba(255, 255, 255, 0.96)", "rgba(245, 250, 240, 0.88)"],
+  "textPrimary": "#1a2e1a",
+  "textSecondary": "#5a7a4a",
+  "accentAH": "#16a34a",
+  "accentEI": "#d97706",
+  "border": "rgba(22, 163, 74, 0.18)",
+  "timelineLine": "rgba(22, 163, 74, 0.2)",
+  "markerColor": "#86efac",
+  "timelineBackground": ["rgba(255, 255, 255, 0.85)", "rgba(245, 250, 240, 0.7)"],
+  "timelineSecondaryBackground": ["rgba(255, 255, 255, 0.95)", "rgba(255, 255, 255, 0.85)"],
+  "success": "#22c55e",
+  "subtypeColors": {
+    "iv": "#0ea5e9",
+    "im": "#a855f7",
+    "po": "#d97706",
+    "ivpo": "#16a34a",
+    "vtrk": "#ef4444"
+  },
+  "subtypePanel": {
+    "bg": "rgba(245, 250, 240, 0.6)",
+    "border": "rgba(134, 239, 172, 0.5)"
+  },
+  "addButton": {
+    "bg": "linear-gradient(135deg, #16a34a, #22c55e)",
+    "text": "#ffffff",
+    "border": "rgba(22, 163, 74, 0.3)",
+    "glow": "rgba(22, 163, 74, 0.35)"
+  },
+  "gradientHeader": {
+    "start": "#16a34a",
+    "end": "#22c55e",
+    "overlay": "rgba(255, 255, 255, 0.12)",
+    "textColor": "#ffffff"
+  },
+  "premiumTexture": "leaf-pattern"
+}
